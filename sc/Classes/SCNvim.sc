@@ -7,7 +7,7 @@ SCNVim {
     *initClass {
         listenAdress = "/tmp/scvim-socket";
         // nvr = "$NVIM_LISTEN_ADRESS=% nvr".format(listenAdress);
-        nvr = "nvr -s";
+        nvr = "nvr -s --nostart";
     }
 
     *new {
