@@ -3,28 +3,30 @@
 " Description: Autoload functions
 " Last Modified: October 08, 2018
 
-function! scnvim#supercollider#line_send()
-  if mode() == "n"
-    let txt = getline(".")
-  else
-    let txt = s:get_visual_selection()
-  endif
-
-  call scnvim#sclang#send(txt)
+function! scnvim#supercollider#send_line(...)
+	let lines = getline(a:1, a:2)
+  let str = join(lines, "\n")
+  call scnvim#sclang#send(str)
 endfunction
 
-function! scnvim#supercollider#paragraph_send()
+function! scnvim#supercollider#send_selection()
+	let selection = s:get_visual_selection()
+  call scnvim#sclang#send(selection)
+endfunction
+
+function! scnvim#supercollider#send_paragraph()
   " empty
 endfunction
 
+" from neoterm
 function! s:get_visual_selection()
-  let [line_start, column_start] = getpos("'<")[1:2]
-  let [line_end, column_end] = getpos("'>")[1:2]
-  let lines = getline(line_start, line_end)
-  if len(lines) == 0
-    return ''
+  let [l:lnum1, l:col1] = getpos("'<")[1:2]
+  let [l:lnum2, l:col2] = getpos("'>")[1:2]
+  if &selection ==# 'exclusive'
+    let l:col2 -= 1
   endif
-  let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
-  let lines[0] = lines[0][column_start - 1:]
-  return join(lines, "\n")
+  let l:lines = getline(l:lnum1, l:lnum2)
+  let l:lines[-1] = l:lines[-1][:l:col2 - 1]
+  let l:lines[0] = l:lines[0][l:col1 - 1:]
+  return join(l:lines, "\n")
 endfunction
