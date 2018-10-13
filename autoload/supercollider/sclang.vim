@@ -78,14 +78,15 @@ function! s:Sclang.on_stdout(id, data, event) dict
   let s:chunks[-1] .= a:data[0]
   call extend(s:chunks, a:data[1:])
 
+  let curwin_id = win_getid()
+
   if bufexists(self.post_win.bufnr)
-    let curwin_id = win_getid()
     call win_gotoid(self.post_win.winid)
     call append(line('$'), s:chunks)
     call cursor("$", 1)
-    " return to where we were
-    call win_gotoid(curwin_id)
   endif
+
+  call win_gotoid(curwin_id)
 endfunction
 
 let s:Sclang.on_stderr = function(s:Sclang.on_stdout)
