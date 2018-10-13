@@ -1,63 +1,98 @@
 " File: autoload/supercollider/sclang.vim
 " Author: David Granström
-" Description: Spawn a sclang process in a vim PTY
-" Last Modified: October 08, 2018
+" Description: Spawn a sclang process
+" Last Modified: October 13, 2018
 
-let s:Sclang = {"pid": 0}
+" interface {{{
+function! supercollider#sclang#open()
+  if exists("s:sclang")
+    echo "sclang is already running."
+  endif
 
-function! s:Sclang.on_stdout(id, data, event)
-  echo join(a:data)
+  let s:sclang = s:Sclang.new()
+  let s:sclang.post_win = s:CreatePostWindow()
+
+  let g:Sclang = s:sclang
+endfunction
+
+function! supercollider#sclang#close()
+  if exists("s:sclang")
+    call jobstop(s:sclang.id)
+  endif
+endfunction
+
+function! supercollider#sclang#send(data)
+  let cmd = printf("%s\x0c", a:data)
+  call s:SendCmd(cmd)
+endfunction
+
+function! supercollider#sclang#send_silent(data)
+  let cmd = printf("%s\x1b", a:data)
+  call s:SendCmd(cmd)
+endfunction
+" }}}
+
+" helpers {{{
+function! s:SendCmd(cmd)
+  if exists("s:sclang")
+    call chansend(s:sclang.id, a:cmd)
+  endif
+endfunction
+
+function! s:CreatePostWindow()
+  botright 8split sclang
+
+  setlocal buftype=nofile
+  setlocal bufhidden=hide
+  setlocal noswapfile
+
+  let attrs = {
+    \ "bufnr": bufnr("%"),
+    \ "winid": win_getid(),
+    \ }
+
+  return attrs
+endfunction
+" }}}
+
+" job handlers {{{
+let s:Sclang = {}
+
+function! s:Sclang.new()
+  let object = extend(copy(s:Sclang), {'name': 'sclang'})
+  " TODO: rundir opt
+  let object.cmd = ['sclang', '-i', 'scvim']
+  let object.id = jobstart(object.cmd, object)
+
+  if object.id == 0
+    throw "scnvim: Job table is full"
+  elseif object.id == -1
+    throw "scnvim: sclang is not executable"
+  endif
+
+  return object
+endfunction
+
+let s:chunks = ['']
+function! s:Sclang.on_stdout(id, data, event) dict
+  let s:chunks[-1] .= a:data[0]
+  call extend(s:chunks, a:data[1:])
+
+  if bufexists(self.post_win.bufnr)
+    let curwin_id = win_getid()
+    call win_gotoid(self.post_win.winid)
+    call append(line('$'), s:chunks)
+    call cursor("$", 1)
+    " return to where we were
+    call win_gotoid(curwin_id)
+  endif
 endfunction
 
 let s:Sclang.on_stderr = function(s:Sclang.on_stdout)
 
 function! s:Sclang.on_exit(id, data, event)
-  echom "sclang exited"
-  s:sclang_pid = 0
+  unlet s:sclang
 endfunction
+" }}}
 
-function! supercollider#sclang#open()
-  if exists("s:sclang_pid") || exists("s:sclang_pid") && s:sclang_pid == 0
-    return
-  endif
-
-  let object = extend(copy(s:Sclang), {'name': 'sclang'})
-  let object.cmd = ['sclang', '-i', 'scvim']
-
-  botright 10split sclang
-  " TODO: rundir opt
-  let s:sclang_pid = termopen(object.cmd)
-  let object.pid = s:sclang_pid
-
-  if s:sclang_pid == 0
-    throw "scnvim: Job table is full"
-  elseif s:sclang_pid == -1
-     throw "scnvim: sclang is not executable"
-  endif
-
-  startinsert
-  " wincmd w
-endfunction
-
-function! supercollider#sclang#send(data)
-  if exists("s:sclang_pid")
-    let cmd = printf("%s\x0c\n", a:data)
-    call chansend(s:sclang_pid, cmd)
-  endif
-endfunction
-
-function! supercollider#sclang#sendsilent(data)
-  if exists("s:sclang_pid")
-    let cmd = printf("%s\x1b\n", a:data)
-    call chansend(s:sclang_pid, cmd)
-  endif
-endfunction
-
-function! supercollider#sclang#close()
-  if exists("s:sclang_pid")
-    call jobstop(s:sclang_pid)
-    s:sclang_pid = 0
-  else
-    throw "scnvim: Error closing channel"
-  endif
-endfunction
+" vim:foldmethod=marker
