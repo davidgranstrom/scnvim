@@ -1,20 +1,20 @@
-" File: supercollider/supercollider.vim
+" File: scnvim/supercollider.vim
 " Author: David Granström
 " Description: Autoload functions
 " Last Modified: October 08, 2018
 
-function! supercollider#line_send()
+function! scnvim#supercollider#line_send()
   if mode() == "n"
     let txt = getline(".")
   else
     let txt = s:get_visual_selection()
   endif
 
-  call supercollider#sclang#send(txt)
+  call scnvim#sclang#send(txt)
 endfunction
 
-function! supercollider#paragraph_send()
-  supercollider#sclang#send(a:data)
+function! scnvim#supercollider#paragraph_send()
+  " empty
 endfunction
 
 function! s:get_visual_selection()

@@ -1,10 +1,10 @@
-" File: autoload/supercollider/sclang.vim
+" File: autoload/scnvim/sclang.vim
 " Author: David Granström
 " Description: Spawn a sclang process
 " Last Modified: October 13, 2018
 
 " interface {{{
-function! supercollider#sclang#open()
+function! scnvim#sclang#open()
   if exists("s:sclang")
     echo "sclang is already running."
   endif
@@ -15,18 +15,18 @@ function! supercollider#sclang#open()
   let g:Sclang = s:sclang
 endfunction
 
-function! supercollider#sclang#close()
+function! scnvim#sclang#close()
   if exists("s:sclang")
     call jobstop(s:sclang.id)
   endif
 endfunction
 
-function! supercollider#sclang#send(data)
+function! scnvim#sclang#send(data)
   let cmd = printf("%s\x0c", a:data)
   call s:SendCmd(cmd)
 endfunction
 
-function! supercollider#sclang#send_silent(data)
+function! scnvim#sclang#send_silent(data)
   let cmd = printf("%s\x1b", a:data)
   call s:SendCmd(cmd)
 endfunction

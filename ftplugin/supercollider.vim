@@ -21,10 +21,10 @@ execute "set tags+=".s:sclangTagsFile
 let b:match_skip = 's:scComment\|scString\|scSymbol'
 let b:match_words = '(:),[:],{:}'
 
-command! -buffer -range SCnvimLineSend call supercollider#line_send()
+command! -buffer -range SCnvimLineSend call scnvim#supercollider#line_send()
 " command! -buffer SCnvimParagraphSend call supercollider#paragraph_send()
-command! -buffer SCnvimStart call supercollider#sclang#open()
-command! -buffer SCnvimStop call supercollider#sclang#close()
+command! -buffer SCnvimStart call scnvim#sclang#open()
+command! -buffer SCnvimStop call scnvim#sclang#close()
 
 " mappings
 if !exists("g:scnvim_no_mappings") || !g:scnvim_no_mappings
