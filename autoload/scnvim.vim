@@ -4,9 +4,16 @@
 " Last Modified: October 08, 2018
 
 function! scnvim#send_line(...) abort
-  let lines = getline(a:1, a:2)
-  let str = join(lines, "\n")
-  call scnvim#sclang#send(str)
+  let is_single_line = len(a:000) == 0
+
+  if is_single_line
+    let str = getline(line("."))
+    call scnvim#sclang#send(str)
+  else
+    let lines = getline(a:1, a:2)
+    let str = join(lines, "\n")
+    call scnvim#sclang#send(str)
+  endif
 endfunction
 
 function! scnvim#send_selection() abort
