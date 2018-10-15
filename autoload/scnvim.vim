@@ -73,13 +73,13 @@ function! s:get_sclang_block()
 
     " if we are in a string, comment etc.
     " parse the block as if we are in the middle
-    let should_skip = eval(s:skip_pattern())
+    let in_comment = eval(s:skip_pattern())
 
-    if pindex == 0 && !should_skip
+    if pindex == 0 && !in_comment
       " on an opening brace
       let start_pos = [c_lnum, c_col]
       let end_pos = s:find_match(p, p2, forward_flags)
-    elseif pindex == 1 && !should_skip
+    elseif pindex == 1 && !in_comment
       " on a closing brace
       let start_pos = [c_lnum, c_col]
       let end_pos = s:find_match(p, p2, backward_flags)
