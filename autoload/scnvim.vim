@@ -80,7 +80,7 @@ function! s:get_sclang_block()
       let start_pos = [c_lnum, c_col]
       let end_pos = s:find_match(p, p2, forward_flags)
     elseif pindex == 1 && !should_skip
-      " on an closing brace
+      " on a closing brace
       let start_pos = [c_lnum, c_col]
       let end_pos = s:find_match(p, p2, backward_flags)
     else
