@@ -26,7 +26,16 @@ function! scnvim#send_block() abort
     let [start, end] = s:get_sclang_block()
     call scnvim#send_line(start, end)
   catch
-    echohl WarningMsg | echo v:exception | echohl None
+    call scnvim#util#err(v:exception)
+  endtry
+endfunction
+
+function! scnvim#open_post_window() abort
+  try
+    let bufnr = scnvim#sclang#get_post_window_bufnr()
+    execute 'keepjumps keepalt ' . 'sbuffer! ' . bufnr
+  catch
+    call scnvim#util#err(v:exception)
   endtry
 endfunction
 

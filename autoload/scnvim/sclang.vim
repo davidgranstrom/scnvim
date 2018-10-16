@@ -36,6 +36,14 @@ endfunction
 " }}}
 
 " helpers {{{
+function! scnvim#sclang#get_post_window_bufnr()
+  if exists("s:sclang") && !empty(s:sclang) && s:sclang.bufnr
+    return s:sclang.bufnr
+  else
+    throw "sclang not started"
+  endif
+endfunction
+
 function! s:create_post_window()
   " TODO: be able to control vertical/horizontal split
   execute 'keepjumps keepalt ' . 'rightbelow ' . 'vnew'
@@ -83,7 +91,7 @@ autocmd scnvim FileType scnvim setlocal
       \ statusline=
       \ nocursorline nocursorcolumn colorcolumn=
       \ foldcolumn=0 nofoldenable winfixwidth
-      \ | noremap <buffer> <silent> q <c-o>:close<cr>
+      \ | noremap <buffer><silent> <cr> <c-o>:close<cr>
 " }}}
 
 " job handlers {{{
