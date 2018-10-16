@@ -2,16 +2,15 @@ SCNVim {
     classvar <listenAdress;
     classvar <nvr;
 
-    var cmdType;
+    classvar cmdType;
 
     *initClass {
         listenAdress = "/tmp/scvim-socket";
-        // nvr = "$NVIM_LISTEN_ADRESS=% nvr".format(listenAdress);
         nvr = "nvr -s --nostart";
-    }
-
-    *new {
-        ^super.new.init;
+        cmdType = (
+            echo: {|str| ":echom '%'<cr>".format(str) },
+            print_args: {|str| "<c-o>:echo '%'<cr>".format(str) },
+        );
     }
 
     *currentPath {
@@ -23,23 +22,20 @@ SCNVim {
         ^nil;
     }
 
-    init {
-        cmdType = (
-            echo: {|str| ":echom '%'<cr>".format(str) },
-        );
-
-        this.send("sc.nvim adapter connected!");
-    }
-
-    send {|message, type=\echo|
+    *send {|message, type=\echo|
         var cmd = cmdType[type].(message);
         var msg = "% --remote-send %".format(nvr, cmd.quote);
         msg.unixCmd(postOutput: false);
     }
 
-    receive {|cmd|
+    *receive {|cmd|
         var msg = "% --remote-expr %".format(nvr, cmd.quote);
         ^msg.unixCmdGetStdOut;
+    }
+
+    *exec {|cmd, type=\print_args|
+        var message = cmd.interpret;
+        SCNVim.send(message, type);
     }
 }
 
