@@ -9,6 +9,10 @@ endif
 
 let b:did_scnvim = 1
 
+augroup scnvim
+  au!
+augroup END
+
 " setup sctags like scvim
 if exists($SCVIM_TAGFILE)
   let s:sclangTagsFile = $SCVIM_TAGFILE
