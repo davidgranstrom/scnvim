@@ -61,26 +61,15 @@ endfunction
 
 function! s:receive(self, data)
   let ret_bufnr = bufnr('%')
-  let ret_mode = mode()
-  let ret_line = line('.')
-  let ret_col = col('.')
-
   let bufnr = get(a:self, 'bufnr')
+  let post_window_visible = bufwinnr(bufnr)
 
-  " go to sclang buf
-  execute 'keepjumps keepalt buf! ' . bufnr
-  call append(line('$'), a:data)
-  call cursor(line('$'), 1)
-
-  " return to where we were
-  execute 'keepjumps keepalt buf! ' . ret_bufnr
-   " Restore mode and position
-  if ret_mode =~ '[vV]'
-    keepjumps normal! gv
-  elseif ret_mode =~ '[sS]'
-    exe "keepjumps normal! gv\<c-g>"
+  call nvim_buf_set_lines(bufnr, -1, -1, v:true, [a:data])
+  if post_window_visible >= 0
+    execute bufwinnr(bufnr) . 'wincmd w'
+    call nvim_command("normal! G")
+    execute bufwinnr(ret_bufnr) . 'wincmd w'
   endif
-  keepjumps call cursor(ret_line, ret_col)
 endfunction
 
 autocmd scnvim FileType scnvim setlocal
