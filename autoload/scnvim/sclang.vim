@@ -48,6 +48,7 @@ function! s:create_post_window()
   " TODO: be able to control vertical/horizontal split
   execute 'keepjumps keepalt ' . 'rightbelow ' . 'vnew'
   setlocal filetype=scnvim
+  execute 'file ' . 'sclang-post-window'
   keepjumps keepalt wincmd p
   return bufnr("$")
 endfunction
