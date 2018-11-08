@@ -11,8 +11,8 @@ let b:did_scnvim_mappings = 1
 
 if !exists("g:scnvim_no_mappings") || !g:scnvim_no_mappings
   if !hasmapto('<Plug>(scnvim-send-line)', 'ni')
-    nmap <buffer> <C-e> <Plug>(scnvim-send-line)
-    imap <buffer> <C-e> <c-o><Plug>(scnvim-send-line)
+    nmap <buffer> <M-e> <Plug>(scnvim-send-line)
+    imap <buffer> <M-e> <c-o><Plug>(scnvim-send-line)
   endif
 
   if !hasmapto('<Plug>(scnvim-open-postwindow)', 'n')
@@ -25,7 +25,7 @@ if !exists("g:scnvim_no_mappings") || !g:scnvim_no_mappings
   endif
 
   if !hasmapto('<Plug>(scnvim-send-block)', 'n')
-    nmap <buffer> <M-e> <Plug>(scnvim-send-block)
-    imap <buffer> <M-e> <c-o><Plug>(scnvim-send-block)
+    nmap <buffer> <C-e> <Plug>(scnvim-send-block)
+    imap <buffer> <C-e> <c-o><Plug>(scnvim-send-block)
   endif
 endif

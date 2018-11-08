@@ -22,12 +22,12 @@ function! scnvim#send_selection() abort
 endfunction
 
 function! scnvim#send_block() abort
-  try
-    let [start, end] = s:get_sclang_block()
+  let [start, end] = s:get_sclang_block()
+  if start && end
     call scnvim#send_line(start, end)
-  catch
-    call scnvim#util#err(v:exception)
-  endtry
+  else
+    call scnvim#send_line()
+  endif
 endfunction
 
 function! scnvim#open_post_window() abort
@@ -128,10 +128,6 @@ function! s:get_sclang_block()
       " middle of a block
       let start_pos = s:find_match(p, p2, backward_flags)
       let end_pos = s:find_match(p, p2, forward_flags)
-    endif
-
-    if start_pos[0] == 0 || end_pos[0] == 0
-      throw "scnvim: Error parsing block"
     endif
 
     " sort the numbers so getline can use them
