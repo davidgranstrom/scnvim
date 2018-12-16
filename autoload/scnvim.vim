@@ -39,6 +39,10 @@ function! scnvim#open_post_window() abort
   endtry
 endfunction
 
+function! scnvim#hard_stop() abort
+  call scnvim#sclang#send_silent('thisProcess.hardStop')
+endfunction
+
 function! scnvim#print_args() abort
   let class = s:get_class_ar_kr()
   if !empty(class)
