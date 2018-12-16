@@ -1,7 +1,6 @@
 " File: ftplugin/supercollider/commands.vim
 " Author: David Granström
 " Description: scnvim commands
-" Last Modified: October 14, 2018
 
 if exists("b:did_scnvim_commands")
   finish

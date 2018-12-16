@@ -55,7 +55,6 @@ endfunction
 
 function! s:send(cmd)
   if exists("s:sclang")
-    echo a:cmd
     call chansend(s:sclang.id, a:cmd)
   endif
 endfunction
@@ -66,6 +65,7 @@ function! s:receive(self, data)
   let post_window_visible = bufwinnr(bufnr)
 
   call nvim_buf_set_lines(bufnr, -1, -1, v:true, [a:data])
+
   if post_window_visible >= 0
     execute bufwinnr(bufnr) . 'wincmd w'
     call nvim_command("normal! G")
