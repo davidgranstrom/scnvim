@@ -81,7 +81,8 @@ autocmd scnvim FileType scnvim setlocal
       \ statusline=
       \ nocursorline nocursorcolumn colorcolumn=
       \ foldcolumn=0 nofoldenable winfixwidth
-      \ | noremap <buffer><silent> <cr> <c-o>:close<cr>
+      \ | nnoremap <buffer><silent> <cr> :close<cr>
+      \ | nnoremap <buffer><silent> q :close<cr>
 " }}}
 
 " job handlers {{{
