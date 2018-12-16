@@ -115,8 +115,11 @@ function! s:Sclang.on_stdout(id, data, event) dict
   let s:chunks[-1] .= a:data[0]
   call extend(s:chunks, a:data[1:])
   for line in s:chunks
-    call s:receive(self, line)
-    let s:chunks = ['']
+    if !empty(line)
+      call s:receive(self, line)
+    else
+      let s:chunks = ['']
+    endif
   endfor
 endfunction
 
