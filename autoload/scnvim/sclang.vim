@@ -1,7 +1,6 @@
 " File: autoload/scnvim/sclang.vim
 " Author: David Granström
 " Description: Spawn a sclang process
-" Last Modified: October 13, 2018
 
 " interface {{{
 function! scnvim#sclang#open()
