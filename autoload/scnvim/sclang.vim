@@ -152,6 +152,12 @@ endfunction
 let s:Sclang.on_stderr = function(s:Sclang.on_stdout)
 
 function! s:Sclang.on_exit(id, data, event)
+  try
+    let bufnr = scnvim#sclang#get_post_window_bufnr()
+    execute 'bwipeout' . bufnr
+  catch
+    call scnvim#util#err(v:exception)
+  endtry
   unlet s:sclang
 endfunction
 " }}}
