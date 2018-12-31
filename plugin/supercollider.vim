@@ -1,3 +1,7 @@
+" File: plugin/supercollider.vim
+" Author: David Granström
+" Description: scnvim setup
+
 if exists('g:scnvim_loaded')
   finish
 endif
