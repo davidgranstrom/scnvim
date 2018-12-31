@@ -45,8 +45,34 @@ function! scnvim#sclang#get_post_window_bufnr()
 endfunction
 
 function! s:create_post_window()
-  " TODO: be able to control vertical/horizontal split
-  execute 'keepjumps keepalt ' . 'rightbelow ' . 'vnew'
+  let orientation = get(g:, 'scnvim_postwin_orientation', 'v')
+  let direction = get(g:, 'scnvim_postwin_direction', 'right')
+
+  if direction == 'right'
+    let direction = 'botright'
+  elseif direction == 'left'
+    let direction = 'topleft'
+  else
+    throw "valid directions are: 'left' or 'right'"
+  endif
+
+  if orientation == 'v'
+    let pos = 'vertical'
+    let default_size = &columns / 3
+  elseif orientation == 'h'
+    let pos = ''
+    let default_size = &lines / 3
+  else
+    throw "valid orientations are: 's' or 'v'"
+  endif
+
+  let size = get(g:, 'scnvim_postwin_size', default_size)
+
+  let cmd = 'silent keepjumps keepalt '
+  let cmd .= printf('%s %s new', pos, direction)
+  let cmd .= printf(' | %s resize %d', pos, size)
+  execute cmd
+
   setlocal filetype=scnvim
   execute 'file ' . 'sclang-post-window'
   keepjumps keepalt wincmd p
