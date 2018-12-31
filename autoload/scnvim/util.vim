@@ -1,5 +1,5 @@
 function! scnvim#util#err(msg)
-  echohl ErrorMsg | echom a:msg | echohl None
+  echohl ErrorMsg | echom '[scnvim] ' . a:msg | echohl None
 endfunction
 
 function! scnvim#util#scnvim_exec(msg)

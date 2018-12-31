@@ -102,9 +102,9 @@ function! s:Sclang.new()
   let job.id = jobstart(job.cmd, job)
 
   if job.id == 0
-    throw "scnvim: Job table is full"
+    throw "Job table is full"
   elseif job.id == -1
-    throw "scnvim: sclang is not executable"
+    throw "sclang is not executable"
   endif
 
   return job
