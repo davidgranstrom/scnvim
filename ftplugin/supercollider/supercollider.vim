@@ -36,4 +36,11 @@ command! -buffer -nargs=+ SCnvimHelp call s:open_help_for(<q-args>)
 setlocal keywordprg=:SCnvimHelp
 
 au scnvim TextChangedI *.scd,*.sc silent call scnvim#print_args()
+
+" options
 setlocal shortmess+=c
+
+" indentation
+setlocal tabstop=4
+setlocal softtabstop=4
+setlocal shiftwidth=4
