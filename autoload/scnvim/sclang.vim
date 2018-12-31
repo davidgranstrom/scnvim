@@ -44,32 +44,21 @@ function! scnvim#sclang#get_post_window_bufnr()
 endfunction
 
 function! s:create_post_window()
-  let orientation = get(g:, 'scnvim_postwin_orientation', 'v')
-  let direction = get(g:, 'scnvim_postwin_direction', 'right')
+  try
+    let settings = scnvim#util#get_user_settings()
+    let g:scnvim_current_user_settings = settings
+  catch
+    call scnvim#util#err(v:exception)
+    return
+  endtry
 
-  if direction == 'right'
-    let direction = 'botright'
-  elseif direction == 'left'
-    let direction = 'topleft'
-  else
-    throw "valid directions are: 'left' or 'right'"
-  endif
-
-  if orientation == 'v'
-    let pos = 'vertical'
-    let default_size = &columns / 3
-  elseif orientation == 'h'
-    let pos = ''
-    let default_size = &lines / 3
-  else
-    throw "valid orientations are: 's' or 'v'"
-  endif
-
-  let size = get(g:, 'scnvim_postwin_size', default_size)
+  let orientation = settings.post_window.orientation
+  let direction = settings.post_window.direction
+  let size = settings.post_window.size
 
   let cmd = 'silent keepjumps keepalt '
-  let cmd .= printf('%s %s new', pos, direction)
-  let cmd .= printf(' | %s resize %d', pos, size)
+  let cmd .= printf('%s %s new', orientation, direction)
+  let cmd .= printf(' | %s resize %d', orientation, size)
   execute cmd
 
   setlocal filetype=scnvim

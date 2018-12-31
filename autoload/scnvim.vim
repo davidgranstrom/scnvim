@@ -32,35 +32,22 @@ endfunction
 
 function! scnvim#toggle_post_window() abort
   try
+    let settings = get(g:, 'scnvim_current_user_settings')
+    if !exists('g:scnvim_current_user_settings')
+      let settings = scnvim#util#get_user_settings()
+    endif
+
+    let orientation = settings.post_window.orientation
+    let direction = settings.post_window.direction
+    let size = settings.post_window.size
+
     let bufnr = scnvim#sclang#get_post_window_bufnr()
-    let orientation = get(g:, 'scnvim_postwin_orientation', 'v')
-    let direction = get(g:, 'scnvim_postwin_direction', 'right')
-
-    if direction == 'right'
-      let direction = 'botright'
-    elseif direction == 'left'
-      let direction = 'topleft'
-    else
-      throw "valid directions are: 'left' or 'right'"
-    endif
-
-    if orientation == 'v'
-      let pos = 'vertical'
-      let default_size = &columns / 3
-    elseif orientation == 'h'
-      let pos = ''
-      let default_size = &lines / 3
-    else
-      throw "valid orientations are: 's' or 'v'"
-    endif
-
-    let size = get(g:, 'scnvim_postwin_size', default_size)
     let win_id = bufwinnr(bufnr)
 
     if win_id <= 0
       let cmd = 'silent keepjumps keepalt '
-      let cmd .= printf('%s %s sbuffer!%d', pos, direction, bufnr)
-      let cmd .= printf(' | %s resize %d | wincmd w', pos, size)
+      let cmd .= printf('%s %s sbuffer!%d', orientation, direction, bufnr)
+      let cmd .= printf(' | %s resize %d | wincmd w', orientation, size)
       execute cmd
     else
       " post window already open
