@@ -62,40 +62,7 @@ function! scnvim#hard_stop() abort
   call scnvim#sclang#send_silent('thisProcess.hardStop')
 endfunction
 
-function! scnvim#print_args() abort
-  let class = s:get_class_ar_kr()
-  if !empty(class)
-    let get_args = printf("Help.methodArgs(\\\"%s\\\")", class)
-    call scnvim#util#scnvim_exec(get_args)
-  endif
-endfunction
-
 " helpers {{{
-function! s:get_class_ar_kr()
-  let c_lnum = line('.')
-  let ret_col = col('.')
-  let start = ret_col - 1
-
-  if start <= 0
-    return
-  endif
-
-  let c = synIDattr(synID(c_lnum, start, 1), "name")
-  let match = ''
-
-  if c == 'scArate' || c == 'scKrate'
-    let line = getline(c_lnum)
-    let pattern = '(\|\s'
-    while start > 0 && line[start-1] !~ pattern
-      let start -= 1
-    endwhile
-    let match = matchstr(line, '^.\{-}\.[akr]*\ze', start)
-    call cursor(c_lnum, ret_col)
-  endif
-
-  return match
-endfunction
-
 function! s:get_visual_selection()
   let [l:lnum1, l:col1] = getpos("'<")[1:2]
   let [l:lnum2, l:col2] = getpos("'>")[1:2]
