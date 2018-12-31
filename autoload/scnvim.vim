@@ -33,7 +33,9 @@ endfunction
 function! scnvim#open_post_window() abort
   try
     let bufnr = scnvim#sclang#get_post_window_bufnr()
-    execute 'keepjumps keepalt ' . 'sbuffer! ' . bufnr
+    if bufwinnr(bufnr) <= 0
+      execute 'keepjumps keepalt ' . 'sbuffer! ' . bufnr
+    endif
   catch
     call scnvim#util#err(v:exception)
   endtry
