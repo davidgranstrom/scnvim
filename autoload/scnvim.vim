@@ -33,8 +33,34 @@ endfunction
 function! scnvim#open_post_window() abort
   try
     let bufnr = scnvim#sclang#get_post_window_bufnr()
+    let orientation = get(g:, 'scnvim_postwin_orientation', 'v')
+    let direction = get(g:, 'scnvim_postwin_direction', 'right')
+
+    if direction == 'right'
+      let direction = 'botright'
+    elseif direction == 'left'
+      let direction = 'topleft'
+    else
+      throw "valid directions are: 'left' or 'right'"
+    endif
+
+    if orientation == 'v'
+      let pos = 'vertical'
+      let default_size = &columns / 3
+    elseif orientation == 'h'
+      let pos = ''
+      let default_size = &lines / 3
+    else
+      throw "valid orientations are: 's' or 'v'"
+    endif
+
+    let size = get(g:, 'scnvim_postwin_size', default_size)
+
     if bufwinnr(bufnr) <= 0
-      execute 'keepjumps keepalt ' . 'sbuffer! ' . bufnr
+      let cmd = 'silent keepjumps keepalt '
+      let cmd .= printf('%s %s sbuffer!%d', pos, direction, bufnr)
+      let cmd .= printf(' | %s resize %d | wincmd w', pos, size)
+      execute cmd
     endif
   catch
     call scnvim#util#err(v:exception)
