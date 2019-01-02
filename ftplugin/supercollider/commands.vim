@@ -8,10 +8,13 @@ endif
 
 let b:did_scnvim_commands = 1
 
-command! -buffer SCnvimStart call scnvim#sclang#open()
-command! -buffer SCnvimStop call scnvim#sclang#close()
+command! -buffer SCNvimStart call scnvim#sclang#open()
+command! -buffer SCNvimStop call scnvim#sclang#close()
+command! -buffer SCNvimRecompile call scnvim#sclang#recompile()
+command! -buffer -nargs=+ SCNvimHelp call s:open_help_for(<q-args>)
 
-" command! -buffer -range=% SCnvimSendFile call scnvim#send_line(<line1>, <line2>)
-" command! -buffer -range SCnvimSendLine call scnvim#send_line(<line1>, <line2>)
-" command! -buffer -range SCnvimSendSelection call scnvim#send_selection()
-" command! -buffer -range SCnvimSendBlock call scnvim#send_block()
+" util
+function! s:open_help_for(subject)
+  let cmd = printf('HelpBrowser.openHelpFor("%s");', a:subject)
+  call scnvim#sclang#send(cmd)
+endfunction

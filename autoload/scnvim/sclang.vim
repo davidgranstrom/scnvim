@@ -2,6 +2,8 @@
 " Author: David Granström
 " Description: Spawn a sclang process
 
+let s:recompling_class_library = 0
+
 " interface {{{
 function! scnvim#sclang#open()
   if exists("s:sclang")
@@ -21,6 +23,13 @@ function! scnvim#sclang#close()
   catch
     call scnvim#util#err("sclang is not running")
   endtry
+endfunction
+
+function! scnvim#sclang#recompile()
+  call scnvim#sclang#send_silent("Server.quitAll;")
+  let s:recompling_class_library = 1
+  " on_exit callback will restart sclang
+  call scnvim#sclang#close()
 endfunction
 
 function! scnvim#sclang#send(data)
@@ -156,6 +165,10 @@ function! s:Sclang.on_exit(id, data, event)
     call scnvim#util#err(v:exception)
   endtry
   unlet s:sclang
+  if s:recompling_class_library
+    let s:recompling_class_library = 0
+    call scnvim#sclang#open()
+  endif
 endfunction
 " }}}
 

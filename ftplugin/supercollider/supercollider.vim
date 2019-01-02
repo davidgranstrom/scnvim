@@ -27,13 +27,7 @@ let b:match_skip = 's:scComment\|scString\|scSymbol'
 let b:match_words = '(:),[:],{:}'
 
 " help
-function! s:open_help_for(subject)
-  let cmd = printf('HelpBrowser.openHelpFor("%s");', a:subject)
-  call scnvim#sclang#send(cmd)
-endfunction
-
-command! -buffer -nargs=+ SCnvimHelp call s:open_help_for(<q-args>)
-setlocal keywordprg=:SCnvimHelp
+setlocal keywordprg=:SCNvimHelp
 
 " indentation
 setlocal tabstop=4
