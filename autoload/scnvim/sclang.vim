@@ -76,11 +76,20 @@ endfunction
 function! s:receive(self, data)
   let ret_bufnr = bufnr('%')
   let bufnr = get(a:self, 'bufnr')
-  let post_window_visible = bufwinnr(bufnr)
+  " scan for ERROR: marker in sclang stdout
+  let found_error = match(a:data, "^ERROR") == 0
+  let post_window_visible = bufwinnr(bufnr) >= 0
+
+  let user_settings = get(g:, 'scnvim_current_user_settings')
+  if found_error && user_settings.post_window.auto_toggle
+    if !post_window_visible
+      call scnvim#toggle_post_window()
+    endif
+  endif
 
   call nvim_buf_set_lines(bufnr, -1, -1, v:true, [a:data])
 
-  if post_window_visible >= 0
+  if post_window_visible
     execute bufwinnr(bufnr) . 'wincmd w'
     call nvim_command("normal! G")
     execute bufwinnr(ret_bufnr) . 'wincmd w'

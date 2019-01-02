@@ -10,6 +10,7 @@ endfunction
 function! scnvim#util#get_user_settings()
   let post_win_orientation = get(g:, 'scnvim_postwin_orientation', 'v')
   let post_win_direction = get(g:, 'scnvim_postwin_direction', 'right')
+  let post_win_auto_toggle = get(g:, 'scnvim_postwin_auto_toggle', 1)
 
   if post_win_direction == 'right'
     let post_win_direction = 'botright'
@@ -35,6 +36,7 @@ function! scnvim#util#get_user_settings()
   \ 'direction': post_win_direction,
   \ 'orientation': post_win_orientation,
   \ 'size': post_win_size,
+  \ 'auto_toggle': post_win_auto_toggle,
   \ }
 
   return {
