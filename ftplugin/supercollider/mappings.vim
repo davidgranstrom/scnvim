@@ -28,8 +28,13 @@ if !exists("g:scnvim_no_mappings") || !g:scnvim_no_mappings
     imap <buffer> <F12> <c-o><Plug>(scnvim-hard-stop)
   endif
 
-  if !hasmapto('<Plug>(scnvim-open-postwindow)', 'ni')
-    nmap <buffer> <CR> <Plug>(scnvim-open-postwindow)
-    imap <buffer> <M-CR> <c-o><Plug>(scnvim-open-postwindow)
+  if !hasmapto('<Plug>(scnvim-postwindow-open)', 'ni')
+    nmap <buffer> <CR> <Plug>(scnvim-postwindow-open)
+    imap <buffer> <M-CR> <c-o><Plug>(scnvim-postwindow-open)
+  endif
+
+  if !hasmapto('<Plug>(scnvim-postwindow-clear)', 'ni')
+    nmap <buffer> <M-L> <Plug>(scnvim-postwindow-clear)
+    imap <buffer> <M-L> <c-o><Plug>(scnvim-postwindow-clear)
   endif
 endif

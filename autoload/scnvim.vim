@@ -58,6 +58,15 @@ function! scnvim#toggle_post_window() abort
   endtry
 endfunction
 
+function! scnvim#clear_post_window() abort
+  try
+    let bufnr = scnvim#sclang#get_post_window_bufnr()
+    call nvim_buf_set_lines(bufnr, 0, -1, v:true, [])
+  catch
+    call scnvim#util#err(v:exception)
+  endtry
+endfunction
+
 function! scnvim#hard_stop() abort
   call scnvim#sclang#send_silent('thisProcess.hardStop')
 endfunction
