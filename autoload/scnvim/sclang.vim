@@ -3,6 +3,7 @@
 " Description: Spawn a sclang process
 
 let s:recompling_class_library = 0
+let s:is_exiting = 0
 
 " interface {{{
 function! scnvim#sclang#open()
@@ -19,10 +20,12 @@ endfunction
 
 function! scnvim#sclang#close()
   try
+    let s:is_exiting = 1
     call jobstop(s:sclang.id)
   catch
     call scnvim#util#err("sclang is not running")
   endtry
+  let s:is_exiting = 0
 endfunction
 
 function! scnvim#sclang#recompile()
@@ -147,6 +150,9 @@ endfunction
 
 let s:chunks = ['']
 function! s:Sclang.on_stdout(id, data, event) dict
+  if s:is_exiting
+    return
+  endif
   let s:chunks[-1] .= a:data[0]
   call extend(s:chunks, a:data[1:])
   for line in s:chunks
