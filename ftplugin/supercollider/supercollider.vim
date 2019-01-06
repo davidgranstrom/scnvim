@@ -13,12 +13,10 @@ augroup scnvim
 augroup END
 
 " setup sctags like scvim
-if exists($SCVIM_TAGFILE)
-  let s:sclangTagsFile = $SCVIM_TAGFILE
-else
-  let s:sclangTagsFile = "~/.sctags"
+let s:tagsFile = expand(get(g:, 'scnvim_root_dir') . '/tmp/tags')
+if filereadable(s:tagsFile)
+  execute "setlocal tags+=" . s:tagsFile
 endif
-execute "setlocal tags+=" . s:sclangTagsFile
 
 " matchit
 let b:match_skip = 's:scComment\|scString\|scSymbol'
