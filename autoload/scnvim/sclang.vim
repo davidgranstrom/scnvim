@@ -112,6 +112,7 @@ function! s:receive(self, data)
   endif
 endfunction
 
+autocmd scnvim VimLeavePre * let s:is_exiting = 1
 autocmd scnvim FileType scnvim setlocal
       \ buftype=nofile
       \ bufhidden=hide
