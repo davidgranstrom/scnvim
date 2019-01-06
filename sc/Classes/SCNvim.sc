@@ -84,6 +84,54 @@ SCNvim {
         tagFile.close;
         "Generated tags file: %".format(tagPath);
     }
+
+    *generateSnippets {arg filePath;
+        var file, path;
+        var snippets = [];
+
+        path = filePath ? "~/.scsnippets";
+        path = path.standardizePath;
+        file = File.open(path, "w");
+
+        Class.allClasses.do {arg klass;
+            var className, argList, signature;
+            if (klass.asString.beginsWith("Meta_").not) {
+                // collect all creation methods
+                klass.class.methods.do {arg meth;
+                    var index, snippet;
+                    var snippetName;
+                    // classvars with getter/setters produces an error
+                    // since we're only interested in creation methods we skip them
+                    try {
+                        snippetName = "%.%".format(klass, meth.name);
+                        signature = Help.methodArgs(snippetName);
+                    };
+
+                    if (signature.notNil and:{signature.isEmpty.not}) {
+                        index = signature.find("(");
+                        className = signature[..index - 1];
+                        className = className.replace("*", ".").replace(" ", "");
+
+                        argList = signature[index..];
+                        argList = argList.replace("(", "").replace(")", "");
+                        argList = argList.split($,);
+                        argList = argList.collect {|a, i| "${%:%}".format(i+1, a) };
+                        argList = "(" ++ argList.join(", ") ++ ")";
+
+                        snippet = className ++ argList;
+                        snippet = "snippet %\n%\nendsnippet\n".format(snippetName, snippet);
+                        snippets = snippets.add(snippet ++ Char.nl);
+                    };
+                };
+            };
+        };
+
+        file.write("# SuperCollider snippets" ++ Char.nl);
+        file.write("# Author: David Granström\n" ++ Char.nl);
+        file.putAll(snippets);
+        file.close;
+        "Generated snippets file: %".format(path).postln;
+    }
 }
 
 Document {
