@@ -1,7 +1,6 @@
 " File: ftplugin/supercollider/supercollider.vim
 " Author: David Granström
-" Description: Filetype plugin
-" Last Modified: October 08, 2018
+" Description: General settings
 
 if exists("b:did_scnvim")
   finish
@@ -19,7 +18,6 @@ if exists($SCVIM_TAGFILE)
 else
   let s:sclangTagsFile = "~/.sctags"
 endif
-
 execute "setlocal tags+=" . s:sclangTagsFile
 
 " matchit
