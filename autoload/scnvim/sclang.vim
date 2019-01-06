@@ -114,7 +114,6 @@ autocmd scnvim FileType scnvim setlocal
       \ bufhidden=hide
       \ noswapfile
       \ nonu nornu nolist nomodeline nowrap
-      \ statusline=
       \ nocursorline nocursorcolumn colorcolumn=
       \ foldcolumn=0 nofoldenable winfixwidth
       \ | nnoremap <buffer><silent> <cr> :close<cr>
