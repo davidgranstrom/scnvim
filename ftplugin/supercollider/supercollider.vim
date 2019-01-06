@@ -33,3 +33,8 @@ setlocal keywordprg=:SCNvimHelp
 setlocal tabstop=4
 setlocal softtabstop=4
 setlocal shiftwidth=4
+
+" completion
+setlocal shortmess+=c
+" .ar/.kr command line hint
+autocmd scnvim InsertCharPre * call scnvim#util#echo_ar_kr_args()
