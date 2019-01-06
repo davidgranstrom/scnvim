@@ -34,7 +34,7 @@ SCNvim {
     }
 
     *exec {|cmd, type=\print_args|
-        var message = cmd.interpret;
+        var message = cmd.quote.interpret;
         SCNvim.send(message, type);
     }
 
