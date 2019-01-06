@@ -51,10 +51,11 @@ SCNvim {
 
         tagFile.write('!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/'.asString ++ Char.nl);
         tagFile.write("!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/" ++ Char.nl);
-        tagFile.write("!_TAG_PROGRAM_AUTHOR	David Granström /info@davidgranstrom.com/" ++ Char.nl);
-        tagFile.write("!_TAG_PROGRAM_NAME	SCNvim.sc//" ++ Char.nl);
+        tagFile.write("!_TAG_PROGRAM_AUTHOR Stephen Lumenta /stephen.lumenta@gmail.com/" ++ Char.nl);
+        tagFile.write("!_TAG_PROGRAM_AUTHOR David Granström /info@davidgranstrom.com/" ++ Char.nl);
+        tagFile.write("!_TAG_PROGRAM_NAME   SCNVim.sc//" ++ Char.nl);
         tagFile.write("!_TAG_PROGRAM_URL	https://github.com/davidgranstrom/scnvim" ++ Char.nl);
-        tagFile.write("!_TAG_PROGRAM_VERSION	1.0//" ++ Char.nl);
+        tagFile.write("!_TAG_PROGRAM_VERSION	2.0//" ++ Char.nl);
 
         Class.allClasses.do {arg klass;
             var klassName, klassFilename, klassSearchString;
@@ -64,7 +65,7 @@ SCNvim {
             klassFilename = klass.filenameSymbol;
             // use a symbol and convert to string to avoid the "open ended
             // string" error on class lib compiliation
-            klassSearchString = '/^%/;"%'.asString.format(klassName, "c");
+            klassSearchString = '/^%/;"%%'.asString.format(klassName, Char.tab, "c");
 
             result = klassName ++ Char.tab ++ klassFilename ++ Char.tab ++ klassSearchString ++ Char.nl;
             tags = tags.add(result);
@@ -73,7 +74,7 @@ SCNvim {
                 var methName, methFilename, methSearchString;
                 methName = meth.name;
                 methFilename = meth.filenameSymbol;
-                methSearchString = '/^%/;"%'.asString.format(klassName, "m");
+                methSearchString = '/% {/;"%%'.asString.format(methName, Char.tab, "m");
                 result = methName ++ Char.tab ++ methFilename ++ Char.tab ++ methSearchString ++ Char.nl;
                 tags = tags.add(result);
             }
