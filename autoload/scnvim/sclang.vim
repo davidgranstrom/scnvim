@@ -41,6 +41,10 @@ function! scnvim#sclang#send_silent(data)
   let cmd = printf("%s\x1b", a:data)
   call s:send(cmd)
 endfunction
+
+function! scnvim#sclang#is_running()
+  return exists("s:sclang") && !empty(s:sclang)
+endfunction
 " }}}
 
 " helpers {{{

@@ -12,6 +12,7 @@ command! -buffer SCNvimStart call scnvim#sclang#open()
 command! -buffer SCNvimStop call scnvim#sclang#close()
 command! -buffer SCNvimRecompile call scnvim#sclang#recompile()
 command! -buffer -nargs=+ SCNvimHelp call s:open_help_for(<q-args>)
+command! -buffer SCNvimTags call scnvim#generate_tags()
 
 " util
 function! s:open_help_for(subject)

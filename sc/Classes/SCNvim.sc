@@ -40,11 +40,11 @@ SCNvim {
 
     // borrowed from SCVim.sc
     // GPLv3 license
-    *generateTags {
+    *generateTags {arg outputPath;
         var tagPath, tagFile;
         var tags = [];
 
-        tagPath = "SCVIM_TAGFILE".getenv ? "~/.sctags";
+        tagPath = outputPath ? "~/.sctags";
         tagPath = tagPath.standardizePath;
 
         tagFile = File.open(tagPath, "w");
@@ -82,14 +82,14 @@ SCNvim {
         tags = tags.sort;
         tagFile.putAll(tags);
         tagFile.close;
-        "Generated tags file: %".format(tagPath);
+        "Generated tags file: %".format(tagPath).postln;
     }
 
-    *generateSnippets {arg filePath;
+    *generateSnippets {arg outputPath;
         var file, path;
         var snippets = [];
 
-        path = filePath ? "~/.scsnippets";
+        path = outputPath ? "~/.scsnippets";
         path = path.standardizePath;
         file = File.open(path, "w");
 
@@ -127,7 +127,7 @@ SCNvim {
         };
 
         file.write("# SuperCollider snippets" ++ Char.nl);
-        file.write("# Author: David Granström\n" ++ Char.nl);
+        file.write("# Snippet generator: SCNvim.sc\n" ++ Char.nl);
         file.putAll(snippets);
         file.close;
         "Generated snippets file: %".format(path).postln;

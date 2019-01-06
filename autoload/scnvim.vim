@@ -74,6 +74,18 @@ function! scnvim#hard_stop() abort
   call scnvim#sclang#send_silent('thisProcess.hardStop')
 endfunction
 
+function! scnvim#generate_tags() abort
+  let is_running = scnvim#sclang#is_running()
+  if is_running
+    let tagsPath = get(g:, 'scnvim_root_dir') . '/tmp/tags'
+    let snipPath = get(g:, 'scnvim_root_dir') . '/tmp/supercollider.snippets'
+    call scnvim#sclang#send_silent(printf('SCNvim.generateTags("%s")', tagsPath))
+    call scnvim#sclang#send_silent(printf('SCNvim.generateSnippets("%s")', snipPath))
+  else
+    call scnvim#util#err('sclang is not started')
+  endif
+endfunction
+
 " helpers {{{
 function! s:get_visual_selection()
   let [l:lnum1, l:col1] = getpos("'<")[1:2]
