@@ -35,6 +35,8 @@ setlocal softtabstop=4
 setlocal shiftwidth=4
 
 " completion
-setlocal shortmess+=c
-" .ar/.kr command line hint
-autocmd scnvim InsertCharPre * call scnvim#util#echo_ar_kr_args()
+if exists('g:scnvim_echo_args')
+  setlocal shortmess+=c
+  " .ar/.kr command line hint
+  autocmd scnvim InsertCharPre * call scnvim#util#echo_ar_kr_args()
+endif
