@@ -35,11 +35,7 @@ endfunction
 
 function! scnvim#toggle_post_window() abort
   try
-    let settings = get(g:, 'scnvim_current_user_settings')
-    if !exists('g:scnvim_current_user_settings')
-      let settings = scnvim#util#get_user_settings()
-    endif
-
+    let settings = get(g:, 'scnvim_user_settings')
     let orientation = settings.post_window.orientation
     let direction = settings.post_window.direction
     let size = settings.post_window.size

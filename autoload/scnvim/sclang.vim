@@ -13,7 +13,7 @@ function! scnvim#sclang#open()
   endif
   try
     " cache user settings
-    let g:scnvim_current_user_settings = scnvim#util#get_user_settings()
+    let g:scnvim_user_settings = scnvim#util#get_user_settings()
     let s:sclang = s:Sclang.new()
   catch
     call scnvim#util#err(v:exception)
@@ -62,7 +62,7 @@ function! scnvim#sclang#get_post_window_bufnr()
 endfunction
 
 function! s:create_post_window()
-  let settings = g:scnvim_current_user_settings
+  let settings = get(g:, 'scnvim_user_settings')
   let orientation = settings.post_window.orientation
   let direction = settings.post_window.direction
   let size = settings.post_window.size
@@ -91,7 +91,7 @@ function! s:receive(self, data)
   let found_error = match(a:data, "^ERROR") == 0
   let post_window_visible = bufwinnr(bufnr) >= 0
 
-  let user_settings = get(g:, 'scnvim_current_user_settings')
+  let user_settings = get(g:, 'scnvim_user_settings')
   if found_error && user_settings.post_window.auto_toggle
     if !post_window_visible
       call scnvim#toggle_post_window()
@@ -133,7 +133,7 @@ function! s:Sclang.new()
   let rundir = getcwd()
 
   let job.bufnr = s:create_post_window()
-  let prg = g:scnvim_current_user_settings.paths.sclang_executable
+  let prg = get(g:, 'scnvim_user_settings').paths.sclang_executable
   let job.cmd = [prg, '-i', 'scvim', '-d', rundir]
   let job.id = jobstart(job.cmd, job)
 
