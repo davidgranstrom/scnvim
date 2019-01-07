@@ -15,16 +15,24 @@
 " along with SCVIM.  If not, see <http://www.gnu.org/licenses/>.
 "
 " Vim syntax file
-" Language:	supercollider	
+" Language:	supercollider
 " Maintainer: Stephen Lumenta <stephen.lumenta@gmail.com>
 " Version:	0.2
 " Last change:	2012-03-31
+"
+" Maintainer: David Granström <info@davidgranstrom.com>
+" Version:	0.3
+" Modified:	2018-01-06
 
 if exists("b:current_syntax")
   finish
 endif
+let b:current_syntax = "supercollider"
 
 syn clear
+
+" source generated syntax file
+runtime! syntax/classes.vim
 
 syn match	scAoperator	"{"
 syn match	scAoperator	"}"
@@ -51,7 +59,7 @@ syn match scInteger	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<0[oO]\=\o\+\%(_\o\+\)*\>"
 syn match scInteger	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<0[bB][01]\+\%(_[01]\+\)*\>"								display
 syn match scFloat	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<\%(0\|[1-9]\d*\%(_\d\+\)*\)\.\d\+\%(_\d\+\)*\>"					display
 syn match scFloat	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<\%(0\|[1-9]\d*\%(_\d\+\)*\)\%(\.\d\+\%(_\d\+\)*\)\=\%([eE][-+]\=\d\+\%(_\d\+\)*\)\>"	display
-syn match scInfinity "inf"	
+syn match scInfinity "inf"
 
 " keywords
 syn match   scControl	"\<\%(break\|rescue\|return\)\>[?!]\@!"
@@ -102,10 +110,6 @@ syn keyword scCommentTodo   TODO FIXME XXX TBD contained
 syn match   scLineComment   "\/\/.*" contains=@Spell,scCommentTodo
 syn region  scComment	      start="/\*"  end="\*/" contains=@Spell,scCommentTodo
 
-
-" object syntax file is regenerated on startup
-runtime! syntax/supercollider_objects.vim
-
 """""""""""""""""""""""""""""""""""""""""
 " linkage
 
@@ -130,5 +134,3 @@ hi def link scArg Type
 hi def link scControl Statement
 hi def link scKeyword Keyword
 hi def link scBoolean Boolean
-
-let b:current_syntax = "supercollider"

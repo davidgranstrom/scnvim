@@ -1,6 +1,8 @@
 # directories
+scnvim-data
 sc/sketch
-tmp
 
 # files
+# auto-generated
+syntax/classes.vim
 tags
