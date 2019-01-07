@@ -12,7 +12,7 @@ augroup scnvim
   au!
 augroup END
 
-" setup sctags like scvim
+" tags
 let s:tagsFile = expand(get(g:, 'scnvim_root_dir') . '/tmp/tags')
 if filereadable(s:tagsFile)
   execute "setlocal tags+=" . s:tagsFile
@@ -29,6 +29,9 @@ setlocal keywordprg=:SCNvimHelp
 setlocal tabstop=4
 setlocal softtabstop=4
 setlocal shiftwidth=4
+
+" comments
+setlocal commentstring=\/\/%s
 
 " completion
 if exists('g:scnvim_echo_args')
