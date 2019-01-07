@@ -7,10 +7,6 @@ if exists("b:did_scnvim")
 endif
 let b:did_scnvim = 1
 
-augroup scnvim
-  au!
-augroup END
-
 " tags
 let s:tagsFile = expand(get(g:, 'scnvim_root_dir') . '/tmp/tags')
 if filereadable(s:tagsFile)
