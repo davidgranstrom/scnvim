@@ -12,6 +12,8 @@ function! scnvim#sclang#open()
     return
   endif
   try
+    " cache user settings
+    let g:scnvim_current_user_settings = scnvim#util#get_user_settings()
     let s:sclang = s:Sclang.new()
   catch
     call scnvim#util#err(v:exception)
@@ -60,14 +62,7 @@ function! scnvim#sclang#get_post_window_bufnr()
 endfunction
 
 function! s:create_post_window()
-  try
-    let settings = scnvim#util#get_user_settings()
-    let g:scnvim_current_user_settings = settings
-  catch
-    call scnvim#util#err(v:exception)
-    return
-  endtry
-
+  let settings = g:scnvim_current_user_settings
   let orientation = settings.post_window.orientation
   let direction = settings.post_window.direction
   let size = settings.post_window.size
