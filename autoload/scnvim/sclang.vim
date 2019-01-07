@@ -4,6 +4,7 @@
 
 let s:recompling_class_library = 0
 let s:is_exiting = 0
+let s:vim_exiting = 0
 
 " interface {{{
 function! scnvim#sclang#open()
@@ -79,9 +80,6 @@ endfunction
 
 let s:chunks = ['']
 function! s:Sclang.on_stdout(id, data, event) dict
-  if s:is_exiting
-    return
-  endif
   let s:chunks[-1] .= a:data[0]
   call extend(s:chunks, a:data[1:])
   for line in s:chunks
@@ -96,6 +94,9 @@ endfunction
 let s:Sclang.on_stderr = function(s:Sclang.on_stdout)
 
 function! s:Sclang.on_exit(id, data, event)
+  if s:vim_exiting
+    return
+  endif
   try
     let bufnr = scnvim#sclang#get_post_window_bufnr()
     execute 'bwipeout' . bufnr
@@ -142,6 +143,9 @@ function! s:send(cmd)
 endfunction
 
 function! s:receive(self, data)
+  if s:is_exiting
+    return
+  endif
   let ret_bufnr = bufnr('%')
   let bufnr = get(a:self, 'bufnr')
   " scan for ERROR: marker in sclang stdout
@@ -164,7 +168,7 @@ function! s:receive(self, data)
   endif
 endfunction
 
-autocmd scnvim VimLeavePre * let s:is_exiting = 1
+autocmd scnvim VimLeavePre * let s:vim_exiting = 1
 autocmd scnvim FileType scnvim setlocal
       \ buftype=nofile
       \ bufhidden=hide
