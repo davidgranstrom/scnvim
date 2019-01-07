@@ -38,6 +38,29 @@ function! scnvim#util#echo_ar_kr_args()
   endif
 endfunction
 
+function! scnvim#util#find_sclang_executable()
+  let exe = get(g:, 'scnvim_sclang_executable', '')
+  if !empty(exe)
+    " user defined
+    return expand(exe)
+  elseif !empty(exepath('sclang'))
+    " in $PATH
+    return exepath('sclang')
+  else
+    " try some known locations
+    let loc = '/Applications/SuperCollider.app/Contents/MacOS/sclang'
+    if executable(loc)
+      return loc
+    endif
+    let loc = '/Applications/SuperCollider/SuperCollider.app/Contents/MacOS/sclang'
+    if executable(loc)
+      return loc
+    endif
+  endif
+  throw "could not find sclang exeutable"
+endfunction
+
+
 function! scnvim#util#get_user_settings()
   let post_win_orientation = get(g:, 'scnvim_postwin_orientation', 'v')
   let post_win_direction = get(g:, 'scnvim_postwin_direction', 'right')
@@ -70,7 +93,13 @@ function! scnvim#util#get_user_settings()
   \ 'auto_toggle': post_win_auto_toggle,
   \ }
 
+  let sclang_executable = scnvim#util#find_sclang_executable()
+  let paths = {
+  \ 'sclang_executable': sclang_executable,
+  \ }
+
   return {
+  \ 'paths': paths,
   \ 'post_window': postwin,
   \ }
 endfunction

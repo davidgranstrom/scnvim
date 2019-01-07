@@ -137,7 +137,8 @@ function! s:Sclang.new()
   let rundir = getcwd()
 
   let job.bufnr = s:create_post_window()
-  let job.cmd = ['sclang', '-i', 'scvim', '-d', rundir]
+  let prg = g:scnvim_current_user_settings.paths.sclang_executable
+  let job.cmd = [prg, '-i', 'scvim', '-d', rundir]
   let job.id = jobstart(job.cmd, job)
 
   if job.id == 0
