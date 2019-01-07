@@ -37,6 +37,18 @@ SCNvim {
         SCNvim.send(message, type);
     }
 
+    *generateSyntax {arg outputPath;
+        var path, file, classes;
+        classes = Class.allClasses.collect {|class|
+            class.asString ++ " ";
+        };
+        path = outputPath.standardizePath;
+        file = File.open(path, "w");
+        file.write("syn keyword scObject ");
+        file.putAll(classes);
+        file.close;
+    }
+
     // borrowed from SCVim.sc
     // GPLv3 license
     *generateTags {arg outputPath;

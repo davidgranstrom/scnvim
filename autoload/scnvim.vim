@@ -73,10 +73,13 @@ endfunction
 function! scnvim#generate_tags() abort
   let is_running = scnvim#sclang#is_running()
   if is_running
-    let tagsPath = get(g:, 'scnvim_root_dir') . '/tmp/tags'
-    let snipPath = get(g:, 'scnvim_root_dir') . '/tmp/supercollider.snippets'
+    let root_dir = get(g:, 'scnvim_root_dir')
+    let tagsPath = root_dir . '/tmp/tags'
+    let snipPath = root_dir . '/tmp/supercollider.snippets'
+    let syntaxPath = root_dir . '/syntax/supercollider_objects.vim'
     call scnvim#sclang#send_silent(printf('SCNvim.generateTags("%s")', tagsPath))
     call scnvim#sclang#send_silent(printf('SCNvim.generateSnippets("%s")', snipPath))
+    call scnvim#sclang#send_silent(printf('SCNvim.generateSyntax("%s")', syntaxPath))
   else
     call scnvim#util#err('sclang is not started')
   endif
