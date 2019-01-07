@@ -8,7 +8,7 @@ endif
 let b:did_scnvim = 1
 
 " tags
-let s:tagsFile = expand(get(g:, 'scnvim_root_dir') . '/tmp/tags')
+let s:tagsFile = expand(get(g:, 'scnvim_root_dir') . '/scnvim-data/tags')
 if filereadable(s:tagsFile)
   execute "setlocal tags+=" . s:tagsFile
 endif
