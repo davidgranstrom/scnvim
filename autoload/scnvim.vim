@@ -36,6 +36,9 @@ endfunction
 function! scnvim#toggle_post_window() abort
   try
     let settings = get(g:, 'scnvim_user_settings')
+    if empty(settings)
+      throw 'sclang not running'
+    endif
     let orientation = settings.post_window.orientation
     let direction = settings.post_window.direction
     let size = settings.post_window.size
