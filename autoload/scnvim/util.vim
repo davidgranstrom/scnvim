@@ -76,7 +76,7 @@ function! scnvim#util#get_user_settings()
 
   if post_win_orientation == 'v'
     let post_win_orientation = 'vertical'
-    let default_size = &columns / 3
+    let default_size = &columns / 2
   elseif post_win_orientation == 'h'
     let post_win_orientation = ''
     let default_size = &lines / 3

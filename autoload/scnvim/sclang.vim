@@ -73,7 +73,7 @@ function! s:create_post_window()
   execute cmd
 
   setlocal filetype=scnvim
-  execute 'file ' . 'sclang-post-window'
+  execute 'file [sclang]'
   keepjumps keepalt wincmd p
   return bufnr("$")
 endfunction
@@ -115,6 +115,7 @@ autocmd scnvim FileType scnvim setlocal
       \ nonu nornu nolist nomodeline nowrap
       \ nocursorline nocursorcolumn colorcolumn=
       \ foldcolumn=0 nofoldenable winfixwidth
+      \ tabstop=4
       \ | nnoremap <buffer><silent> <cr> :close<cr>
       \ | nnoremap <buffer><silent> q :close<cr>
 " }}}
