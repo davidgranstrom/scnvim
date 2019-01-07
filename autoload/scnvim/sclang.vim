@@ -51,7 +51,64 @@ function! scnvim#sclang#is_running()
   return exists("s:sclang") && !empty(s:sclang)
 endfunction
 " }}}
+" job handlers {{{
+let s:Sclang = {}
 
+function! s:Sclang.new()
+  let options = {
+        \ 'name': 'sclang',
+        \ 'lines': [],
+        \ 'bufnr': 0,
+        \ }
+  let job = extend(copy(s:Sclang), options)
+  let rundir = getcwd()
+
+  let job.bufnr = s:create_post_window()
+  let prg = get(g:, 'scnvim_user_settings').paths.sclang_executable
+  let job.cmd = [prg, '-i', 'scvim', '-d', rundir]
+  let job.id = jobstart(job.cmd, job)
+
+  if job.id == 0
+    throw "Job table is full"
+  elseif job.id == -1
+    throw "sclang is not executable"
+  endif
+
+  return job
+endfunction
+
+let s:chunks = ['']
+function! s:Sclang.on_stdout(id, data, event) dict
+  if s:is_exiting
+    return
+  endif
+  let s:chunks[-1] .= a:data[0]
+  call extend(s:chunks, a:data[1:])
+  for line in s:chunks
+    if !empty(line)
+      call s:receive(self, line)
+    else
+      let s:chunks = ['']
+    endif
+  endfor
+endfunction
+
+let s:Sclang.on_stderr = function(s:Sclang.on_stdout)
+
+function! s:Sclang.on_exit(id, data, event)
+  try
+    let bufnr = scnvim#sclang#get_post_window_bufnr()
+    execute 'bwipeout' . bufnr
+  catch
+    call scnvim#util#err(v:exception)
+  endtry
+  unlet s:sclang
+  if s:recompling_class_library
+    let s:recompling_class_library = 0
+    call scnvim#sclang#open()
+  endif
+endfunction
+" }}}
 " helpers {{{
 function! scnvim#sclang#get_post_window_bufnr()
   if exists("s:sclang") && !empty(s:sclang) && s:sclang.bufnr
@@ -118,65 +175,6 @@ autocmd scnvim FileType scnvim setlocal
       \ tabstop=4
       \ | nnoremap <buffer><silent> <cr> :close<cr>
       \ | nnoremap <buffer><silent> q :close<cr>
-" }}}
-
-" job handlers {{{
-let s:Sclang = {}
-
-function! s:Sclang.new()
-  let options = {
-        \ 'name': 'sclang',
-        \ 'lines': [],
-        \ 'bufnr': 0,
-        \ }
-  let job = extend(copy(s:Sclang), options)
-  let rundir = getcwd()
-
-  let job.bufnr = s:create_post_window()
-  let prg = get(g:, 'scnvim_user_settings').paths.sclang_executable
-  let job.cmd = [prg, '-i', 'scvim', '-d', rundir]
-  let job.id = jobstart(job.cmd, job)
-
-  if job.id == 0
-    throw "Job table is full"
-  elseif job.id == -1
-    throw "sclang is not executable"
-  endif
-
-  return job
-endfunction
-
-let s:chunks = ['']
-function! s:Sclang.on_stdout(id, data, event) dict
-  if s:is_exiting
-    return
-  endif
-  let s:chunks[-1] .= a:data[0]
-  call extend(s:chunks, a:data[1:])
-  for line in s:chunks
-    if !empty(line)
-      call s:receive(self, line)
-    else
-      let s:chunks = ['']
-    endif
-  endfor
-endfunction
-
-let s:Sclang.on_stderr = function(s:Sclang.on_stdout)
-
-function! s:Sclang.on_exit(id, data, event)
-  try
-    let bufnr = scnvim#sclang#get_post_window_bufnr()
-    execute 'bwipeout' . bufnr
-  catch
-    call scnvim#util#err(v:exception)
-  endtry
-  unlet s:sclang
-  if s:recompling_class_library
-    let s:recompling_class_library = 0
-    call scnvim#sclang#open()
-  endif
-endfunction
 " }}}
 
 " vim:foldmethod=marker
