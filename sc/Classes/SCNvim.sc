@@ -1,12 +1,11 @@
 SCNvim {
-    classvar <listenAdress;
     classvar <nvr;
-
     classvar cmdType;
 
     *initClass {
-        listenAdress = "/tmp/scvim-socket";
-        nvr = "nvr -s --nostart";
+        // TODO: Find solution for Windows
+        var nvrPath = "which nvr".unixCmdGetStdOut;
+        nvr = "% -s --nostart".format(nvrPath.replace(Char.nl));
         cmdType = (
             echo: {|str| ":echom '%'<cr>".format(str) },
             print_args: {|str| "<c-o>:echo '%'<cr>".format(str) },
