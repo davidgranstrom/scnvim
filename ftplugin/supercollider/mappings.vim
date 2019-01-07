@@ -5,7 +5,6 @@
 if exists("b:did_scnvim_mappings")
   finish
 endif
-
 let b:did_scnvim_mappings = 1
 
 if !exists("g:scnvim_no_mappings") || !g:scnvim_no_mappings

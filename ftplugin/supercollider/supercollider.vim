@@ -5,7 +5,6 @@
 if exists("b:did_scnvim")
   finish
 endif
-
 let b:did_scnvim = 1
 
 augroup scnvim
