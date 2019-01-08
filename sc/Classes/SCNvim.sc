@@ -11,6 +11,8 @@ SCNvim {
             print_args: {|str| "<c-o>:echo '%'<cr>".format(str) },
             none: {|str| str },
         );
+
+        SCNvim.updateStatusline;
     }
 
     *currentPath {
@@ -149,6 +151,30 @@ SCNvim {
         file.putAll(snippets);
         file.close;
         "Generated snippets file: %".format(path).postln;
+    }
+
+    *updateStatusline {arg interval=1;
+        var stlFunc = {
+            var serverStatus, levelMeter, vimCmd, data;
+            var peakCPU, avgCPU, numUGens, numSynths;
+            var server = Server.default;
+
+            if (server.hasBooted) {
+                peakCPU = server.peakCPU.asStringPrec(1);
+                avgCPU = server.avgCPU.asStringPrec(1);
+                numUGens = "%u".format(server.numUGens);
+                numSynths = "%s".format(server.numSynths);
+
+                serverStatus = "[server] %\\% %\\% % %".format(
+                    peakCPU, avgCPU, numUGens, numSynths
+                );
+
+                data = "{ 'server_status': '%' }%".format(serverStatus, Char.nl);
+                "echo \"%\" > '/tmp/scnvim_stl'".unixCmd(postOutput: false);
+            };
+        };
+
+        SkipJack(stlFunc, interval, name: "scnvim_statusline");
     }
 }
 
