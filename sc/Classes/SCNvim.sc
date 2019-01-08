@@ -34,7 +34,12 @@ SCNvim {
     }
 
     *exec {|cmd, type=\print_args|
-        var message = cmd.quote.interpret;
+        var message;
+        try {
+            message = cmd.interpret;
+        } {
+            message = "[scnvim] Could not interpret %".format(cmd);
+        };
         SCNvim.send(message, type);
     }
 

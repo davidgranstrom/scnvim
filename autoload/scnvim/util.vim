@@ -3,7 +3,7 @@ function! scnvim#util#err(msg)
 endfunction
 
 function! scnvim#util#scnvim_exec(msg)
-  let cmd = printf('SCNvim.exec(%s)', a:msg)
+  let cmd = printf('SCNvim.exec("%s")', a:msg)
   call scnvim#sclang#send_silent(cmd)
 endfunction
 
@@ -41,10 +41,9 @@ function! scnvim#util#echo_args()
       let c_col -= 1
     endwhile
     let result = join(reverse(result), '')
-    echo result
     if !empty(result)
       let result .= method
-      let cmd = printf('Help.methodArgs("%s")', result)
+      let cmd = printf('Help.methodArgs(\"%s\")', result)
       call scnvim#util#scnvim_exec(cmd)
     endif
   endif
