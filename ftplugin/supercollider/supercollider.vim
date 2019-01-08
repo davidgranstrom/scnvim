@@ -31,6 +31,6 @@ setlocal commentstring=\/\/%s
 " completion
 if exists('g:scnvim_echo_args')
   setlocal shortmess+=c
-  " .ar/.kr command line hint
-  autocmd scnvim InsertCharPre * call scnvim#util#echo_ar_kr_args()
+  " command line argument hint
+  autocmd scnvim InsertCharPre * call scnvim#util#echo_args()
 endif

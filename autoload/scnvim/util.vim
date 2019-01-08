@@ -7,33 +7,45 @@ function! scnvim#util#scnvim_exec(msg)
   call scnvim#sclang#send_silent(cmd)
 endfunction
 
-function! scnvim#util#echo_ar_kr_args()
-  if v:char == '('
-    let c_lnum = line('.')
-    " we want to move back one step and lines are zero indexed so subtract 2
-    let start = col('.') - 2
-    let match = synIDattr(synID(c_lnum, start, 1), "name")
-    if match == 'scArate' || match == 'scKrate'
-      let line = getline(c_lnum)
-      let result = []
-      if match == 'scArate'
-        let method = '.ar'
-      else
-        let method = '.kr'
-      endif
-      " we are standing on 'r' in either .ar/.kr so skip the first 3 chars
-      " scan until next non-word char
-      let start -= 3
-      while line[start] !~ '\W' && start >= 0
-        call add(result, line[start])
-        let start -= 1
-      endwhile
-      let result = join(reverse(result), '')
-      if !empty(result)
-        let result .= method
-        let cmd = printf('Help.methodArgs("%s")', result)
-        call scnvim#util#scnvim_exec(cmd)
-      endif
+function! scnvim#util#echo_args()
+  if v:char != '('
+    return
+  endif
+
+  let l_num = line('.')
+  let c_col = col('.') - 1
+  let line = getline(l_num)
+
+  let method = []
+  " loop until we hit a valid object or reach first column
+  let match = synIDattr(synID(l_num, c_col, 1), "name")
+  while match != 'scObject' && c_col >= 0
+    call add(method, line[c_col])
+    let c_col -= 1
+    let match = synIDattr(synID(l_num, c_col, 1), "name")
+  endwhile
+
+  " add last char (will be empty if we never entered loop above)
+  call add(method, line[c_col])
+  let method = join(reverse(method), '')
+
+  " since lines are zero indexed (and synID for match above is not)
+  " we subtract one before we continue
+  let c_col -= 1
+
+  if match == 'scObject'
+    let result = []
+    " scan until next non-word char
+    while line[c_col] !~ '\W' && c_col >= 0
+      call add(result, line[c_col])
+      let c_col -= 1
+    endwhile
+    let result = join(reverse(result), '')
+    echo result
+    if !empty(result)
+      let result .= method
+      let cmd = printf('Help.methodArgs("%s")', result)
+      call scnvim#util#scnvim_exec(cmd)
     endif
   endif
 endfunction
