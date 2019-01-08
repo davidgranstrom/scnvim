@@ -7,8 +7,9 @@ SCNvim {
         var nvrPath = "which nvr".unixCmdGetStdOut;
         nvr = "% -s --nostart".format(nvrPath.replace(Char.nl));
         cmdType = (
-            echo: {|str| ":echom '%'<cr>".format(str) },
+            echo: {|str| ":echo '%'<cr>".format(str) },
             print_args: {|str| "<c-o>:echo '%'<cr>".format(str) },
+            none: {|str| str },
         );
     }
 
@@ -21,8 +22,8 @@ SCNvim {
         ^nil;
     }
 
-    *send {|message, type=\echo|
-        var cmd = cmdType[type].(message);
+    *send {|message, type|
+        var cmd = cmdType[type ? 'none'].(message);
         var msg = "% --remote-send %".format(nvr, cmd.quote);
         msg.unixCmd(postOutput: false);
     }
