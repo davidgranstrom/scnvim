@@ -11,7 +11,7 @@ let g:scnvim_root_dir = expand('<sfile>:h:h')
 
 " augroup to be used w/ ftplugin
 augroup scnvim
-  au!
+  autocmd!
 augroup END
 
 noremap <unique><script><silent> <Plug>(scnvim-send-line) :<c-u>call scnvim#send_line()<cr>
