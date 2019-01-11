@@ -1,5 +1,5 @@
 SCNvim {
-    classvar <nvr;
+    classvar <nvr, netAddr;
     classvar cmdType;
 
     *initClass {
@@ -12,6 +12,7 @@ SCNvim {
             none: {|str| str },
         );
 
+        // Call from vim instead
         SCNvim.updateStatusline;
     }
 
@@ -169,9 +170,13 @@ SCNvim {
                     peakCPU, avgCPU, numUGens, numSynths
                 );
 
-                data = "{ 'server_status': '%' }%".format(serverStatus, Char.nl);
-                "echo \"%\" > '/tmp/scnvim_stl'".unixCmd(postOutput: false);
+                data = "{\"server_status\":\"%\"}".format(serverStatus);
+                netAddr.sendRaw(data);
             };
+        };
+
+        if (netAddr.isNil) {
+            netAddr = NetAddr("127.0.0.1", 7777);
         };
 
         SkipJack(stlFunc, interval, name: "scnvim_statusline");
