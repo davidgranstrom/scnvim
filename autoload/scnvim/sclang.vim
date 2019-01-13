@@ -6,6 +6,8 @@ let s:recompling_class_library = 0
 let s:is_exiting = 0
 let s:vim_exiting = 0
 
+autocmd scnvim VimLeavePre * let s:vim_exiting = 1
+
 " interface {{{
 function! scnvim#sclang#open()
   if exists("s:sclang")
@@ -168,17 +170,6 @@ function! s:receive(self, data)
   endif
 endfunction
 
-autocmd scnvim VimLeavePre * let s:vim_exiting = 1
-autocmd scnvim FileType scnvim setlocal
-      \ buftype=nofile
-      \ bufhidden=hide
-      \ noswapfile
-      \ nonu nornu nolist nomodeline nowrap
-      \ nocursorline nocursorcolumn colorcolumn=
-      \ foldcolumn=0 nofoldenable winfixwidth
-      \ tabstop=4
-      \ | nnoremap <buffer><silent> <cr> :close<cr>
-      \ | nnoremap <buffer><silent> q :close<cr>
 " }}}
 
 " vim:foldmethod=marker
