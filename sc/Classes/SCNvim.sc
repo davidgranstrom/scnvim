@@ -166,7 +166,7 @@ SCNvim {
                 numUGens = "%u".format(server.numUGens);
                 numSynths = "%s".format(server.numSynths);
 
-                serverStatus = "[server] %\\% %\\% % %".format(
+                serverStatus = "%\\% %\\% % %".format(
                     peakCPU, avgCPU, numUGens, numSynths
                 );
 
