@@ -1,7 +1,6 @@
-" File: scnvim/supercollider.vim
+" File: scnvim/autoload/scnvim.vim
 " Author: David Granström
 " Description: scnvim interface
-" Last Modified: October 08, 2018
 
 function! scnvim#send_line(...) abort
   let is_single_line = len(a:000) == 0
@@ -33,59 +32,8 @@ function! scnvim#send_block() abort
   endif
 endfunction
 
-function! scnvim#toggle_post_window() abort
-  try
-    let settings = get(g:, 'scnvim_user_settings')
-    if empty(settings)
-      throw 'sclang not running'
-    endif
-    let orientation = settings.post_window.orientation
-    let direction = settings.post_window.direction
-    let size = settings.post_window.size
-
-    let bufnr = scnvim#sclang#get_post_window_bufnr()
-    let winnr = bufwinnr(bufnr)
-
-    if winnr <= 0
-      let cmd = 'silent keepjumps keepalt '
-      let cmd .= printf('%s %s sbuffer!%d', orientation, direction, bufnr)
-      let cmd .= printf(' | %s resize %d | wincmd p', orientation, size)
-      execute cmd
-    else
-      " post window already open
-      execute winnr . 'close'
-    endif
-  catch
-    call scnvim#util#err(v:exception)
-  endtry
-endfunction
-
-function! scnvim#clear_post_window() abort
-  try
-    let bufnr = scnvim#sclang#get_post_window_bufnr()
-    call nvim_buf_set_lines(bufnr, 0, -1, v:true, [])
-  catch
-    call scnvim#util#err(v:exception)
-  endtry
-endfunction
-
 function! scnvim#hard_stop() abort
   call scnvim#sclang#send_silent('thisProcess.hardStop')
-endfunction
-
-function! scnvim#generate_tags() abort
-  let is_running = scnvim#sclang#is_running()
-  if is_running
-    let root_dir = get(g:, 'scnvim_root_dir')
-    let tagsPath = root_dir . '/scnvim-data/tags'
-    let snipPath = root_dir . '/scnvim-data/supercollider.snippets'
-    let syntaxPath = root_dir . '/syntax/classes.vim'
-    call scnvim#sclang#send_silent(printf('SCNvim.generateTags("%s")', tagsPath))
-    call scnvim#sclang#send_silent(printf('SCNvim.generateSnippets("%s")', snipPath))
-    call scnvim#sclang#send_silent(printf('SCNvim.generateSyntax("%s")', syntaxPath))
-  else
-    call scnvim#util#err('sclang is not started')
-  endif
 endfunction
 
 " helpers {{{
