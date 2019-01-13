@@ -1,9 +1,9 @@
 function! scnvim#statusline#server_status()
-  return get(g:scnvim_stl_widgets, 'server_status', '')
+  return &ft ==# 'supercollider' ? get(g:scnvim_stl_widgets, 'server_status', '') : ''
 endfunction
 
 function! scnvim#statusline#level_meter()
-  return get(g:scnvim_stl_widgets, 'level_meter', '')
+  return &ft ==# 'supercollider' ? get(g:scnvim_stl_widgets, 'level_meter', '') : ''
 endfunction
 
 function! scnvim#statusline#update(data) abort
