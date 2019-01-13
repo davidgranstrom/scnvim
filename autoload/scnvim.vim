@@ -44,16 +44,16 @@ function! scnvim#toggle_post_window() abort
     let size = settings.post_window.size
 
     let bufnr = scnvim#sclang#get_post_window_bufnr()
-    let win_id = bufwinnr(bufnr)
+    let winnr = bufwinnr(bufnr)
 
-    if win_id <= 0
+    if winnr <= 0
       let cmd = 'silent keepjumps keepalt '
       let cmd .= printf('%s %s sbuffer!%d', orientation, direction, bufnr)
-      let cmd .= printf(' | %s resize %d | wincmd w', orientation, size)
+      let cmd .= printf(' | %s resize %d | wincmd p', orientation, size)
       execute cmd
     else
       " post window already open
-      execute win_id . 'close'
+      execute winnr . 'close'
     endif
   catch
     call scnvim#util#err(v:exception)
