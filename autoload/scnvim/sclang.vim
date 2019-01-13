@@ -148,7 +148,6 @@ function! s:receive(self, data)
   if s:is_exiting
     return
   endif
-  let ret_bufnr = bufnr('%')
   let bufnr = get(a:self, 'bufnr')
   let winnr = bufwinid(bufnr)
   " scan for ERROR: marker in sclang stdout
