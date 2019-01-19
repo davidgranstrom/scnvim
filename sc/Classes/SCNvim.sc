@@ -13,7 +13,7 @@ SCNvim {
         );
 
         // Call from vim instead
-        SCNvim.updateStatusline;
+        // SCNvim.updateStatusline;
     }
 
     *currentPath {
@@ -36,14 +36,12 @@ SCNvim {
         ^msg.unixCmdGetStdOut;
     }
 
-    *exec {|cmd, type=\print_args|
-        var message;
+    *methodArgs(method) {
         try {
-            message = cmd.interpret;
+            ^Help.methodArgs(method);
         } {
-            message = "[scnvim] Could not interpret %".format(cmd);
-        };
-        SCNvim.send(message, type);
+            ^"[scnvim] Could not find args for %".format(method);
+        }
     }
 
     *generateSyntax {arg outputPath;
