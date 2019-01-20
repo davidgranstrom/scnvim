@@ -3,22 +3,31 @@ SCNvim {
     classvar cmdType;
 
     *initClass {
-        // TODO: Find solution for Windows
         var nvrPath = "which nvr".unixCmdGetStdOut;
-        nvr = "% -s --nostart".format(nvrPath.replace(Char.nl));
+        if (nvrPath.notNil) {
+            nvr = "% -s --nostart".format(nvrPath.replace(Char.nl));
+        };
+
+        netAddr = NetAddr("127.0.0.1", 9670); // TODO: Configure port
+
         cmdType = (
             echo: {|str| ":echo '%'<cr>".format(str) },
             print_args: {|str| "<c-o>:echo '%'<cr>".format(str) },
             none: {|str| str },
         );
+    }
 
-        // Call from vim instead
-        // SCNvim.updateStatusline;
+    *hasRemote {
+        ^nvr.notNil;
     }
 
     *currentPath {
-        var cmd = "expand(\"%:p\")";
-        var path = "% --remote-expr '%'".format(nvr, cmd).unixCmdGetStdOut;
+        var cmd, path;
+        if (SCNvim.hasRemote.not) {
+            ^nil;
+        };
+        cmd = "expand(\"%:p\")";
+        path = "% --remote-expr '%'".format(nvr, cmd).unixCmdGetStdOut;
         if (PathName(path).isAbsolutePath) {
             ^path;
         }
@@ -36,9 +45,16 @@ SCNvim {
         ^msg.unixCmdGetStdOut;
     }
 
-    *methodArgs(method) {
+    *sendJSON {|object|
+        netAddr.sendRaw(object);
+    }
+
+    *methodArgs {|method|
+        var args, message;
         try {
-            ^Help.methodArgs(method);
+            args = Help.methodArgs(method);
+            message = "{\"method_args\":\"%\"}".format(args);
+            SCNvim.sendJSON(message);
         } {
             ^"[scnvim] Could not find args for %".format(method);
         }
@@ -54,6 +70,7 @@ SCNvim {
         file.write("syn keyword scObject ");
         file.putAll(classes);
         file.close;
+        "Generated syntax file: %".format(path).postln;
     }
 
     // borrowed from SCVim.sc
@@ -154,7 +171,7 @@ SCNvim {
 
     *updateStatusline {arg interval=1;
         var stlFunc = {
-            var serverStatus, levelMeter, vimCmd, data;
+            var serverStatus, levelMeter, data;
             var peakCPU, avgCPU, numUGens, numSynths;
             var server = Server.default;
 
@@ -167,14 +184,13 @@ SCNvim {
                 serverStatus = "%\\% %\\% % %".format(
                     peakCPU, avgCPU, numUGens, numSynths
                 );
+                levelMeter = "-inf dB";
 
-                data = "{\"server_status\":\"%\"}".format(serverStatus);
-                netAddr.sendRaw(data);
+                serverStatus = "\"server_status\":\"%\"".format(serverStatus);
+                levelMeter = "\"level_meter\":\"%\"".format(levelMeter);
+                data = "{\"status_line\":{%,%}}".format(serverStatus, levelMeter);
+                SCNvim.sendJSON(data);
             };
-        };
-
-        if (netAddr.isNil) {
-            netAddr = NetAddr("127.0.0.1", 7777);
         };
 
         SkipJack(stlFunc, interval, name: "scnvim_statusline");
