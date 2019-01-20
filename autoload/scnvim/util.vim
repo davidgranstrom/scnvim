@@ -8,7 +8,7 @@ function! scnvim#util#echo_args()
   endif
 
   let l_num = line('.')
-  let c_col = col('.') - 1
+  let c_col = col('.') - 2
   let line = getline(l_num)
 
   let method = []
