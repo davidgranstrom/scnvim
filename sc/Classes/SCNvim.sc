@@ -169,7 +169,7 @@ SCNvim {
         "Generated snippets file: %".format(path).postln;
     }
 
-    *updateStatusline {arg interval=1;
+    *updateStatusLine {arg interval=1;
         var stlFunc = {
             var serverStatus, levelMeter, data;
             var peakCPU, avgCPU, numUGens, numSynths;

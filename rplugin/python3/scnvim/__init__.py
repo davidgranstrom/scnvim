@@ -9,6 +9,7 @@ PORT = 9670
 class SCNvim(object):
     def __init__(self, nvim):
         self.nvim = nvim
+        self.server_started = False
 
     def _echo(self, message):
         try:
@@ -26,10 +27,13 @@ class SCNvim(object):
 
     @pynvim.function('__scnvim_server_start', sync=False)
     def server_start(self, args):
+        if self.server_started:
+            return
+
+        self.server_started = True
         self.server = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
         self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.server.bind((ADDR, PORT))
-        self.nvim.command('echo "Server started"')
         while(True):
             data, addr = self.server.recvfrom(1024)
             data = data.decode('utf-8')
