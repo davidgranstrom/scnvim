@@ -17,7 +17,7 @@ if !exists("g:scnvim_no_mappings") || !g:scnvim_no_mappings
     xmap <buffer> <C-e> <Plug>(scnvim-send-selection)
   endif
 
-  if !hasmapto('<Plug>(scnvim-send-block)', 'n')
+  if !hasmapto('<Plug>(scnvim-send-block)', 'ni')
     nmap <buffer> <C-e> <Plug>(scnvim-send-block)
     imap <buffer> <C-e> <c-o><Plug>(scnvim-send-block)
   endif
