@@ -1,3 +1,7 @@
+" Copied from sc_indent.vim
+" https://github.com/supercollider/scvim
+" License GPLv3
+"
 " this indent function isn't that smart yet, hopefully it'll improve in the future
 if exists ("b:did_scvim_indent")
   finish
