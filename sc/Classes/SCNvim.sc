@@ -4,6 +4,7 @@ SCNvim {
 
     *initClass {
         var nvrPath = "which nvr".unixCmdGetStdOut;
+
         if (nvrPath.notNil) {
             nvr = "% -s --nostart".format(nvrPath.replace(Char.nl));
         };
@@ -35,14 +36,20 @@ SCNvim {
     }
 
     *send {|message, type|
-        var cmd = cmdType[type ? 'none'].(message);
-        var msg = "% --remote-send %".format(nvr, cmd.quote);
-        msg.unixCmd(postOutput: false);
+        var cmd, msg;
+        if (SCNvim.hasRemote) {
+            cmd = cmdType[type ? 'none'].(message);
+            msg = "% --remote-send %".format(nvr, cmd.quote);
+            msg.unixCmd(postOutput: false);
+        }
     }
 
     *receive {|cmd|
-        var msg = "% --remote-expr %".format(nvr, cmd.quote);
-        ^msg.unixCmdGetStdOut;
+        var msg;
+        if (SCNvim.hasRemote) {
+            msg = "% --remote-expr %".format(nvr, cmd.quote);
+            ^msg.unixCmdGetStdOut;
+        }
     }
 
     *sendJSON {|object|
