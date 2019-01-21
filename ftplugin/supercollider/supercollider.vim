@@ -37,3 +37,8 @@ if exists('g:scnvim_echo_args')
     autocmd InsertCharPre <buffer> call scnvim#util#echo_args()
   augroup END
 endif
+
+" statusline widgets
+if exists('g:scnvim_statusline')
+  call __scnvim_server_start()
+endif

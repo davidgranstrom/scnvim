@@ -2,18 +2,13 @@ function! scnvim#util#err(msg)
   echohl ErrorMsg | echom '[scnvim] ' . a:msg | echohl None
 endfunction
 
-function! scnvim#util#scnvim_exec(msg)
-  let cmd = printf('SCNvim.exec("%s")', a:msg)
-  call scnvim#sclang#send_silent(cmd)
-endfunction
-
 function! scnvim#util#echo_args()
   if v:char != '('
     return
   endif
 
   let l_num = line('.')
-  let c_col = col('.') - 1
+  let c_col = col('.') - 2
   let line = getline(l_num)
 
   let method = []
@@ -43,8 +38,8 @@ function! scnvim#util#echo_args()
     let result = join(reverse(result), '')
     if !empty(result)
       let result .= method
-      let cmd = printf('Help.methodArgs(\"%s\")', result)
-      call scnvim#util#scnvim_exec(cmd)
+      let cmd = printf('SCNvim.methodArgs("%s")', result)
+      call scnvim#sclang#send_silent(cmd)
     endif
   endif
 endfunction

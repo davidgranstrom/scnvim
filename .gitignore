@@ -1,6 +1,7 @@
 # directories
 scnvim-data
 sc/sketch
+rplugin/python3/scnvim/__pycache__
 
 # files
 # auto-generated

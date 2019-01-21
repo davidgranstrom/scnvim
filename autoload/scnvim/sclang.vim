@@ -157,7 +157,7 @@ function! s:receive(self, data)
   let user_settings = get(g:, 'scnvim_user_settings')
   if found_error && user_settings.post_window.auto_toggle
     if !post_window_visible
-      call scnvim#toggle_post_window()
+      call scnvim#postwindow#toggle()
     endif
   endif
 
