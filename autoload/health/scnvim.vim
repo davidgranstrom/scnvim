@@ -30,8 +30,20 @@ function! s:check_sclang_executable() abort
   endtry
 endfunction
 
+function! s:check_pynvim() abort
+  if has('python3')
+    call health#report_info('has("python3") - success')
+  else
+    call health#report_warn(
+          \ 'could not find pynvim module for python3',
+          \ 'check :help provider-python for more information'
+          \ )
+  endif
+endfunction
+
 function! health#scnvim#check() abort
   call health#report_start('scnvim')
   call s:check_timers()
   call s:check_sclang_executable()
+  call s:check_pynvim()
 endfunction
