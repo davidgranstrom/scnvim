@@ -20,6 +20,13 @@ class SCNvim(object):
         except BaseException as e:
             self.nvim.err_write('[scnvim]: ' + str(e))
 
+    def echo_err(self, message):
+        try:
+            self.nvim.err_write(message + '\n')
+        except BaseException as e:
+            self.nvim.err_write('[scnvim]: ' + str(e))
+
+
     def stl_update(self, object):
         try:
             json_str = json.dumps(object)
@@ -46,12 +53,29 @@ class SCNvim(object):
     def server_start(self, args):
         if self.server:
             return
+
         self.server = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
         self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.server.bind((ADDR, PORT))
+
+        port = PORT
+        found_port = False
+        max_attempts = 20
+        # retry to connect until a port is found
+        while not found_port and max_attempts > 0:
+            try:
+                self.server.bind((ADDR, port))
+                found_port = True
+            except BaseException as e:
+                port += 1
+                max_attempts -= 1
+
+        if max_attempts == 0:
+            self.echo_err('[scnvim] UDP server: ' + e.strerror)
+            return
 
         self.thread = Thread(target=self.server_loop)
         self.thread.start()
+        return port
 
     @pynvim.autocmd('VimLeave', pattern='*', sync=True)
     def on_vim_leave(self):
