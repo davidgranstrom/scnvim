@@ -40,5 +40,5 @@ endif
 
 " statusline widgets
 if exists('g:scnvim_statusline')
-  call __scnvim_server_start()
+  let g:scnvim_python_port = __scnvim_server_start()
 endif

@@ -1,15 +1,13 @@
 SCNvim {
-    classvar <nvr, netAddr;
+    classvar <nvr, <>netAddr;
     classvar cmdType;
 
     *initClass {
         var nvrPath = "which nvr".unixCmdGetStdOut;
 
-        if (nvrPath.notNil) {
+        if (nvrPath.notNil and:{PathName(nvrPath).isAbsolutePath}) {
             nvr = "% -s --nostart".format(nvrPath.replace(Char.nl));
         };
-
-        netAddr = NetAddr("127.0.0.1", 9670); // TODO: Configure port
 
         cmdType = (
             echo: {|str| ":echo '%'<cr>".format(str) },
@@ -52,16 +50,19 @@ SCNvim {
         }
     }
 
-    *sendJSON {|object|
+    *sendJSON {|object, vimPort|
+        if (netAddr.isNil) {
+            netAddr = NetAddr("127.0.0.1", vimPort);
+        };
         netAddr.sendRaw(object);
     }
 
-    *methodArgs {|method|
+    *methodArgs {|method, vimPort|
         var args, message;
         try {
             args = Help.methodArgs(method);
             message = "{\"method_args\":\"%\"}".format(args);
-            SCNvim.sendJSON(message);
+            SCNvim.sendJSON(message, vimPort);
         } {
             ^"[scnvim] Could not find args for %".format(method);
         }
@@ -176,7 +177,7 @@ SCNvim {
         "Generated snippets file: %".format(path).postln;
     }
 
-    *updateStatusLine {arg interval=1;
+    *updateStatusLine {arg interval=1, vimPort;
         var stlFunc = {
             var serverStatus, levelMeter, data;
             var peakCPU, avgCPU, numUGens, numSynths;
@@ -196,8 +197,8 @@ SCNvim {
                 serverStatus = "\"server_status\":\"%\"".format(serverStatus);
                 levelMeter = "\"level_meter\":\"%\"".format(levelMeter);
                 data = "{\"status_line\":{%,%}}".format(serverStatus, levelMeter);
-                SCNvim.sendJSON(data);
-            };
+                SCNvim.sendJSON(data, vimPort);
+            }
         };
 
         SkipJack(stlFunc, interval, name: "scnvim_statusline");

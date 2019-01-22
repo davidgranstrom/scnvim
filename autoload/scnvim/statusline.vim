@@ -6,6 +6,13 @@ function! scnvim#statusline#level_meter()
   return &ft ==# 'supercollider' ? get(g:scnvim_stl_widgets, 'level_meter', '') : ''
 endfunction
 
+function! scnvim#statusline#sclang_poll()
+  if exists('g:scnvim_python_port')
+    let cmd = printf('SCNvim.updateStatusLine(%d, %d)', get(g:, 'scnvim_statusline_interval', 1), g:scnvim_python_port)
+    call scnvim#sclang#send_silent(cmd)
+  endif
+endfunction
+
 " json encoded data
 function! scnvim#statusline#update(data) abort
   try

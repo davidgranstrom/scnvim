@@ -3,7 +3,6 @@ import json
 import pynvim
 import socket
 
-ADDR = '127.0.0.1' # loopback
 PORT = 9670
 
 @pynvim.plugin
@@ -25,7 +24,6 @@ class SCNvim(object):
             self.nvim.err_write(message + '\n')
         except BaseException as e:
             self.nvim.err_write('[scnvim]: ' + str(e))
-
 
     def stl_update(self, object):
         try:
@@ -49,7 +47,7 @@ class SCNvim(object):
             except BaseException:
                 self.nvim.err_write('[scnvim]: json decode error')
 
-    @pynvim.function('__scnvim_server_start', sync=False)
+    @pynvim.function('__scnvim_server_start', sync=True)
     def server_start(self, args):
         if self.server:
             return
@@ -63,7 +61,7 @@ class SCNvim(object):
         # retry to connect until a port is found
         while not found_port and max_attempts > 0:
             try:
-                self.server.bind((ADDR, port))
+                self.server.bind(('127.0.0.1', port))
                 found_port = True
             except BaseException as e:
                 port += 1
@@ -78,7 +76,7 @@ class SCNvim(object):
         return port
 
     @pynvim.autocmd('VimLeave', pattern='*', sync=True)
-    def on_vim_leave(self):
+    def on_vim_leave(self, args):
         self.vim_leaving = True
         if self.server:
             self.server.shutdown()

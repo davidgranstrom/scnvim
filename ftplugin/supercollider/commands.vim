@@ -13,6 +13,7 @@ command! -buffer SCNvimStop call scnvim#sclang#close()
 command! -buffer SCNvimRecompile call scnvim#sclang#recompile()
 command! -buffer -nargs=+ SCNvimHelp call s:open_help_for(<q-args>)
 command! -buffer SCNvimTags call scnvim#util#generate_tags()
+command! -buffer SCNvimStatus call scnvim#statusline#sclang_poll()
 
 " util
 function! s:open_help_for(subject)
