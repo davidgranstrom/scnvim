@@ -60,7 +60,6 @@ let s:Sclang = {}
 function! s:Sclang.new()
   let options = {
         \ 'name': 'sclang',
-        \ 'lines': [],
         \ 'bufnr': 0,
         \ }
   let job = extend(copy(s:Sclang), options)
@@ -72,9 +71,9 @@ function! s:Sclang.new()
   let job.id = jobstart(job.cmd, job)
 
   if job.id == 0
-    throw "Job table is full"
+    throw "job table is full"
   elseif job.id == -1
-    throw "sclang is not executable"
+    throw "could not find sclang executable"
   endif
 
   return job
