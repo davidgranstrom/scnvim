@@ -75,9 +75,8 @@ class SCNvim(object):
         self.thread.start()
         return port
 
-    @pynvim.autocmd('VimLeave', pattern='*', sync=True)
-    def on_vim_leave(self, args):
+    @pynvim.autocmd('VimLeavePre', pattern='*', sync=True)
+    def on_vim_leave_pre(self):
         self.vim_leaving = True
         if self.server:
-            self.server.shutdown()
             self.server.close()
