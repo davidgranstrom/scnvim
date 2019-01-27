@@ -18,5 +18,5 @@ command! -buffer -nargs=+ SCNvimHelp call <SID>open_help_for(<q-args>)
 " util
 function! s:open_help_for(subject)
   let cmd = printf('HelpBrowser.openHelpFor("%s");', a:subject)
-  call scnvim#sclang#send(cmd)
+  call scnvim#sclang#send_silent(cmd)
 endfunction
