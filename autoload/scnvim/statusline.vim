@@ -8,7 +8,10 @@ endfunction
 
 function! scnvim#statusline#sclang_poll()
   if exists('g:scnvim_python_port')
-    let cmd = printf('SCNvim.updateStatusLine(%d, %d)', get(g:, 'scnvim_statusline_interval', 1), g:scnvim_python_port)
+    let cmd = printf('SCNvim.updateStatusLine(%d, %d)',
+          \ get(g:, 'scnvim_statusline_interval', 1),
+          \ g:scnvim_python_port
+          \ )
     call scnvim#sclang#send_silent(cmd)
   endif
 endfunction
