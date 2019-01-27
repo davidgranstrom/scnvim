@@ -39,6 +39,6 @@ if exists('g:scnvim_echo_args')
 endif
 
 " statusline widgets
-if exists('g:scnvim_statusline')
+if !exists('g:scnvim_simple')
   let g:scnvim_python_port = __scnvim_server_start()
 endif
