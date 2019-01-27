@@ -1,54 +1,5 @@
 SCNvim {
-    classvar <nvr, <>netAddr;
-    classvar cmdType;
-
-    *initClass {
-        var nvrPath = "which nvr".unixCmdGetStdOut;
-
-        if (nvrPath.notNil and:{PathName(nvrPath).isAbsolutePath}) {
-            nvr = "% -s --nostart".format(nvrPath.replace(Char.nl));
-        };
-
-        cmdType = (
-            echo: {|str| ":echo '%'<cr>".format(str) },
-            print_args: {|str| "<c-o>:echo '%'<cr>".format(str) },
-            none: {|str| str },
-        );
-    }
-
-    *hasRemote {
-        ^nvr.notNil;
-    }
-
-    *currentPath {
-        var cmd, path;
-        if (SCNvim.hasRemote.not) {
-            ^nil;
-        };
-        cmd = "expand(\"%:p\")";
-        path = "% --remote-expr '%'".format(nvr, cmd).unixCmdGetStdOut;
-        if (PathName(path).isAbsolutePath) {
-            ^path;
-        }
-        ^nil;
-    }
-
-    *send {|message, type|
-        var cmd, msg;
-        if (SCNvim.hasRemote) {
-            cmd = cmdType[type ? 'none'].(message);
-            msg = "% --remote-send %".format(nvr, cmd.quote);
-            msg.unixCmd(postOutput: false);
-        }
-    }
-
-    *receive {|cmd|
-        var msg;
-        if (SCNvim.hasRemote) {
-            msg = "% --remote-expr %".format(nvr, cmd.quote);
-            ^msg.unixCmdGetStdOut;
-        }
-    }
+    classvar <>netAddr;
 
     *sendJSON {|object, vimPort|
         if (netAddr.isNil) {
@@ -68,6 +19,33 @@ SCNvim {
         }
     }
 
+    *updateStatusLine {arg interval=1, vimPort;
+        var stlFunc = {
+            var serverStatus, levelMeter, data;
+            var peakCPU, avgCPU, numUGens, numSynths;
+            var server = Server.default;
+
+            if (server.hasBooted) {
+                peakCPU = server.peakCPU.asStringPrec(1);
+                avgCPU = server.avgCPU.asStringPrec(1);
+                numUGens = "%u".format(server.numUGens);
+                numSynths = "%s".format(server.numSynths);
+
+                serverStatus = "%\\% %\\% % %".format(
+                    peakCPU, avgCPU, numUGens, numSynths
+                );
+                levelMeter = "-inf dB";
+
+                serverStatus = "\"server_status\":\"%\"".format(serverStatus);
+                levelMeter = "\"level_meter\":\"%\"".format(levelMeter);
+                data = "{\"status_line\":{%,%}}".format(serverStatus, levelMeter);
+                SCNvim.sendJSON(data, vimPort);
+            }
+        };
+
+        SkipJack(stlFunc, interval, name: "scnvim_statusline");
+    }
+
     *generateSyntax {arg outputPath;
         var path, file, classes;
         classes = Class.allClasses.collect {|class|
@@ -81,7 +59,7 @@ SCNvim {
         "Generated syntax file: %".format(path).postln;
     }
 
-    // borrowed from SCVim.sc
+    // copied from SCVim.sc
     // modified to produce a sorted tags file
     // GPLv3 license
     *generateTags {arg outputPath;
@@ -177,31 +155,17 @@ SCNvim {
         "Generated snippets file: %".format(path).postln;
     }
 
-    *updateStatusLine {arg interval=1, vimPort;
-        var stlFunc = {
-            var serverStatus, levelMeter, data;
-            var peakCPU, avgCPU, numUGens, numSynths;
-            var server = Server.default;
-
-            if (server.hasBooted) {
-                peakCPU = server.peakCPU.asStringPrec(1);
-                avgCPU = server.avgCPU.asStringPrec(1);
-                numUGens = "%u".format(server.numUGens);
-                numSynths = "%s".format(server.numSynths);
-
-                serverStatus = "%\\% %\\% % %".format(
-                    peakCPU, avgCPU, numUGens, numSynths
-                );
-                levelMeter = "-inf dB";
-
-                serverStatus = "\"server_status\":\"%\"".format(serverStatus);
-                levelMeter = "\"level_meter\":\"%\"".format(levelMeter);
-                data = "{\"status_line\":{%,%}}".format(serverStatus, levelMeter);
-                SCNvim.sendJSON(data, vimPort);
-            }
-        };
-
-        SkipJack(stlFunc, interval, name: "scnvim_statusline");
+    *currentPath {
+        ^nil;
+        // will be implemented after "clientserver --remote" (#8326) is merged in Neovim
+        //
+        // var cmd, path;
+        // cmd = "expand(\"%:p\")";
+        // path = "% --remote-expr '%'".format(nvr, cmd).unixCmdGetStdOut;
+        // if (PathName(path).isAbsolutePath) {
+        //     ^path;
+        // }
+        // ^nil;
     }
 }
 
