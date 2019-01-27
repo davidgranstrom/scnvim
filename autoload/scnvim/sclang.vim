@@ -63,7 +63,7 @@ function! s:Sclang.new()
         \ 'bufnr': 0,
         \ }
   let job = extend(copy(s:Sclang), options)
-  let rundir = getcwd()
+  let rundir = expand("%:p:h")
 
   let job.bufnr = s:create_post_window()
   let prg = get(g:, 'scnvim_user_settings').paths.sclang_executable
