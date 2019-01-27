@@ -8,7 +8,7 @@ let s:vim_exiting = 0
 
 autocmd scnvim VimLeavePre * let s:vim_exiting = 1
 
-" interface {{{
+" interface
 function! scnvim#sclang#open()
   if exists("s:sclang")
     call scnvim#util#err("sclang is already running.")
@@ -53,8 +53,8 @@ endfunction
 function! scnvim#sclang#is_running()
   return exists("s:sclang") && !empty(s:sclang)
 endfunction
-" }}}
-" job handlers {{{
+
+" job handlers
 let s:Sclang = {}
 
 function! s:Sclang.new()
@@ -110,8 +110,8 @@ function! s:Sclang.on_exit(id, data, event)
     call scnvim#sclang#open()
   endif
 endfunction
-" }}}
-" helpers {{{
+
+" helpers
 function! scnvim#sclang#get_post_window_bufnr()
   if exists("s:sclang") && !empty(s:sclang) && s:sclang.bufnr
     return s:sclang.bufnr
@@ -167,7 +167,3 @@ function! s:receive(self, data)
     call nvim_win_set_cursor(winnr, [numlines, 0])
   endif
 endfunction
-
-" }}}
-
-" vim:foldmethod=marker
