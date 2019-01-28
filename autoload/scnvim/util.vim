@@ -101,7 +101,7 @@ function! scnvim#util#get_user_settings()
     let post_win_orientation = ''
     let default_size = &lines / 3
   else
-    throw "valid orientations are: 's' or 'v'"
+    throw "valid orientations are: 'v' or 'h'"
   endif
 
   let post_win_size = get(g:, 'scnvim_postwin_size', default_size)
