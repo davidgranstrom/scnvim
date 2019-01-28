@@ -3,8 +3,6 @@ import json
 import pynvim
 import socket
 
-PORT = 9670
-
 @pynvim.plugin
 class SCNvim(object):
     def __init__(self, nvim):
@@ -49,21 +47,18 @@ class SCNvim(object):
         self.server = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
         self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-        port = PORT
-        found_port = False
-        max_attempts = 20
-        # retry to connect until a port is found
-        while not found_port and max_attempts > 0:
+        port = args[0]
+        max_attempts = 10
+        # try to connect until a port is found or max_attempts is reached
+        for attempt in range(max_attempts):
             try:
                 self.server.bind(('127.0.0.1', port))
-                found_port = True
+                break
             except BaseException as e:
                 port += 1
-                max_attempts -= 1
-
-        if max_attempts == 0:
-            self.echo_err('[scnvim] UDP server: ' + e.strerror)
-            return
+                if attempt == max_attempts - 1:
+                    self.echo_err('could not open UDP port: ' + e.strerror)
+                    return
 
         self.thread = Thread(target=self.server_loop)
         self.thread.start()

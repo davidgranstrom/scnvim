@@ -30,7 +30,8 @@ setlocal commentstring=\/\/%s
 
 " extras
 if !exists('g:scnvim_no_extras') && has('python3')
-  let g:scnvim_python_port = __scnvim_server_start()
+  let port = get(g:, 'scnvim_udp_port', 9670)
+  let g:scnvim_python_port = __scnvim_server_start(port)
   augroup scnvim_echo_args
     autocmd! * <buffer>
     autocmd InsertCharPre <buffer> call scnvim#util#echo_args()
