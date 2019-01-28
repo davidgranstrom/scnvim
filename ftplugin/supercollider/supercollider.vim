@@ -28,17 +28,14 @@ setlocal shiftwidth=4
 " comments
 setlocal commentstring=\/\/%s
 
-" completion
-if exists('g:scnvim_echo_args')
-  setlocal shortmess+=c
-  " command line argument hint
+" extras
+if !exists('g:scnvim_no_extras') && has('python3')
+  let g:scnvim_python_port = __scnvim_server_start()
   augroup scnvim_echo_args
     autocmd! * <buffer>
     autocmd InsertCharPre <buffer> call scnvim#util#echo_args()
   augroup END
-endif
-
-" statusline widgets
-if !exists('g:scnvim_simple')
-  let g:scnvim_python_port = __scnvim_server_start()
+  " for argument hints
+  setlocal noshowmode
+  setlocal shortmess+=c
 endif
