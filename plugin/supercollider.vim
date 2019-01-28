@@ -10,6 +10,8 @@ let g:scnvim_loaded = 1
 let g:scnvim_root_dir = expand('<sfile>:h:h')
 let g:scnvim_stl_widgets = {}
 
+highlight SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
+
 " augroup to be used w/ ftplugin
 augroup scnvim
   autocmd!

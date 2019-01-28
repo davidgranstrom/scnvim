@@ -102,9 +102,6 @@ function! s:get_sclang_block()
     return sort([start_pos[0], end_pos[0]], 'n')
 endfunction
 
-" TODO: Move somewhere else..
-highlight SCNvimEval guifg=black guibg=white
-
 function! s:flash(start, end)
   " if !has('timers') || !exists('g:scnvim_flash_eval') return
   let repeats = get(g:, 'scnvim_eval_flash_repeats', 2)
