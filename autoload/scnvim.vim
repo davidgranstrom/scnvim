@@ -107,8 +107,8 @@ highlight SCNvimEval guifg=black guibg=white
 
 function! s:flash(start, end)
   " if !has('timers') || !exists('g:scnvim_flash_eval') return
-  let repeats = get(g:, 'scnvim_flash_repeats', 2)
-  let duration = get(g:, 'scnvim_flash_duration', 100)
+  let repeats = get(g:, 'scnvim_eval_flash_repeats', 2)
+  let duration = get(g:, 'scnvim_eval_flash_duration', 100)
   if repeats == 0
     return
   elseif repeats == 1
