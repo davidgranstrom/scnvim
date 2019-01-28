@@ -14,23 +14,17 @@ class SCNvim(object):
         self.server_started = False
 
     def echo(self, message):
-        try:
-            self.nvim.out_write(message + '\n')
-        except BaseException as e:
-            self.nvim.err_write('[scnvim]: ' + str(e))
+        self.nvim.out_write(message + '\n')
 
     def echo_err(self, message):
-        try:
-            self.nvim.err_write(message + '\n')
-        except BaseException as e:
-            self.nvim.err_write('[scnvim]: ' + str(e))
+        self.nvim.err_write('[scnvim]: {}'.format(message) + '\n')
 
     def stl_update(self, object):
         try:
             json_str = json.dumps(object)
             self.nvim.call('scnvim#statusline#update', json_str)
         except BaseException as e:
-            self.nvim.err_write('[scnvim]: ' + str(e))
+            self.echo_err(str(e))
 
     def server_loop(self):
         while not self.vim_leaving:
@@ -45,7 +39,7 @@ class SCNvim(object):
                 if status_line:
                     self.nvim.async_call(self.stl_update, status_line)
             except BaseException:
-                self.nvim.err_write('[scnvim]: json decode error')
+                self.echo_err('json decode error')
 
     @pynvim.function('__scnvim_server_start', sync=True)
     def server_start(self, args):
