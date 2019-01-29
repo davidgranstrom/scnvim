@@ -59,10 +59,12 @@ Here is an example using [vim-plug](https://github.com/junegunn/vim-plug)
 Plug 'davidgranstrom/scnvim'
 ```
 2. `:PlugInstall`
+
+> Steps 3-4 require pynvim and can be omitted if you don't want to use the remote plugin features (see explanation below).
+
 3. `:UpdateRemotePlugins`
 4. Exit nvim and re-open
 
-> Steps 3-4 can be omitted if you don't want to use the remote plugin features (see explanation below).
 
 There is also a SuperCollider class that needs to be installed. It is located at `sc/Classes/SCNvim.sc` in this repo.
 
@@ -223,8 +225,7 @@ let g:scnvim_no_mappings = 1
 ```vim
 " vim-plug
 call plug#begin('path/to/plugin/directory')
-  " Plug 'davidgranstrom/scnvim'
-  Plug 'https://github.com/davidgranstrom/scnvim'
+  Plug 'davidgranstrom/scnvim'
   " (optional) for snippets
   Plug 'SirVer/ultisnips'
 call plug#end()
