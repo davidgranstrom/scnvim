@@ -13,7 +13,7 @@ if !exists("g:scnvim_no_mappings") || !g:scnvim_no_mappings
     imap <buffer> <M-e> <c-o><Plug>(scnvim-send-line)
   endif
 
-  if !hasmapto('<Plug>(scnvim-send-region)', 'x')
+  if !hasmapto('<Plug>(scnvim-send-selection)', 'x')
     xmap <buffer> <C-e> <Plug>(scnvim-send-selection)
   endif
 
