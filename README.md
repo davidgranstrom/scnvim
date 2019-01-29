@@ -1,42 +1,50 @@
 # scnvim
 
-SuperCollider integration for Neovim.
+[SuperCollider][supercollider] integration for [Neovim][neovim]
 
 ## Features
 
-#### Post Window is displayed in a regular vim buffer
+* Post window is displayed in a regular vim buffer
+  - Use vim key bindings to navigate/move/copy etc.
+* Interactive argument hints in the command-line area
+* Status line widgets
+  - Display SuperCollider server status in vim status line.
+* Snippet generator
+  - Generates snippets for all creation methods in SCClassLibrary.
+* Can be used with Neovim [GUI frontends](https://github.com/neovim/neovim/wiki/Related-projects#gui)
+* Supports lazy loading
+* Context aware evaluation (like `Cmd-Enter` in ScIDE)
+* Flashy eval flash (configurable)
 
-Use vim key bindings to navigate/move/copy etc.
+## Showcase
+
+#### Post window displayed in a regular vim buffer
+
+Toggle the post window buffer by pressing `<Enter>` in normal mode or `<M-Enter>` in insert mode.
 
 ![post window](./gif/postwindow-min.gif)
 
 #### Interactive argument hints in the command-line area
 
+Arguments are automatically displayed after typing the opening brace.
+
 ![argument hints](./gif/arghints-min.gif)
 
 #### Status line widgets
 
-Display SuperCollider server status in vim statusline.
+Displays server status in the status line
 
 ![server status](./gif/serverstatus-min.gif)
 
 #### Snippet generator
 
-Generates snippets for all creation methods in SCClassLibrary.
-
 The snippet engine used here is [UltiSnips][UltiSnips] together with [deoplete](https://github.com/Shougo/deoplete.nvim) for auto completion.
 
 ![snippets](./gif/snippets-min.gif)
 
-### more..
-
-* Can be used with Neovim [GUI frontends](https://github.com/neovim/neovim/wiki/Related-projects#gui)
-* Supports lazy loading
-* Context aware evaluation (like `Cmd-Enter` in ScIDE)
-
 ## Installation
 
-### Requirements 
+### Requirements
 
 * [Neovim][neovim] (tested with >= 0.3.1)
 * [SuperCollider][supercollider]
@@ -97,14 +105,14 @@ scnvim provides some functions suitable to use in your vim statusline.
 
 Run `:SCNvimStatusLine` to get feedback in the status line.
 
-See the [example init.vim](#) on how they can be used.
+See the [example configuration](#example-configuration) on how they can be used.
 
 This command calls `SCNvim.statusLineUpdate(<interval>, <port>)` in
 SuperCollider, where <port> is the UDP port of the remote plugin. Currently
 there is no way to support multiple (SuperCollider) sessions without guessing
-the port number for the remote plugin. But if you use single sessions you could
-probably add this to your `startup.scd` to automatically call the function on
-server boot.
+the port number for the remote plugin. But if you mostly use single sessions
+you could probably add this to your `startup.scd` to automatically call the
+function on server boot.
 
 ```supercollider
 Server.default.doWhenBooted {
@@ -189,14 +197,76 @@ let g:scnvim_sclang_executable = ''
 " (don't set this to low or vim will get slow)
 let g:scnvim_statusline_interval = 1
 
-" set this variable if you don't want any remote plugin features (argument hints, server status)
-let g:scnvim_no_extras = 1
+" set this variable if you don't want the "echo args" feature
+let g:scnvim_echo_args = 1
 
 " UDP port for (remote) python plugin
 let g:scnvim_udp_port = 9670
 
 " set this variable if you don't want any default mappings
 let g:scnvim_no_mappings = 1
+```
+
+## Example configuration
+
+```vim
+" vim-plug
+call plug#begin('/tmp/bundle')
+  " Plug 'davidgranstrom/scnvim'
+  Plug '~/code/vim/sc.nvim'
+  " (optional) for snippets
+  Plug 'SirVer/ultisnips'
+call plug#end()
+
+" scnvim
+"
+" post window at the bottom
+let g:scnvim_postwin_orientation = 'h'
+
+" remap send block
+nmap <F5> <Plug>(scnvim-send-block)
+
+" remap post window toggle
+nmap <Space>o <Plug>(scnvim-postwindow-toggle)
+
+" eval flash colors
+highlight SCNvimEval guifg=black guibg=cyan ctermfg=black ctermbg=cyan
+
+" hard coded path to sclang executable
+let g:scnvim_sclang_executable = '~/bin/sclang'
+
+" snippets support
+let g:UltiSnipsSnippetDirectories = ['UltiSnips', 'scnvim-data']
+
+" create a custom status line for supercollider buffers
+function! s:set_sclang_statusline()
+  setlocal stl=
+  setlocal stl+=%f
+  setlocal stl+=%=
+  setlocal stl+=%(%l,%c%)
+  setlocal stl+=\ \|
+  setlocal stl+=%18.18{scnvim#statusline#server_status()}
+endfunction
+
+augroup scnvim_stl
+  autocmd!
+  autocmd FileType supercollider call <SID>set_sclang_statusline()
+augroup END
+
+" lightline.vim example
+" let g:lightline.component_function = {
+"   \ 'server_status': 'scnvim#statusline#server_status',
+"   \ }
+"
+" function! s:set_sclang_lightline_stl()
+"   let g:lightline.active = {
+"   \ 'left':  [ [ 'mode', 'paste' ],
+"   \          [ 'readonly', 'filename', 'modified' ] ],
+"   \ 'right': [ [ 'lineinfo' ],
+"   \            [ 'percent' ],
+"   \            [ 'server_status'] ]
+"   \ }
+" endfunction
 ```
 
 ## Thanks to
