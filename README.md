@@ -6,6 +6,7 @@
 
 * Post window is displayed in a regular vim buffer
   - Use vim key bindings to navigate/move/copy etc.
+  - Toggles back if hidden on a SuperCollider error
 * Interactive argument hints in the command-line area
 * Status line widgets
   - Display SuperCollider server status in vim status line.
