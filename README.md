@@ -4,20 +4,104 @@ SuperCollider integration for Neovim.
 
 ## Features
 
-* Post Window is displayed in a regular vim buffer
-    - Use vim key bindings to navigate/copy etc.
-* Interactive argument hints in the command-line
-* Status line widgets
-    - Display server status in vim statusline
-    - Level Meter (in progress)
+#### Post Window is displayed in a regular vim buffer
+
+Use vim key bindings to navigate/move/copy etc.
+
+![post window](./gif/postwindow-min.gif)
+
+#### Interactive argument hints in the command-line area
+
+![argument hints](./gif/arghints-min.gif)
+
+#### Status line widgets
+
+Display SuperCollider server status in vim statusline.
+
+![server status](./gif/serverstatus-min.gif)
+
+#### Snippet generator
+
+Generates snippets for all creation methods in SCClassLibrary.
+
+The snippet engine used here is [UltiSnips][UltiSnips] together with [deoplete](https://github.com/Shougo/deoplete.nvim) for auto completion.
+
+![snippets](./gif/snippets-min.gif)
+
+### more..
+
 * Can be used with Neovim [GUI frontends](https://github.com/neovim/neovim/wiki/Related-projects#gui)
-* Snippet generator
 * Supports lazy loading
-* Context aware evaluation (Cmd-Enter in ScIDE)
+* Context aware evaluation (like `Cmd-Enter` in ScIDE)
+
+## Installation
+
+Here is an example using [vim-plug](https://github.com/junegunn/vim-plug)
+
+1. Add this line to your init.vim
+```vim
+Plug 'davidgranstrom/scnvim'
+```
+2. `:PlugInstall`
+
+That covers the basic installation, open a new file with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider. If you want to use all of scnvim's features please read on.
+
+Some features of scnvim are implemented as a [remote plugin](https://neovim.io/doc/user/remote_plugin.html) which can communicate to SuperCollider via UDP.
+If you want to use the *argument hints* or *statusline update* features you will need to install the python3 client [pynvim][pynvim].
+
+Visit the [pynvim repo][pynvim] to read the official installation instructions.
+
+After you have installed [pynvim][pynvim] (or if you already had it!) open vim and type:
+
+1. `:UpdateRemotePlugins`
+2. Exit vim
+
+Open a `.scd` or `.sc` file and type `:SCNvimStart` to start SuperCollider. You should now see argument hints echoed to the command-line area after typing the opening bracket for a SuperCollider object e.g. `SinOsc.ar(`
+
+## Syntax highlighting
+
+Run `:SCNvimTags` after starting SuperCollider to generate a file used for syntax highlighting.
+
+The command will also generate a file with snippet definitions for all
+object creation methods and also a `tags` file which can be used to navigate to
+references using the built-in vim command `C-]` (jump to definition).
+
+If you write or install new classes you will need to run this command again to update the syntax/tags/snippets files.
+
+## Snippets
+
+Run `:SCNvimTags` to generate the snippet definitions.
+
+You will also need a snippet engine like [UltiSnips][UltiSnips] in order to use the snippets. To let [UltiSnips][UltiSnips] know about the snippets put the following line in your init.vim:
+
+```vim
+let g:UltiSnipsSnippetDirectories = ['UltiSnips', 'scnvim-data']
+```
+
+## Status line widgets
+
+scnvim provides some functions suitable to use in your vim statusline.
+
+* `scnvim#statusline#server_status`
+
+Run `:SCNvimStatusLine` to get feedback in the status line.
+
+See the [example init.vim](#) on how they can be used.
+
+This command calls `SCNvim.statusLineUpdate(<interval>, <port>)` in
+SuperCollider, where <port> is the UDP port of the remote plugin. Currently
+there is no way to support multiple (SuperCollider) sessions without guessing
+the port number for the remote plugin. But if you use single sessions you could
+probably add this to your `startup.scd` to automatically call the function on
+server boot.
+
+```supercollider
+Server.default.doWhenBooted {
+    SCNvim.updateStatusLine(1, 9670); // default port for scnvim
+}
+```
 
 ## Mappings
-
-Here is an overview of the default mappings.
 
 | Map | Description | Name | Mode |
 | --- | --- | --- | --- |
@@ -38,8 +122,8 @@ To disable all default mappings specify `let g:scnvim_no_mappings = 1` in your v
 
 | Command | Description |
 | --- | --- |
-| `SCNvimStart` | Starts SuperCollider |
-| `SCNvimStop` | Stops SuperCollider |
+| `SCNvimStart` | Start SuperCollider |
+| `SCNvimStop` | Stop SuperCollider |
 | `SCNvimRecompile` | Recompile SCClassLibrary |
 | `SCNvimTags` | Create auto-generated utility files |
 | `SCNvimHelp <subject>` | Open HelpBrowser for <subject> |
@@ -104,7 +188,7 @@ let g:scnvim_udp_port = 9670
 let g:scnvim_no_mappings = 1
 ```
 
-## Thanks & Inspiration
+## Thanks to
 
 [scvim](https://github.com/supercollider/scvim)
 
@@ -129,3 +213,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ```
+
+[pynvim]: https://github.com/neovim/pynvim
+[UltiSnips]: https://github.com/SirVer/ultisnips
