@@ -130,6 +130,7 @@ Server.default.doWhenBooted {
 | `<F12>` | Hard stop | `<Plug>(scnvim-hard-stop)` | Insert, Normal |
 | `<CR>`  | Toggle post window buffer | `<Plug>(scnvim-postwindow-toggle)` | Insert, Normal |
 | `<M-L>` | Clear post window buffer | `<Plug>(scnvim-postwindow-clear)` | Insert, Normal |
+| `K` | Open documentation | Uses vim `keywordprg` | Normal |
 
 To remap any of the default mappings use the `nmap` command together with the name of the mapping.
 
