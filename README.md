@@ -36,6 +36,14 @@ The snippet engine used here is [UltiSnips][UltiSnips] together with [deoplete](
 
 ## Installation
 
+### Requirements 
+
+* [Neovim][neovim] (tested with >= 0.3.1)
+* [SuperCollider][supercollider]
+* [pynvim][pynvim] (optional)
+
+### Installation
+
 Here is an example using [vim-plug](https://github.com/junegunn/vim-plug)
 
 1. Add this line to your init.vim
@@ -43,20 +51,23 @@ Here is an example using [vim-plug](https://github.com/junegunn/vim-plug)
 Plug 'davidgranstrom/scnvim'
 ```
 2. `:PlugInstall`
+3. `:UpdateRemotePlugins`
+4. Exit nvim and re-open
 
-That covers the basic installation, open a new file with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider. If you want to use all of scnvim's features please read on.
+> Steps 3-4 can be omitted if you don't want to use the remote plugin features (see explanation below).
+
+Open a new file with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
+
+### Remote plugin
 
 Some features of scnvim are implemented as a [remote plugin](https://neovim.io/doc/user/remote_plugin.html) which can communicate to SuperCollider via UDP.
 If you want to use the *argument hints* or *statusline update* features you will need to install the python3 client [pynvim][pynvim].
 
-Visit the [pynvim repo][pynvim] to read the official installation instructions.
+```shell
+pip3 install pynvim --user
+```
 
-After you have installed [pynvim][pynvim] (or if you already had it!) open vim and type:
-
-1. `:UpdateRemotePlugins`
-2. Exit vim
-
-Open a `.scd` or `.sc` file and type `:SCNvimStart` to start SuperCollider. You should now see argument hints echoed to the command-line area after typing the opening bracket for a SuperCollider object e.g. `SinOsc.ar(`
+Please visit the [pynvim repo][pynvim] to read the official installation instructions and how to upgrade to newer versions.
 
 ## Syntax highlighting
 
@@ -214,5 +225,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ```
 
+[neovim]: https://github.com/neovim/neovim
+[supercollider]: https://github.com/supercollider/supercollider
 [pynvim]: https://github.com/neovim/pynvim
 [UltiSnips]: https://github.com/SirVer/ultisnips
