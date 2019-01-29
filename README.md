@@ -212,7 +212,7 @@ let g:scnvim_sclang_executable = ''
 let g:scnvim_statusline_interval = 1
 
 " set this variable if you don't want the "echo args" feature
-let g:scnvim_echo_args = 1
+let g:scnvim_echo_args = 0
 
 " UDP port for (remote) python plugin
 let g:scnvim_udp_port = 9670
@@ -245,7 +245,7 @@ nmap <Space>o <Plug>(scnvim-postwindow-toggle)
 " eval flash colors
 highlight SCNvimEval guifg=black guibg=cyan ctermfg=black ctermbg=cyan
 
-" hard coded path to sclang executable
+" hard coded path to sclang executable (optional)
 let g:scnvim_sclang_executable = '~/bin/sclang'
 
 " snippets support
