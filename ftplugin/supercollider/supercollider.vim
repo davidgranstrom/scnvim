@@ -28,15 +28,17 @@ setlocal shiftwidth=4
 " comments
 setlocal commentstring=\/\/%s
 
-" extras
-if !exists('g:scnvim_no_extras') && has('python3')
+" remote plugin
+if has('python3')
   let port = get(g:, 'scnvim_udp_port', 9670)
   let g:scnvim_python_port = __scnvim_server_start(port)
-  augroup scnvim_echo_args
-    autocmd! * <buffer>
-    autocmd InsertCharPre <buffer> call scnvim#util#echo_args()
-  augroup END
-  " for argument hints
-  setlocal noshowmode
-  setlocal shortmess+=c
+  if !exists('g:scnvim_echo_args') || g:scnvim_echo_args == 1
+    augroup scnvim_echo_args
+      autocmd! * <buffer>
+      autocmd InsertCharPre <buffer> call scnvim#util#echo_args()
+    augroup END
+    " for argument hints
+    setlocal noshowmode
+    setlocal shortmess+=c
+  endif
 endif
