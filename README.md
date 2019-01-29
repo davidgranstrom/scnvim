@@ -120,7 +120,7 @@ Run `:SCNvimStatusLine` to get feedback in the status line.
 See the [example configuration](#example-configuration) on how they can be used.
 
 This command calls `SCNvim.statusLineUpdate(<interval>, <port>)` in
-SuperCollider, where <port> is the UDP port of the remote plugin. Currently
+SuperCollider, where `<port>` is the UDP port of the remote plugin. Currently
 there is no way to support multiple (SuperCollider) sessions without guessing
 the port number for the remote plugin. But if you mostly use single sessions
 you could probably add this to your `startup.scd` to automatically call the
