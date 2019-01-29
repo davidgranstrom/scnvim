@@ -13,7 +13,7 @@
   - Generates snippets for all creation methods in SCClassLibrary.
 * Can be used with Neovim [GUI frontends](https://github.com/neovim/neovim/wiki/Related-projects#gui)
 * Supports lazy loading
-* Context aware evaluation (like `Cmd-Enter` in ScIDE)
+* Context aware evaluation (like `Cmd-Enter` in scIDE)
 * Flashy eval flash (configurable)
 
 ## Showcase
@@ -69,7 +69,7 @@ Open a new file with a `.scd` or `.sc` extension and type `:SCNvimStart` to star
 ### Remote plugin
 
 Some features of scnvim are implemented as a [remote plugin](https://neovim.io/doc/user/remote_plugin.html) which can communicate to SuperCollider via UDP.
-If you want to use the *argument hints* or *statusline update* features you will need to install the python3 client [pynvim][pynvim].
+If you want to use the *echo args* or *statusline update* features you will need to install the python3 client [pynvim][pynvim].
 
 ```shell
 pip3 install pynvim --user
@@ -151,7 +151,7 @@ To disable all default mappings specify `let g:scnvim_no_mappings = 1` in your v
 ## Configuration
 
 The following variables are used to configure scnvim. This plugin should work
-out-of-the-box so it is not neccessary to set them if you are happy with the
+out-of-the-box so it is not necessary to set them if you are happy with the
 defaults.
 
 Run `:checkhealth` to diagnose common problems with your config.
