@@ -222,9 +222,9 @@ let g:scnvim_no_mappings = 1
 
 ```vim
 " vim-plug
-call plug#begin('/tmp/bundle')
+call plug#begin('path/to/plugin/directory')
   " Plug 'davidgranstrom/scnvim'
-  Plug '~/code/vim/sc.nvim'
+  Plug 'https://github.com/davidgranstrom/scnvim'
   " (optional) for snippets
   Plug 'SirVer/ultisnips'
 call plug#end()
