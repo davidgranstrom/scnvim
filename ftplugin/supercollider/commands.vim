@@ -17,6 +17,11 @@ command! -buffer -nargs=+ SCNvimHelp call <SID>open_help_for(<q-args>)
 
 " util
 function! s:open_help_for(subject)
-  let cmd = printf('HelpBrowser.openHelpFor("%s");', a:subject)
+  let native = get(g:, 'scnvim_scdoc_vim', 0)
+  if native
+    let cmd = printf('SCNvim.openHelpFor("%s", %d);', a:subject, g:scnvim_python_port)
+  else
+    let cmd = printf('HelpBrowser.openHelpFor("%s");', a:subject)
+  endif
   call scnvim#sclang#send_silent(cmd)
 endfunction
