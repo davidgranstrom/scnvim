@@ -71,8 +71,8 @@ function! s:get_sclang_block()
     let plist = ['(', ')']
     let pindex = index(plist, c)
 
-    let p = '^('
-    let p2 = '^)'
+    let p = '('
+    let p2 = ')'
 
     let start_pos = [0, 0]
     let end_pos = [0, 0]
