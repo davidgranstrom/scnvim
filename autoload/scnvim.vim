@@ -2,18 +2,18 @@
 " Author: David Granström
 " Description: scnvim interface
 
-function! scnvim#send_line(...) abort
-  let is_single_line = len(a:000) == 0
+function! scnvim#send_line(start, end) abort
+  let is_single_line = a:start == 0 && a:end == 0
   if is_single_line
     let line = line(".")
     let str = getline(line)
     call scnvim#sclang#send(str)
     call s:flash(line, line, v:false)
   else
-    let lines = getline(a:1, a:2)
+    let lines = getline(a:start, a:end)
     let str = join(lines, "\n")
     call scnvim#sclang#send(str)
-    call s:flash(a:1, a:2, v:false)
+    call s:flash(a:start - 1, a:end + 1, v:false)
   endif
 endfunction
 
@@ -28,7 +28,7 @@ function! scnvim#send_block() abort
   if start && end
     call scnvim#send_line(start, end)
   else
-    call scnvim#send_line()
+    call scnvim#send_line(0, 0)
   endif
 endfunction
 
