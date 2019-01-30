@@ -18,7 +18,7 @@ augroup scnvim
   autocmd!
 augroup END
 
-noremap <unique><script><silent> <Plug>(scnvim-send-line) :<c-u>call scnvim#send_line()<cr>
+noremap <unique><script><silent> <Plug>(scnvim-send-line) :<c-u>call scnvim#send_line(0, 0)<cr>
 noremap <unique><script><silent> <Plug>(scnvim-send-block) :<c-u>call scnvim#send_block()<cr>
 noremap <unique><script><silent> <Plug>(scnvim-send-selection) :<c-u>call scnvim#send_selection()<cr>
 noremap <unique><script><silent> <Plug>(scnvim-postwindow-toggle) :<c-u>call scnvim#postwindow#toggle()<cr>
