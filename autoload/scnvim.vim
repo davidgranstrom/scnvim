@@ -8,19 +8,19 @@ function! scnvim#send_line(...) abort
     let line = line(".")
     let str = getline(line)
     call scnvim#sclang#send(str)
-    call s:flash(line, line)
+    call s:flash(line, line, v:false)
   else
     let lines = getline(a:1, a:2)
     let str = join(lines, "\n")
     call scnvim#sclang#send(str)
-    call s:flash(a:1, a:2)
+    call s:flash(a:1, a:2, v:false)
   endif
 endfunction
 
 function! scnvim#send_selection() abort
   let selection = s:get_visual_selection()
   call scnvim#sclang#send(selection.text)
-  call s:flash(selection.start - 1, selection.end + 1)
+  call s:flash(selection.start - 1, selection.end + 1, v:true)
 endfunction
 
 function! scnvim#send_block() abort
@@ -38,19 +38,19 @@ endfunction
 
 " helpers {{{
 function! s:get_visual_selection()
-  let [l:lnum1, l:col1] = getpos("'<")[1:2]
-  let [l:lnum2, l:col2] = getpos("'>")[1:2]
+  let [lnum1, col1] = getpos("'<")[1:2]
+  let [lnum2, col2] = getpos("'>")[1:2]
   if &selection ==# 'exclusive'
-    let l:col2 -= 1
+    let col2 -= 1
   endif
-  let l:lines = getline(l:lnum1, l:lnum2)
-  let l:lines[-1] = l:lines[-1][:l:col2 - 1]
-  let l:lines[0] = l:lines[0][l:col1 - 1:]
+  let lines = getline(lnum1, lnum2)
+  let lines[-1] = lines[-1][:col2 - 1]
+  let lines[0] = lines[0][col1 - 1:]
   return {
-  \ 'text': join(l:lines, "\n"),
-  \ 'start': l:lnum1,
-  \ 'end': l:lnum2,
-  \ }
+        \ 'text': join(lines, "\n"),
+        \ 'start': col1,
+        \ 'end': col2,
+        \ }
 endfunction
 
 function! s:skip_pattern()
@@ -102,31 +102,41 @@ function! s:get_sclang_block()
     return sort([start_pos[0], end_pos[0]], 'n')
 endfunction
 
-function! s:flash(start, end)
+function! s:flash(start, end, selection)
   let repeats = get(g:, 'scnvim_eval_flash_repeats', 2)
   let duration = get(g:, 'scnvim_eval_flash_duration', 100)
   if repeats == 0 || duration == 0
     return
   elseif repeats == 1
-    call s:flash_once(a:start, a:end, duration)
+    call s:flash_once(a:start, a:end, duration, a:selection)
   else
     let delta = duration / 2
-    call s:flash_once(a:start, a:end, delta)
-    call timer_start(duration, {-> s:flash_once(a:start, a:end, delta)}, {'repeat': repeats - 1})
+    call s:flash_once(a:start, a:end, delta, a:selection)
+    call timer_start(duration, {-> s:flash_once(a:start, a:end, delta, a:selection)}, {'repeat': repeats - 1})
   endif
 endfunction
 
-function! s:flash_once(start, end, duration)
-  let m = s:highlight_region(a:start, a:end)
+function! s:flash_once(start, end, duration, selection)
+  let m = s:highlight_region(a:start, a:end, a:selection)
   call timer_start(a:duration, {-> s:clear_region(m) })
 endfunction
 
-function! s:highlight_region(start, end)
-  if a:start == a:end
-    let pattern = '\%' . a:start . 'l'
+function! s:highlight_region(start, end, selection)
+  if !a:selection
+    if a:start == a:end
+      let pattern = '\%' . a:start . 'l'
+    else
+      let pattern = '\%>' . a:start . 'l'
+      let pattern .= '\%<' . a:end . 'l'
+    endif
   else
-    let pattern = '\%>' . a:start . 'l'
-    let pattern .= '\%<' . a:end . 'l'
+    let pattern = '\%' . line('.') . 'l'
+    if a:start == a:end
+      let pattern .= '\%' . a:start . 'c'
+    else
+      let pattern .= '\%>' . a:start . 'c'
+      let pattern .= '\%<' . a:end . 'c'
+    endif
   endif
   return matchadd('SCNvimEval', pattern)
 endfunction
