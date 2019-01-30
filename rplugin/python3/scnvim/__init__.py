@@ -25,6 +25,14 @@ class SCNvim(object):
         except BaseException as e:
             self.echo_err(str(e))
 
+    def dispatch(self, object):
+        help = object.get('help', '')
+        if help:
+            uri = help.get('open', '')
+            if uri:
+                self.nvim.command('split')
+                self.nvim.command('edit ' + uri)
+
     def server_loop(self):
         while not self.vim_leaving:
             data, addr = self.server.recvfrom(1024)
@@ -33,12 +41,16 @@ class SCNvim(object):
                 data = json.loads(data)
                 status_line = data.get('status_line', '')
                 method_args = data.get('method_args', '')
+                action = data.get('action', '')
                 if method_args:
                     self.nvim.async_call(self.echo, method_args)
                 if status_line:
                     self.nvim.async_call(self.stl_update, status_line)
-            except BaseException:
-                self.echo_err('json decode error')
+                if action:
+                    self.nvim.async_call(self.dispatch, action)
+
+            except BaseException as e:
+                self.echo_err('json decode error: ' + str(e))
 
     @pynvim.function('__scnvim_server_start', sync=True)
     def server_start(self, args):
