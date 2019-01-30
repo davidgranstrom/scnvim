@@ -36,7 +36,7 @@ function! scnvim#hard_stop() abort
   call scnvim#sclang#send_silent('thisProcess.hardStop')
 endfunction
 
-" helpers {{{
+" helpers
 function! s:get_visual_selection()
   let [lnum1, col1] = getpos("'<")[1:2]
   let [lnum2, col2] = getpos("'>")[1:2]
@@ -144,6 +144,3 @@ endfunction
 function! s:clear_region(match)
   call matchdelete(a:match)
 endfunction
-" }}}
-
-" vim:foldmethod=marker
