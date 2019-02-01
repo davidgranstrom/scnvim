@@ -207,7 +207,7 @@ highlight SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
 
 ### Extras
 
-```
+```vim
 " path to the sclang executable
 " scnvim will look in some known locations for sclang, but if it can't find it use this variable instead
 " (also improves startup time slightly)
@@ -228,6 +228,8 @@ let g:scnvim_no_mappings = 1
 ```
 
 ## Example configuration
+
+This is not a recommended configuration but rather a way to show how a minimal `init.vim` could look to configure the plugin.
 
 ```vim
 " vim-plug
@@ -251,10 +253,10 @@ nmap <Space>o <Plug>(scnvim-postwindow-toggle)
 " eval flash colors
 highlight SCNvimEval guifg=black guibg=cyan ctermfg=black ctermbg=cyan
 
-" hard coded path to sclang executable (optional)
+" hard coded path to sclang executable
 let g:scnvim_sclang_executable = '~/bin/sclang'
 
-" snippets support
+" enable snippets support
 let g:UltiSnipsSnippetDirectories = ['UltiSnips', 'scnvim-data']
 
 " create a custom status line for supercollider buffers
@@ -273,6 +275,7 @@ augroup scnvim_stl
 augroup END
 
 " lightline.vim example
+" let g:lightline = {}
 " let g:lightline.component_function = {
 "   \ 'server_status': 'scnvim#statusline#server_status',
 "   \ }
