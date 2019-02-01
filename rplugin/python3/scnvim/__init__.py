@@ -66,6 +66,8 @@ class SCNvim(object):
                     self.nvim.command('syntax match SCNvimConcealResults /^.*Help\/\|.txt\||.*|\|/ conceal')
                     self.nvim.command('setlocal conceallevel=2')
                     self.nvim.command('setlocal concealcursor=nvic')
+                else:
+                    self.nvim.call('setqflist', [{'text': 'No results for: ' + method}])
 
             if uri:
                 self.nvim.command('split')
