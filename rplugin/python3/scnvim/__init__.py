@@ -39,16 +39,15 @@ class SCNvim(object):
             data = data.decode('utf-8')
             try:
                 data = json.loads(data)
-                status_line = data.get('status_line', '')
-                method_args = data.get('method_args', '')
-                action = data.get('action', '')
+                status_line = data.get('status_line')
+                method_args = data.get('method_args')
+                action = data.get('action')
                 if method_args:
                     self.nvim.async_call(self.echo, method_args)
                 if status_line:
                     self.nvim.async_call(self.stl_update, status_line)
                 if action:
                     self.nvim.async_call(self.dispatch, action)
-
             except BaseException as e:
                 self.echo_err('json decode error: ' + str(e))
 
