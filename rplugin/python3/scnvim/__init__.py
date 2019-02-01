@@ -1,7 +1,10 @@
 from threading import Thread
 import json
-import pynvim
+import os
+import re
 import socket
+
+import pynvim
 
 @pynvim.plugin
 class SCNvim(object):
@@ -11,6 +14,7 @@ class SCNvim(object):
         self.port = 0
         self.vim_leaving = False
         self.server_started = False
+        self.docmap = {}
 
     def echo(self, message):
         self.nvim.out_write(message + '\n')
@@ -25,10 +29,44 @@ class SCNvim(object):
         except BaseException as e:
             self.echo_err(str(e))
 
+    def prepareDocMap(self, path):
+        try:
+            if not self.docmap:
+                with open(os.path.join(path, 'docmap.json')) as f:
+                    self.docmap = json.load(f)
+        except BaseException as e:
+            self.echo_err('error parsing docmap ' + str(e))
+
     def dispatch(self, object):
-        help = object.get('help', '')
-        if help:
-            uri = help.get('open', '')
+        data = object.get('help')
+        if data:
+            uri = data.get('open')
+            method = data.get('method')
+            help_target_dir = data.get('helpTargetDir')
+            if method:
+                self.prepareDocMap(help_target_dir)
+                result = []
+                if self.docmap:
+                    for value in self.docmap.values():
+                        for k in value.items():
+                            if k[0] == 'methods':
+                                for m in k[1]:
+                                    match = re.match('.{}'.format(method), m)
+                                    if match:
+                                        path = os.path.join(help_target_dir, value['path'] + '.txt')
+                                        result.append({
+                                            'filename': path,
+                                            'text': match.group(0),
+                                            'pattern': '^.*' + method
+                                        })
+                if result:
+                    self.nvim.call('setqflist', result)
+                    self.nvim.command('let w:quickfix_title="methods"')
+                    self.nvim.command('copen')
+                    self.nvim.command('syntax match SCNvimConcealResults /^.*Help\/\|.txt\||.*|\|/ conceal')
+                    self.nvim.command('setlocal conceallevel=2')
+                    self.nvim.command('setlocal concealcursor=nvic')
+
             if uri:
                 self.nvim.command('split')
                 self.nvim.command('edit ' + uri)
