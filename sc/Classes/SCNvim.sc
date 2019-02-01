@@ -169,6 +169,7 @@ SCNvim {
     }
 }
 
+/*
 Document {
     // needed for thisProcess.nowExecutingPath to work.. see Kernel::interpretCmdLine
     var <path, <dataptr;
@@ -182,3 +183,4 @@ Document {
         ^Document(path, true);
     }
 }
+*/
