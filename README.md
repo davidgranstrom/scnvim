@@ -2,6 +2,12 @@
 
 [SuperCollider][supercollider] integration for [Neovim][neovim]
 
+## Note
+
+Please note that this plugin is still in active development. It should be stable enough
+by now for everyday use, but if you encounter any bugs/problems please report them on the
+[issue tracker](https://github.com/davidgranstrom/scnvim/issues), thanks!
+
 ## Features
 
 * Post window is displayed in a regular vim buffer
