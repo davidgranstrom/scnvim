@@ -65,30 +65,29 @@ endfunction
 function! s:get_sclang_block()
 	  let c_lnum = line('.')
 	  let c_col = col('.')
-
-    " see where we are now
-	  let c = getline(c_lnum)[c_col - 1]
-    let plist = ['(', ')']
-    let pindex = index(plist, c)
-
-    let p = '('
-    let p2 = ')'
-
     let start_pos = [0, 0]
     let end_pos = [0, 0]
 
+    let p = '^('
+    let p2 = '^);\=$'
     let forward_flags = 'nW'
     let backward_flags = 'nbW'
-
+    let opening_brace = match(getline('.'), p) == 0
+    let closing_brace = match(getline('.'), p2) == 0
     " if we are in a string, comment etc.
     " parse the block as if we are in the middle
     let in_comment = eval(s:skip_pattern())
 
-    if pindex == 0 && !in_comment
+    " searchpairpos starts the search from the cursor so save where we are
+    " right now and restore the cursor after the search
+    let c_curpos = getcurpos()
+    call setpos('.', [0, c_lnum, 1, 0])
+
+    if opening_brace && !in_comment
       " on an opening brace
       let start_pos = [c_lnum, c_col]
       let end_pos = s:find_match(p, p2, forward_flags)
-    elseif pindex == 1 && !in_comment
+    elseif closing_brace && !in_comment
       " on a closing brace
       let start_pos = [c_lnum, c_col]
       let end_pos = s:find_match(p, p2, backward_flags)
@@ -98,6 +97,8 @@ function! s:get_sclang_block()
       let end_pos = s:find_match(p, p2, forward_flags)
     endif
 
+    " restore cursor
+    call setpos('.', c_curpos)
     " sort the numbers so getline can use them
     return sort([start_pos[0], end_pos[0]], 'n')
 endfunction
