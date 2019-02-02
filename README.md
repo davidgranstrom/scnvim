@@ -4,9 +4,10 @@
 
 ## Note
 
-Please note that this plugin is still in active development. It should be stable enough
-by now for everyday use, but if you encounter any bugs/problems please report them on the
-[issue tracker](https://github.com/davidgranstrom/scnvim/issues), thanks!
+Please note that this plugin is still in active development. It should be
+stable enough by now for everyday use. If you encounter any bugs, or have ideas
+for new features, please report them on the [issue
+tracker](https://github.com/davidgranstrom/scnvim/issues), thanks!
 
 ## Features
 
