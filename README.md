@@ -130,13 +130,19 @@ See the [example configuration](#example-configuration) on how they can be used.
 This command calls `SCNvim.statusLineUpdate(<interval>, <port>)` in
 SuperCollider, where `<port>` is the UDP port of the remote plugin. Currently
 there is no way to support multiple (SuperCollider) sessions without guessing
-the port number for the remote plugin. But if you mostly use single sessions
-you could probably add this to your `startup.scd` to automatically call the
-function on server boot.
+the port number for the remote plugin. The `:SCNvimStatusLine` command ensures
+that SuperCollider always connects to the correct port.
+
+But if you mostly use single sessions, and know that the port is likely to be
+available, you could probably add this to your `startup.scd` to automatically
+call the function on server boot.
 
 ```supercollider
-Server.default.doWhenBooted {
-    SCNvim.updateStatusLine(1, 9670); // default port for scnvim
+// scnvim
+if (\SCNvim.asClass.notNil) {
+    Server.default.doWhenBooted {
+        \SCNvim.asClass.updateStatusLine(1, 9670);
+    }
 }
 ```
 
@@ -166,7 +172,7 @@ To disable all default mappings specify `let g:scnvim_no_mappings = 1` in your v
 | `SCNvimStop` | Stop SuperCollider |
 | `SCNvimRecompile` | Recompile SCClassLibrary |
 | `SCNvimTags` | Create auto-generated utility files |
-| `SCNvimHelp <subject>` | Open HelpBrowser for <subject> |
+| `SCNvimHelp <subject>` | Open HelpBrowser for \<subject\> |
 | `SCNvimStatusLine` | Display server status in status line |
 
 ## Configuration
