@@ -76,12 +76,14 @@ Plug 'davidgranstrom/scnvim'
 
 There is also a SuperCollider class that needs to be installed. It is located at `sc/Classes/SCNvim.sc` in this repo.
 
-This class needs to be linked to your Extensions directory (run `Platform.userExtensionDir` in SuperCollider to see where it is located).
+This class needs to be linked to your Extensions directory (run `Platform.userExtensionDir` in SuperCollider to see where it is located on your platform).
 
 In your Extensions directory create a folder named `scide_scvim` and link/create an alias to `SCNvim.sc` class there.
 
+Example:
+
 ```shell
-ln -s ~/path/to/scnvim/sc/Classes/SCNvim.sc ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim/SCNvim.sc
+ln -s <PATH_TO_SCNVIM_PLUGIN>/sc/Classes/SCNvim.sc ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim/SCNvim.sc
 ```
 
 Finally, open a new file with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
