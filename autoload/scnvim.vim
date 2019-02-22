@@ -11,6 +11,10 @@ function! scnvim#send_line(start, end) abort
     call s:flash(line, line, 'n')
   else
     let lines = getline(a:start, a:end)
+    let last_line = lines[-1]
+    let end_paren = match(last_line, ')')
+    " don't send whatever happens after block closure
+    let lines[-1] = last_line[:end_paren]
     let str = join(lines, "\n")
     call scnvim#sclang#send(str)
     call s:flash(a:start - 1, a:end + 1, 'n')
@@ -31,7 +35,7 @@ function! scnvim#send_selection() abort
 endfunction
 
 function! scnvim#send_block() abort
-  let [start, end] = s:get_sclang_block()
+  let [start, end] = s:get_block()
   if start && end
     call scnvim#send_line(start, end)
   else
@@ -71,45 +75,34 @@ function! s:find_match(start, end, flags)
     return searchpairpos(a:start, '', a:end, a:flags, s:skip_pattern())
 endfunction
 
-function! s:get_sclang_block()
-	  let c_lnum = line('.')
-	  let c_col = col('.')
+function! s:get_block()
+    " initialize to invalid ranges
     let start_pos = [0, 0]
     let end_pos = [0, 0]
-
-    let p = '^('
-    let p2 = '^);\=$'
     let forward_flags = 'nW'
     let backward_flags = 'nbW'
-    let opening_brace = match(getline('.'), p) == 0
-    let closing_brace = match(getline('.'), p2) == 0
-    " if we are in a string, comment etc.
-    " parse the block as if we are in the middle
-    let in_comment = eval(s:skip_pattern())
-
     " searchpairpos starts the search from the cursor so save where we are
     " right now and restore the cursor after the search
     let c_curpos = getcurpos()
-    call setpos('.', [0, c_lnum, 1, 0])
-
-    if opening_brace && !in_comment
-      " on an opening brace
-      let start_pos = [c_lnum, c_col]
-      let end_pos = s:find_match(p, p2, forward_flags)
-    elseif closing_brace && !in_comment
-      " on a closing brace
-      let start_pos = [c_lnum, c_col]
-      let end_pos = s:find_match(p, p2, backward_flags)
+    " move to first column
+    call setpos('.', [0, c_curpos[1], 1, 0])
+    let [xs, ys] = s:find_match('(', ')', backward_flags)
+    let start_pos = [xs, ys]
+    if xs == 0 && ys == 0
+      " we are already standing on the opening brace
+      let start_pos = [line('.'), col('.')]
     else
-      " middle of a block
-      let start_pos = s:find_match(p, p2, backward_flags)
-      let end_pos = s:find_match(p, p2, forward_flags)
+      while xs > 0 && ys > 0
+        call setpos('.', [0, xs, ys, 0])
+        let start_pos = [xs, ys]
+        let [xs, ys] = s:find_match('(', ')', backward_flags)
+      endwhile
     endif
-
+    call setpos('.', [0, start_pos[0], start_pos[1], 0])
+    let end_pos = s:find_match('(', ')', forward_flags)
     " restore cursor
     call setpos('.', c_curpos)
-    " sort the numbers so getline can use them
-    return sort([start_pos[0], end_pos[0]], 'n')
+    return [start_pos[0], end_pos[0]]
 endfunction
 
 function! s:flash(start, end, mode)
