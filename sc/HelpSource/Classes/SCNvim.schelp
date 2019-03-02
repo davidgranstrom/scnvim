@@ -1,0 +1,59 @@
+TITLE:: SCNvim
+SUMMARY:: Neovim frontend
+CATEGORIES:: Frontends
+
+DESCRIPTION::
+SCNvim is a SuperCollider editor frontend for Neovim. It provides ways to
+evaluate code and inspect output from the post window among other features
+such as automatic function signature hints and more. The goal of this plugin
+is to create an integrated development environment for SuperCollider in
+Neovim.
+
+NOTE::The following methods are usually called internally by SCNvim.::
+
+CLASSMETHODS::
+
+METHOD::updateStatusLine
+Begin polling link::Classes/Server#*default:: for CPU usage and other info.
+ARGUMENT::interval
+How often to poll the server. Doing this to often will impact the performance
+for both SuperCollider and Neovim.
+ARGUMENT::vimPort
+Port for the remote plugin UDP server.
+DISCUSSION::
+You need to configure your teletype::statusline:: in nvim to actually see any
+output. Please see the "Example configuration" section in the README of
+link::https://github.com/davidgranstrom/scnvim:: This method is called by the
+teletype:::SCNvimStatusLine:: command in nvim.
+
+METHOD::generateTags
+Generate a ctags compatible tag file with all SuperCollider classes and
+methods. The tag file is used to look up the implementation of a class or
+method using the teletype:::tag:: command.
+
+Use teletype::CTRL-]:: to jump to the implementation for the word under the
+cursor, or use teletype::gCTRL-]:: to browse between multiple matches (often
+the case with methods).  
+ARGUMENT::outputPath
+Path to write the file.
+DISCUSSION::
+This method is called by the teletype:::SCNvimTags:: command in nvim.
+
+METHOD::generateSyntax
+Generate a vim syntax file containing all SuperCollider objects.
+ARGUMENT::outputPath
+Path to write the file.
+DISCUSSION::
+This method is called by the teletype:::SCNvimTags:: command in nvim.
+
+METHOD::generateSnippets
+Generate a file containing snippet definitions for all SuperCollider class constructors (*new, *ar, *fromPoints etc.).
+ARGUMENT::outputPath
+Path to write the file.
+DISCUSSION::
+This method is called by the teletype:::SCNvimTags:: command in nvim.
+
+private::currentPath
+private::methodArgs
+private::netAddr
+private::sendJSON
