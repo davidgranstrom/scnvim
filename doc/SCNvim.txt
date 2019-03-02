@@ -16,7 +16,7 @@ SCNvim                                      *SCNvim*
 6. License                                  |SCNvim-license|
 
 ==============================================================================
-1. Description                                              *SCNvim-description*
+DESCRIPTION                                                 *SCNvim-description*
 
 SCNvim is a SuperCollider editor frontend for Neovim. It provides ways to
 evaluate code and inspect output from the post window among other features
@@ -24,24 +24,21 @@ such as automatic function signature hints and more. The goal of this plugin
 is to create an integrated development environment for SuperCollider in
 Neovim.
 
-1.1 Acknowledgments
--------------------
+Acknowledgments~
 
 This plugin borrows some code and ideas from the original scvim
-implementation, for example the indent and syntax highlighting code.
+implementation, for example the code for indent and syntax highlighting.
 
 ==============================================================================
-2. Installation
+INSTALLATION                                               *SCNvim-installation*
 
-Requirements
-------------
+Requirements~
 
 Neovim (>= 0.3.1)
 SuperCollider (>= 3.9)
 pynvim (optional)
 
-Installation
-------------
+Installation~
 
 Here is an example using vim-plug
 
@@ -65,7 +62,7 @@ your platform).
 In your Extensions directory create a folder named `scide_scvim` and
 link/create an alias to `SCNvim.sc` class there.
 
-Example:
+Example~
 >
   ln -s <PATH_TO_SCNVIM_PLUGIN>/sc/Classes/SCNvim.sc \
   ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim/SCNvim.sc
@@ -74,39 +71,38 @@ Finally, open a new file with a `.scd` or `.sc` extension and type
 `:SCNvimStart` to start SuperCollider.
 
 ==============================================================================
-3. Mappings                                                    *SCNvim-mappings*
+MAPPINGS                                                       *SCNvim-mappings*
 
 <C-e>                   Send current block or line.
                         (depending on context).
                         Mode: Insert, Normal
                         Name: `<Plug>(scnvim-send-block)`
 
-<C-e>	                  Send current selection.
-	                      Mode: Visual
+<C-e>                   Send current selection.
+                        Mode: Visual
                         Name: `<Plug>(scnvim-send-selection)`
 
-<M-e>	                  Send current line.
-	                      Mode: Insert, Normal
+<M-e>                   Send current line.
+                        Mode: Insert, Normal
                         Name: `<Plug>(scnvim-send-line)`
 
-<F12>	                  Hard stop.
-	                      Mode: Insert, Normal
+<F12>                   Hard stop.
+                        Mode: Insert, Normal
                         Name: `<Plug>(scnvim-hard-stop)`
 
-<CR>	                  Toggle post window buffer
+<CR>                    Toggle post window buffer
                         Mode: Insert, Normal
                         Name: `<Plug>(scnvim-postwindow-toggle)`
 
-<M-L>	                  Clear post window buffer
-                        Mode:	 Insert, Normal
+<M-L>                   Clear post window buffer
+                        Mode:  Insert, Normal
                         Name: `<Plug>(scnvim-postwindow-clear)`
 
-K	                      Open documentation
+K                       Open documentation
                         See `keywordprg`
                         Mode: Normal
 
-3.1 Remapping
--------------
+Remapping~
 
 You can remap all of the default keybindings using the `<Plug>` mappings.
 >
@@ -115,21 +111,19 @@ You can remap all of the default keybindings using the `<Plug>` mappings.
   imap <C-s> <c-o><Plug>(scnvim-send-line)
 
 ==============================================================================
-3. Commands                                                    *SCNvim-commands*
+COMMANDS                                                       *SCNvim-commands*
 
-Command	                       Description
--------	                       -----------
-`SCNvimStart`	                 Start SuperCollider
-`SCNvimStop`	                 Stop SuperCollider
-`SCNvimRecompile`	             Recompile SCClassLibrary
-`SCNvimTags`	                 Create auto-generated utility files
+Command                        Description
+-------                        -----------
+`SCNvimStart`                    Start SuperCollider
+`SCNvimStop`                     Stop SuperCollider
+`SCNvimRecompile`                Recompile SCClassLibrary
+`SCNvimTags`                     Create auto-generated utility files
 `SCNvimHelp` <subject>           Open HelpBrowser for <subject>
-`SCNvimStatusLine`	           Display server status in 'statusline'
-
+`SCNvimStatusLine`               Display server status in 'statusline'
 
 ==============================================================================
-4. Configuration                                          *SCNvim-configuration*
-
+CONFIGURATION                                             *SCNvim-configuration*
 
 The following variables are used to configure scnvim. This plugin should work
 out-of-the-box so it is not necessary to set them if you are happy with the
@@ -138,7 +132,6 @@ defaults.
 Run `:checkhealth` to diagnose common problems with your config.
 
 Post window~
------------~
 
 Vertical "v" or horizontal "h" split.
 >
@@ -158,7 +151,6 @@ Automatically open post window on a SuperCollider error
   let g:scnvim_postwin_auto_toggle = 1
 
 Eval flash~
-----------~
 
 Duration of the highlight in milliseconds. A value of 0 disables eval flash.
 >
@@ -173,7 +165,6 @@ Configure the color
   highlight SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
 
 Extras~
-------~
 
 Path to the sclang executable.
 SCNvim will look in some known locations for sclang, but if it can't find it
@@ -198,9 +189,8 @@ Set this variable if you don't want any default mappings
 >
   let g:scnvim_no_mappings = 1
 
-
 ==============================================================================
-6. License                                                      *SCNvim-license*
+LICENSE                                                         *SCNvim-license*
 
 scnvim - SuperCollider integration for Neovim
 Copyright © 2018-2019 David Granström
