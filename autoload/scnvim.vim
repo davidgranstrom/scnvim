@@ -36,7 +36,7 @@ endfunction
 
 function! scnvim#send_block() abort
   let [start, end] = s:get_block()
-  if start && end
+  if start > 0 && end > 0 && start != end
     call scnvim#send_line(start, end)
   else
     call scnvim#send_line(0, 0)
