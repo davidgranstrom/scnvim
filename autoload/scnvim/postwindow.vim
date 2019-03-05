@@ -4,14 +4,13 @@
 
 function! scnvim#postwindow#toggle() abort
   try
-    let settings = get(g:, 'scnvim_user_settings')
+    let settings = scnvim#util#get_user_settings()
     if empty(settings)
       throw 'sclang not running'
     endif
     let orientation = settings.post_window.orientation
     let direction = settings.post_window.direction
-    let size = settings.post_window.size
-
+    let size = settings.post_window.calc_size()
     let bufnr = scnvim#sclang#get_post_window_bufnr()
     let winnr = bufwinnr(bufnr)
 

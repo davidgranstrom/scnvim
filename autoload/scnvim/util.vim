@@ -81,7 +81,26 @@ function! scnvim#util#generate_tags() abort
   endif
 endfunction
 
+function! scnvim#util#calc_postwindow_size()
+  let user_defined = get(g:, 'scnvim_postwin_size')
+  if user_defined
+    return user_defined
+  endif
+  let settings = scnvim#util#get_user_settings()
+  let orientation = settings.post_window.orientation
+  if orientation == 'vertical'
+    let size = &columns / 2
+  else
+    let size = &lines / 3
+  endif
+  return size
+endfunction
+
 function! scnvim#util#get_user_settings()
+  if exists('g:scnvim_user_settings')
+    return g:scnvim_user_settings
+  endif
+
   let post_win_orientation = get(g:, 'scnvim_postwin_orientation', 'v')
   let post_win_direction = get(g:, 'scnvim_postwin_direction', 'right')
   let post_win_auto_toggle = get(g:, 'scnvim_postwin_auto_toggle', 1)
@@ -105,21 +124,25 @@ function! scnvim#util#get_user_settings()
   endif
 
   let post_win_size = get(g:, 'scnvim_postwin_size', default_size)
-
   let postwin = {
-  \ 'direction': post_win_direction,
-  \ 'orientation': post_win_orientation,
-  \ 'size': post_win_size,
-  \ 'auto_toggle': post_win_auto_toggle,
-  \ }
+        \ 'direction': post_win_direction,
+        \ 'orientation': post_win_orientation,
+        \ 'size': post_win_size,
+        \ 'calc_size': function('scnvim#util#calc_postwindow_size'),
+        \ 'auto_toggle': post_win_auto_toggle,
+        \ }
 
   let sclang_executable = scnvim#util#find_sclang_executable()
   let paths = {
-  \ 'sclang_executable': sclang_executable,
-  \ }
+        \ 'sclang_executable': sclang_executable,
+        \ }
 
-  return {
-  \ 'paths': paths,
-  \ 'post_window': postwin,
-  \ }
+  let settings = {
+        \ 'paths': paths,
+        \ 'post_window': postwin,
+        \ }
+
+  " cache settings
+  let g:scnvim_user_settings = settings
+  return settings
 endfunction
