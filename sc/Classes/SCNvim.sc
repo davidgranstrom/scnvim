@@ -46,6 +46,17 @@ SCNvim {
         SkipJack(stlFunc, interval, name: "scnvim_statusline");
     }
 
+    *generateAssets {|rootDir|
+        var tagsPath = rootDir +/+ "scnvim-data/tags";
+        var syntaxPath = rootDir +/+ "syntax/classes.vim";
+        var snippetPath = rootDir +/+ "scnvim-data/supercollider.snippets";
+        Routine.run {
+            SCNvim.generateTags(tagsPath);
+            SCNvim.generateSyntax(syntaxPath);
+            SCNvim.generateSnippets(snippetPath);
+        };
+    }
+
     *generateSyntax {arg outputPath;
         var path, file, classes;
         classes = Class.allClasses.collect {|class|
