@@ -10,13 +10,14 @@ let g:scnvim_loaded = 1
 let g:scnvim_root_dir = expand('<sfile>:h:h')
 let g:scnvim_stl_widgets = {}
 
-" eval flash default color
-highlight default SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
-
 " augroup to be used w/ ftplugin
 augroup scnvim
   autocmd!
 augroup END
+
+" eval flash default color
+highlight default SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
+autocmd scnvim ColorScheme * highlight default SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
 
 noremap <unique><script><silent> <Plug>(scnvim-send-line) :<c-u>call scnvim#send_line(0, 0)<cr>
 noremap <unique><script><silent> <Plug>(scnvim-send-block) :<c-u>call scnvim#send_block()<cr>
