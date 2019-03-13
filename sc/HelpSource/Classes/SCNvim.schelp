@@ -57,3 +57,4 @@ private::currentPath
 private::methodArgs
 private::netAddr
 private::sendJSON
+private::generateAssets
