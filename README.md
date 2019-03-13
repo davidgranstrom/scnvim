@@ -261,6 +261,12 @@ nmap <Space>o <Plug>(scnvim-postwindow-toggle)
 
 " eval flash colors
 highlight SCNvimEval guifg=black guibg=cyan ctermfg=black ctermbg=cyan
+" this autocmd keeps the custom highlight when changing colorschemes
+augroup scnvim_vimrc
+  autocmd!
+  autocmd ColorScheme *
+        \ highlight SCNvimEval guifg=black guibg=cyan ctermfg=black ctermbg=cyan
+augroup END
 
 " hard coded path to sclang executable
 let g:scnvim_sclang_executable = '~/bin/sclang'
