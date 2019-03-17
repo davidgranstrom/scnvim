@@ -2,6 +2,16 @@
 " Author: David Granström
 " Description: scnvim help system
 
+function! scnvim#help#open_help_for(subject)
+  let internal = get(g:, 'scnvim_scdoc_vim', 0)
+  if internal
+    let cmd = printf('SCNvim.openHelpFor("%s", %d);', a:subject, g:scnvim_python_port)
+  else
+    let cmd = printf('HelpBrowser.openHelpFor("%s");', a:subject)
+  endif
+  call scnvim#sclang#send_silent(cmd)
+endfunction
+
 function! scnvim#help#open(uri)
   let settings = scnvim#util#get_user_settings()
   let id = get(settings.help_window, 'id')
