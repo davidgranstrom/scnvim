@@ -12,13 +12,14 @@ function! scnvim#help#open_help_for(subject)
   call scnvim#sclang#send_silent(cmd)
 endfunction
 
-function! scnvim#help#open(uri)
+function! scnvim#help#open(uri, pattern)
   let settings = scnvim#util#get_user_settings()
   let id = get(settings.help_window, 'id')
   if win_gotoid(id)
-    execute 'edit ' . a:uri
+    echom printf('edit +/%s %s', a:pattern, a:uri)
+    execute printf('edit +/%s %s', a:pattern, a:uri)
   else
-    execute 'topleft split ' . a:uri
+    execute 'topleft split | ' . printf('edit +/%s %s', a:pattern, a:uri)
     let settings.help_window.id = win_getid()
   endif
 endfunction
@@ -30,14 +31,14 @@ function! scnvim#help#open_from_quickfix(item_idx)
     let bufnr = get(item, 'bufnr')
     let uri = bufname(bufnr)
     if filereadable(uri)
-      call scnvim#help#open(uri)
-      " execute printf("normal! edit +/%s \"%s\"", item.pattern, uri)
+      call scnvim#help#open(uri, item.pattern)
     else
-      call scnvim#help#render(uri)
+      call scnvim#help#render(uri, item.pattern)
     endif
   endif
 endfunction
 
-function! scnvim#help#render(uri)
-  " SCNvimDoc.prepareHelpForURL(url);
+function! scnvim#help#render(uri, pattern)
+  let cmd = printf("SCNvim.renderMethod(\"%s\", %d, \"%s\")", a:uri, g:scnvim_python_port, a:pattern)
+  call scnvim#sclang#send_silent(cmd)
 endfunction
