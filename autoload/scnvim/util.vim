@@ -127,6 +127,10 @@ function! scnvim#util#get_user_settings()
         \ 'auto_toggle': post_win_auto_toggle,
         \ }
 
+  let helpwin = {
+        \ 'id': 0,
+        \ }
+
   let sclang_executable = scnvim#util#find_sclang_executable()
   let paths = {
         \ 'sclang_executable': sclang_executable,
@@ -135,6 +139,7 @@ function! scnvim#util#get_user_settings()
   let settings = {
         \ 'paths': paths,
         \ 'post_window': postwin,
+        \ 'help_window': helpwin,
         \ }
 
   " cache settings
