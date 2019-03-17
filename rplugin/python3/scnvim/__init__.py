@@ -15,6 +15,7 @@ class SCNvim(object):
         self.vim_leaving = False
         self.server_started = False
         self.docmap = {}
+        self.port = 0
 
     def echo(self, message):
         self.nvim.out_write(message + '\n')
@@ -29,7 +30,7 @@ class SCNvim(object):
         except BaseException as e:
             self.echo_err(str(e))
 
-    def prepareDocMap(self, path):
+    def prepare_doc_map(self, path):
         try:
             if not self.docmap:
                 with open(os.path.join(path, 'docmap.json')) as f:
@@ -37,41 +38,45 @@ class SCNvim(object):
         except BaseException as e:
             self.echo_err('error parsing docmap ' + str(e))
 
+    def handle_method(self, method, target_dir):
+        self.prepare_doc_map(target_dir)
+        if not self.docmap:
+            return
+        result = []
+        for value in self.docmap.values():
+            for k in value.items():
+                if k[0] == 'methods':
+                    for m in k[1]:
+                        match = re.match('.{}'.format(method), m)
+                        if match:
+                            path = os.path.join(target_dir, value['path'] + '.txt')
+                            result.append({
+                                'filename': path,
+                                'text': match.group(0),
+                                'pattern': '^.*' + method
+                            })
+        if result:
+            self.nvim.call('setqflist', result)
+            self.nvim.command('copen')
+            # self.nvim.win_set_var('let w:quickfix_title="supercollider"')
+            self.nvim.command('syntax match SCNvimConcealResults /^.*Help\/\|.txt\||.*|\|/ conceal')
+            self.nvim.command('setlocal conceallevel=2')
+            self.nvim.command('setlocal concealcursor=nvic')
+            self.nvim.command('nnoremap <buffer> <Enter> :call scnvim#help#open_from_quickfix(line("."))<cr>')
+        else:
+            self.nvim.call('setqflist', [{'text': 'No results for: ' + method}])
+
     def dispatch(self, object):
         data = object.get('help')
-        if data:
-            uri = data.get('open')
-            method = data.get('method')
-            help_target_dir = data.get('helpTargetDir')
-            if method:
-                self.prepareDocMap(help_target_dir)
-                result = []
-                if self.docmap:
-                    for value in self.docmap.values():
-                        for k in value.items():
-                            if k[0] == 'methods':
-                                for m in k[1]:
-                                    match = re.match('.{}'.format(method), m)
-                                    if match:
-                                        path = os.path.join(help_target_dir, value['path'] + '.txt')
-                                        result.append({
-                                            'filename': path,
-                                            'text': match.group(0),
-                                            'pattern': '^.*' + method
-                                        })
-                if result:
-                    self.nvim.call('setqflist', result)
-                    self.nvim.command('let w:quickfix_title="methods"')
-                    self.nvim.command('copen')
-                    self.nvim.command('syntax match SCNvimConcealResults /^.*Help\/\|.txt\||.*|\|/ conceal')
-                    self.nvim.command('setlocal conceallevel=2')
-                    self.nvim.command('setlocal concealcursor=nvic')
-                else:
-                    self.nvim.call('setqflist', [{'text': 'No results for: ' + method}])
-
-            if uri:
-                self.nvim.command('split')
-                self.nvim.command('edit ' + uri)
+        if not data:
+            return
+        uri = data.get('open')
+        method = data.get('method')
+        if method:
+            target_dir = data.get('helpTargetDir')
+            self.handle_method(method, target_dir)
+        if uri:
+            self.nvim.call('scnvim#help#open', uri)
 
     def server_loop(self):
         while not self.vim_leaving:
