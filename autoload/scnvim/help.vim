@@ -15,13 +15,11 @@ endfunction
 function! scnvim#help#open(uri)
   let settings = scnvim#util#get_user_settings()
   let id = get(settings.help_window, 'id')
-  if !id
-    execute 'split ' . a:uri
-    let settings.help_window.id = win_getid()
+  if win_gotoid(id)
+    execute 'edit ' . a:uri
   else
-    if win_gotoid(id)
-      execute 'edit ' . a:uri
-    endif
+    execute 'topleft split ' . a:uri
+    let settings.help_window.id = win_getid()
   endif
 endfunction
 
