@@ -53,7 +53,8 @@ class SCNvim(object):
                             result.append({
                                 'filename': path,
                                 'text': match.group(0),
-                                'pattern': '^.*' + method
+                                # 'pattern': '^\\\\.\\\\<{}\\\\>'.format(method)
+                                'pattern': '^.*{}'.format(method)
                             })
         if result:
             self.nvim.call('setqflist', result)
@@ -70,13 +71,14 @@ class SCNvim(object):
         data = object.get('help')
         if not data:
             return
-        uri = data.get('open')
+        uri = data.get('uri')
+        pattern = data.get('pattern', '')
         method = data.get('method')
         if method:
             target_dir = data.get('helpTargetDir')
             self.handle_method(method, target_dir)
         if uri:
-            self.nvim.call('scnvim#help#open', uri)
+            self.nvim.call('scnvim#help#open', uri, pattern)
 
     def server_loop(self):
         while not self.vim_leaving:
