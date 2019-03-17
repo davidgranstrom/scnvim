@@ -3,10 +3,9 @@
 // order to convert html to vim help on the fly.
 //
 // TODO:
-// * Use a different extension so that we don't overwrite existing help files
-// (and avoid conflicts with regular help system)
 //
 // * See if we can add markup for class methods (this will enable "outline"/gO)
+// * Check that html is still valid (html/head/body tags properly closed)
 //
 SCNvimDocRenderer : SCDocHTMLRenderer {
     *renderTOC {
