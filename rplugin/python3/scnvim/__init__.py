@@ -8,6 +8,7 @@ class SCNvim(object):
     def __init__(self, nvim):
         self.nvim = nvim
         self.server = None
+        self.port = 0
         self.vim_leaving = False
         self.server_started = False
 
@@ -41,8 +42,9 @@ class SCNvim(object):
 
     @pynvim.function('__scnvim_server_start', sync=True)
     def server_start(self, args):
+        """Main entry point"""
         if self.server:
-            return
+            return self.port
 
         self.server = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
         self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -54,14 +56,15 @@ class SCNvim(object):
             try:
                 self.server.bind(('127.0.0.1', port))
                 break
-            except BaseException as e:
+            except BaseException as err:
                 port += 1
                 if attempt == max_attempts - 1:
-                    self.echo_err('could not open UDP port: ' + e.strerror)
-                    return
+                    self.echo_err('could not open UDP port: ' + str(err))
+                    return 0
 
-        self.thread = Thread(target=self.server_loop)
-        self.thread.start()
+        self.port = port
+        thread = Thread(target=self.server_loop)
+        thread.start()
         return port
 
     @pynvim.autocmd('VimLeavePre', pattern='*', sync=True)
