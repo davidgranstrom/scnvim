@@ -6,9 +6,11 @@ function! scnvim#help#open_help_for(subject)
   let internal = get(g:, 'scnvim_scdoc_vim', 0)
   if internal
     let settings = scnvim#util#get_user_settings()
-    let has_pandoc = !empty(settings.paths.pandoc_executable)
+    let pandoc_path = settings.paths.pandoc_executable 
+    let has_pandoc = !empty(pandoc_path)
     if has_pandoc
-      let cmd = printf('SCNvim.openHelpFor("%s", %d);', a:subject, g:scnvim_python_port)
+      let cmd = printf('SCNvim.openHelpFor("%s", %d, "", "%s");',
+            \ a:subject, g:scnvim_python_port, pandoc_path)
     else
       call scnvim#util#err('Could not find pandoc executable.')
     endif
@@ -52,6 +54,14 @@ function! scnvim#help#open_from_quickfix(item_idx)
 endfunction
 
 function! scnvim#help#render(uri, pattern)
-  let cmd = printf("SCNvim.renderMethod(\"%s\", %d, \"%s\")", a:uri, g:scnvim_python_port, a:pattern)
-  call scnvim#sclang#send_silent(cmd)
+  let settings = scnvim#util#get_user_settings()
+  let pandoc_path = settings.paths.pandoc_executable
+  let has_pandoc = !empty(pandoc_path)
+  if has_pandoc
+    let cmd = printf("SCNvim.renderMethod(\"%s\", %d, \"%s\", \"%s\")",
+          \ a:uri, g:scnvim_python_port, a:pattern, pandoc_path)
+    call scnvim#sclang#send_silent(cmd)
+  else
+    call scnvim#util#err('Could not find pandoc executable.')
+  endif
 endfunction

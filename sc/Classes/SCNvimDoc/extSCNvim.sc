@@ -18,8 +18,7 @@
         ^result;
     }
 
-    // TODO: Add check for pandoc (or do it in vim)
-    *openHelpFor {|text, vimPort, pattern|
+    *openHelpFor {|text, vimPort, pattern, pandocPath|
         var msg, uri, path;
         var outputPath;
 
@@ -38,18 +37,18 @@
             // help file
             // removes .html.scnvim
             outputPath = path.drop(-12) ++ ".txt";
-            "pandoc \"%\" --from html --to plain -o \"%\"".format(path, outputPath).unixCmdGetStdOut;
-            msg = '{ "action": { "help": { "uri": "%", "pattern": "%" } } }'.asString.format(outputPath, pattern);
+            "% \"%\" --from html --to plain -o \"%\"".format(pandocPath, path, outputPath).unixCmdGetStdOut;
+            msg = "{\"action\":{\"help\":{\"uri\":\"%\",\"pattern\":\"%\"}}}".format(outputPath, pattern);
         } {
             // search for method
-            msg = '{ "action": { "help": { "method": "%", "helpTargetDir": "%" } } }'.asString.format(uri.asString, SCDoc.helpTargetDir);
+            msg = "{\"action\":{\"help\":{\"method\":\"%\",\"helpTargetDir\":\"%\"}}}".format(uri.asString, SCDoc.helpTargetDir);
         };
 
         SCNvim.sendJSON(msg, vimPort);
     }
 
-    *renderMethod {|uri, vimPort, pattern|
+    *renderMethod {|uri, vimPort, pattern, pandocPath|
         var name = PathName(uri).fileNameWithoutExtension;
-        SCNvim.openHelpFor(name, vimPort, pattern);
+        SCNvim.openHelpFor(name, vimPort, pattern, pandocPath);
     }
 }
