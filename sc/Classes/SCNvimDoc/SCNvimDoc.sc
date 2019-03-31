@@ -1,7 +1,6 @@
 SCNvimDoc : SCDoc {
 	*exportDocMapJson {|path|
         var f, numItems;
-        // path = SCDoc.helpTargetDir +/+ "docmap.json";
         f = File.open(path,"w");
         numItems = this.documents.size - 1;
         f << "{\n";
@@ -284,5 +283,4 @@ SCNvimDocEntry : SCDocEntry {
 
 		stream << "}%\n".format(delimiter);
 	}
-
 }

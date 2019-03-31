@@ -1,12 +1,3 @@
-// This class produces html help files but modified with some vim markup. The
-// idea is to use `pandoc <help-file>.html -t plain -o <help-file>.txt` in
-// order to convert html to vim help on the fly.
-//
-// TODO:
-//
-// * See if we can add markup for class methods (this will enable "outline"/gO)
-// * Check that html is still valid (html/head/body tags properly closed)
-//
 SCNvimDocRenderer : SCDocHTMLRenderer {
     *renderTOC {
         ^nil;
@@ -45,8 +36,6 @@ SCNvimDocRenderer : SCDocHTMLRenderer {
 			stream << "| SuperCollider " << Main.version << " | Help";
 		};
         stream << "</div>";
-
-		// stream << "Version: " << Main.version;
 
 		doc.related !? {
             stream << "<div>See also: "
