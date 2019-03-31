@@ -45,18 +45,16 @@ class SCNvimHelp():
                             result.append({
                                 'filename': path,
                                 'text': match.group(0),
-                                # 'pattern': '^\\\\.\\\\<{}\\\\>'.format(method)
                                 'pattern': '^.*{}'.format(method)
                             })
         if result:
             self.nvim.call('setqflist', result)
             self.nvim.command('copen')
-            # self.nvim.win_set_var('let w:quickfix_title="supercollider"')
             self.nvim.command('syntax match SCNvimConcealResults '
                               + r'/^.*Help\/\|.txt\||.*|\|/ conceal')
             self.nvim.command('setlocal conceallevel=2')
             self.nvim.command('setlocal concealcursor=nvic')
-            self.nvim.command('nnoremap <buffer> <Enter> '
+            self.nvim.command('nnoremap <silent> <buffer> <Enter> '
                               + ':call scnvim#help#open_from_quickfix(line("."))<cr>')
         else:
             self.nvim.call('setqflist', [{'text': 'No results for: ' + method}])
