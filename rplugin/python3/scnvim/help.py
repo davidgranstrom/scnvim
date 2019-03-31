@@ -57,4 +57,4 @@ class SCNvimHelp():
             self.nvim.command('nnoremap <silent> <buffer> <Enter> '
                               + ':call scnvim#help#open_from_quickfix(line("."))<cr>')
         else:
-            self.nvim.call('setqflist', [{'text': 'No results for: ' + method}])
+            self.msg.echo_err('No results for: ' + method)
