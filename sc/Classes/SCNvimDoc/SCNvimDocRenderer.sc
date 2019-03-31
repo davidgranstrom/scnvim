@@ -36,6 +36,7 @@ SCNvimDocRenderer : SCDocHTMLRenderer {
 		<< "<html lang='en'>"
         << "<head></head>";
 
+        stream << "<body>";
         stream << "<div>";
 		stream << "*%* ".format(doc.title);
 		if(thisIsTheMainHelpFile) {
@@ -52,19 +53,14 @@ SCNvimDocRenderer : SCDocHTMLRenderer {
 			<< (doc.related.collect {|r| this.htmlForLink(r)}.join(" "))
             << "</div>";
 		};
-
-        stream << "<body>";
 	}
 
 	*renderFooter {|stream, doc|
-		stream << "<div class='doclink'>";
 		doc.fullPath !? {
-			stream << "helpfile source: <a href='" << URI.fromLocalPath(doc.fullPath).asString << "'>"
-			<< doc.fullPath << "</a><br>"
+            stream << "<div>helpfile source: " << doc.fullPath << "</div>";
 		};
-		stream << "link::" << doc.path << "::<br>";
+        stream << "<div> vim:tw=78:et:ft=help.supercollider:norl:<\div>";
         stream << "</body></html>";
-		stream << "\n\n vim:tw=78:et:ft=help.supercollider:norl:\n";
 	}
 
     *renderMethod {|stream, node, methodType, cls, icls|
