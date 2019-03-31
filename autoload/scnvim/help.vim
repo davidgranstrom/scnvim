@@ -16,10 +16,17 @@ function! scnvim#help#open(uri, pattern)
   let settings = scnvim#util#get_user_settings()
   let id = get(settings.help_window, 'id')
   if win_gotoid(id)
-    echom printf('edit +/%s %s', a:pattern, a:uri)
-    execute printf('edit +/%s %s', a:pattern, a:uri)
+    if !empty(a:pattern)
+      execute printf('edit +/%s %s', a:pattern, a:uri)
+    else
+      execute printf('edit %s', a:uri)
+    endif
   else
-    execute 'topleft split | ' . printf('edit +/%s %s', a:pattern, a:uri)
+    if !empty(a:pattern)
+      execute 'topleft split | ' . printf('edit +/%s %s', a:pattern, a:uri)
+    else
+      execute 'topleft split | ' . printf('edit %s', a:uri)
+    endif
     let settings.help_window.id = win_getid()
   endif
 endfunction
