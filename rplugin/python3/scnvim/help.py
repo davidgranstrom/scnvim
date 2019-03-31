@@ -50,10 +50,6 @@ class SCNvimHelp():
         if result:
             self.nvim.call('setqflist', result)
             self.nvim.command('copen')
-            self.nvim.command('syntax match SCNvimConcealResults '
-                              + r'/^.*Help\/\|.txt\||.*|\|/ conceal')
-            self.nvim.command('setlocal conceallevel=2')
-            self.nvim.command('setlocal concealcursor=nvic')
             self.nvim.command('nnoremap <silent> <buffer> <Enter> '
                               + ':call scnvim#help#open_from_quickfix(line("."))<cr>')
         else:

@@ -42,3 +42,16 @@ if has('python3')
     setlocal shortmess+=c
   endif
 endif
+
+" auto commands
+function! s:apply_quickfix_conceal()
+  echom &ft
+  syntax match SCNvimConcealResults /^.*Help\/\|.txt\||.*|\|/ conceal
+  setlocal conceallevel=2
+  setlocal concealcursor=nvic
+endfunction
+
+augroup scnvim_qf_conceal
+  autocmd!
+  autocmd BufWinEnter quickfix call s:apply_quickfix_conceal()
+augroup END
