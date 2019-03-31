@@ -12,8 +12,9 @@ SCNvim                                      *SCNvim*
 3. Mappings                                 |SCNvim-mappings|
    3.1 Remapping
 4. Commands                                 |SCNvim-commands|
-5. Configuration                            |SCNvim-configuration|
-6. License                                  |SCNvim-license|
+5. Help system                              |SCNvim-help-system|
+6. Configuration                            |SCNvim-configuration|
+7. License                                  |SCNvim-license|
 
 ==============================================================================
 DESCRIPTION                                                 *SCNvim-description*
@@ -37,6 +38,7 @@ Requirements~
 Neovim (>= 0.3.1)
 SuperCollider (>= 3.9)
 pynvim (optional)
+pandoc (optional)
 
 Installation~
 
@@ -119,8 +121,36 @@ Command                        Description
 `SCNvimStop`                     Stop SuperCollider
 `SCNvimRecompile`                Recompile SCClassLibrary
 `SCNvimTags`                     Create auto-generated utility files
-`SCNvimHelp` <subject>           Open HelpBrowser for <subject>
+`SCNvimHelp` <subject>           Open HelpBrowser or window split for <subject>
 `SCNvimStatusLine`               Display server status in 'statusline'
+
+==============================================================================
+HELP SYSTEM                                                 *SCNvim-help-system*
+
+SCNvim can be configured to render SCDoc help files (.schelp) to plain text
+and display the result in split window, much like Nvim's default help system.
+
+The scnvim help system uses `Pandoc` to convert the HTML help file into plain
+text with some additional vim-help markup. Pandoc is therefor a dependency if
+you'd like to use this feature, it is available for download in all major
+package managers see the pandoc homepage[1] for more information.
+
+Set scnvim_scdoc_vim like this in your `init.vim` to enable the native help system.
+>
+  let g:scnvim_scdoc_vim = 1
+<
+Useful hints ~
+
+Use the `K` command to open a split window for the documentation of the word
+under the cursor. The 'quickfix' window is used to display methods, press enter
+on a match to jump to the corresponding help file. Read `:h quickfix` to learn
+more about how the 'quickfix' window works.
+
+To see an overview (outline) of the content of the help file press `gO`. This
+will open a window local quickfix window (a 'location-list'), use this list to
+jump to different sections of the document.
+
+[1]: https://pandoc.org/
 
 ==============================================================================
 CONFIGURATION                                             *SCNvim-configuration*
