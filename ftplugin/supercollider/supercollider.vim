@@ -45,7 +45,6 @@ endif
 
 " auto commands
 function! s:apply_quickfix_conceal()
-  echom &ft
   syntax match SCNvimConcealResults /^.*Help\/\|.txt\||.*|\|/ conceal
   setlocal conceallevel=2
   setlocal concealcursor=nvic
