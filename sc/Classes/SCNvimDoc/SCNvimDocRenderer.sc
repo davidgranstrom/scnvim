@@ -158,7 +158,7 @@ SCNvimDocRenderer : SCDocHTMLRenderer {
 				}
 			);
 
-			stream << "</h3>\n";
+			stream << " ~</h3>\n";
 
 			// has setter
 			if(mstat & 2 > 0) {
