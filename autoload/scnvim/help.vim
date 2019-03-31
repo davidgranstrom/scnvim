@@ -5,7 +5,13 @@
 function! scnvim#help#open_help_for(subject)
   let internal = get(g:, 'scnvim_scdoc_vim', 0)
   if internal
-    let cmd = printf('SCNvim.openHelpFor("%s", %d);', a:subject, g:scnvim_python_port)
+    let settings = scnvim#util#get_user_settings()
+    let has_pandoc = !empty(settings.paths.pandoc_executable)
+    if has_pandoc
+      let cmd = printf('SCNvim.openHelpFor("%s", %d);', a:subject, g:scnvim_python_port)
+    else
+      call scnvim#util#err('Could not find pandoc executable.')
+    endif
   else
     let cmd = printf('HelpBrowser.openHelpFor("%s");', a:subject)
   endif
