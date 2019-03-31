@@ -238,6 +238,7 @@ SCNvimDocRenderer : SCDocHTMLRenderer {
 			},
 			\CODEBLOCK, {
                 stream << "<pre><code>"
+                << ">\n"
 				<< this.escapeSpecialChars(node.text)
                 << "</code></pre>";
 			},
