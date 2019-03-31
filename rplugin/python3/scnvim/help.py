@@ -54,3 +54,23 @@ class SCNvimHelp():
                               + ':call scnvim#help#open_from_quickfix(line("."))<cr>')
         else:
             self.msg.echo_err('No results for: ' + method)
+
+    def open_arghints_float(self, method_args):
+        """Open a floating window to display argument hints."""
+        if not method_args:
+            return
+        args = method_args
+        # extract function args
+        args = args[args.find("(") + 1:args.find(")")]
+        buf = self.nvim.api.create_buf(False, True)
+        self.nvim.api.buf_set_lines(buf, 0, -1, True, [args])
+        options = {
+            'relative': 'cursor',
+            'width': len(args),
+            'height': 1,
+            'col': 0,
+            'row': 0,
+            'anchor': 'SW'
+        }
+        win = self.nvim.api.open_win(buf, 0, options)
+        self.nvim.api.set_var('scnvim_arghints_float_id', win)
