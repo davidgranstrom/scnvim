@@ -21,6 +21,15 @@ function! scnvim#postwindow#toggle() abort
       execute cmd
     else
       " post window already open
+      execute winnr . 'wincmd w'
+      let id = win_getid(winnr)
+      let width = nvim_win_get_width(id)
+      let height = nvim_win_get_height(id)
+      if orientation == 'vertical'
+        let g:scnvim_postwin_size = width
+      else
+        let g:scnvim_postwin_size = height
+      endif
       execute winnr . 'close'
     endif
   catch
