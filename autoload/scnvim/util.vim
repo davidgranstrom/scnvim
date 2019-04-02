@@ -114,19 +114,15 @@ function! scnvim#util#get_user_settings()
 
   if post_win_orientation == 'v'
     let post_win_orientation = 'vertical'
-    let default_size = &columns / 2
   elseif post_win_orientation == 'h'
     let post_win_orientation = ''
-    let default_size = &lines / 3
   else
     throw "valid orientations are: 'v' or 'h'"
   endif
 
-  let post_win_size = get(g:, 'scnvim_postwin_size', default_size)
   let postwin = {
         \ 'direction': post_win_direction,
         \ 'orientation': post_win_orientation,
-        \ 'size': post_win_size,
         \ 'calc_size': function('scnvim#util#calc_postwindow_size'),
         \ 'auto_toggle': post_win_auto_toggle,
         \ }
