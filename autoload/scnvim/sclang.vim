@@ -123,7 +123,7 @@ function! s:create_post_window()
   let settings = scnvim#util#get_user_settings()
   let orientation = settings.post_window.orientation
   let direction = settings.post_window.direction
-  let size = settings.post_window.size
+  let size = settings.post_window.calc_size()
 
   let cmd = 'silent keepjumps keepalt '
   let cmd .= printf('%s %s new', orientation, direction)
