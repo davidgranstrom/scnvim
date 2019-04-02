@@ -194,8 +194,12 @@ let g:scnvim_postwin_orientation = 'v'
 " position of the post window 'right' or 'left'
 let g:scnvim_postwin_direction = 'right'
 
+" specify an initial size
 " default is half the terminal size for vertical and a third for horizontal
 let g:scnvim_postwin_size = 25
+
+" use a fixed size
+let g:scnvim_postwin_fixed_size = 25
 
 " automatically open post window on a SuperCollider error
 let g:scnvim_postwin_auto_toggle = 1

@@ -77,18 +77,22 @@ function! scnvim#util#generate_tags() abort
 endfunction
 
 function! scnvim#util#calc_postwindow_size()
-  let user_defined = get(g:, 'scnvim_postwin_size')
-  if user_defined
-    return user_defined
+  let fixed_size = get(g:, 'scnvim_postwin_fixed_size')
+  if fixed_size
+    return fixed_size
+  endif
+  let size = get(g:, 'scnvim_postwin_size')
+  if size
+    return size
   endif
   let settings = scnvim#util#get_user_settings()
   let orientation = settings.post_window.orientation
   if orientation == 'vertical'
-    let size = &columns / 2
+    let default_size = &columns / 2
   else
-    let size = &lines / 3
+    let default_size = &lines / 3
   endif
-  return size
+  return default_size
 endfunction
 
 function! scnvim#util#get_user_settings()
