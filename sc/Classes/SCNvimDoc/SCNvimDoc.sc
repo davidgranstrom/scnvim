@@ -207,11 +207,12 @@ SCNvimDocEntry : SCDocEntry {
 
 	makeMethodList {
 		var list;
+		// note: the "_" is just padding
 		docimethods.do {|name|
-			list = list.add("-"++name.asString);
+			list = list.add("_-"++name.asString);
 		};
 		doccmethods.do {|name|
-			list = list.add("*"++name.asString);
+			list = list.add("_*"++name.asString);
 		};
 		undocimethods.do {|name|
 			list = list.add("?-"++name.asString);
@@ -220,7 +221,7 @@ SCNvimDocEntry : SCDocEntry {
 			list = list.add("?*"++name.asString);
 		};
 		docmethods.do {|name|
-			list = list.add("."++name.asString);
+			list = list.add("_."++name.asString);
 		};
 		^list;
 	}
