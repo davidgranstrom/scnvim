@@ -3,7 +3,7 @@
 " Description: scnvim help system
 
 function! scnvim#help#open_help_for(subject)
-  let internal = get(g:, 'scnvim_scdoc_vim', 0)
+  let internal = get(g:, 'scnvim_scdoc', 0)
   if internal
     let settings = scnvim#util#get_user_settings()
     let pandoc_path = settings.paths.pandoc_executable 

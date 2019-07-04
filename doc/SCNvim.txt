@@ -135,12 +135,12 @@ text with some additional vim-help markup. Pandoc is therefor a dependency for
 this feature, it is available for download in most package managers. See the
 pandoc homepage[1] for more information.
 
-Set the global variable `g:scnvim_scdoc_vim` in your `init.vim` to enable the
+Set the global variable `g:scnvim_scdoc` in your `init.vim` to enable the
 help system.
 >
-  let g:scnvim_scdoc_vim = 1
+  let g:scnvim_scdoc = 1
 <
-To view documentation in the regular HelpBrowser, set `g:scnvim_scdoc_vim` to
+To view documentation in the regular HelpBrowser, set `g:scnvim_scdoc` to
 a value of zero (you don't need to restart vim for this to take effect).
 
 Useful hints ~
