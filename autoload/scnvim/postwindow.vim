@@ -3,7 +3,7 @@
 " Description: scnvim post window
 
 let s:bufnr = 0
-let s:bufname = get(g:, 'scnvim_postwindow_title')
+let s:bufname = get(g:, 'scnvim_postwin_title', '[sclang]')
 
 function! scnvim#postwindow#create() abort
   if bufexists(s:bufname)
