@@ -41,9 +41,27 @@ function! s:check_pynvim() abort
   endif
 endfunction
 
+function! s:check_pandoc_executable() abort
+  let user_pandoc = get(g:, 'scnvim_pandoc_executable')
+  if !empty(user_pandoc)
+    call health#report_info('using g:scnvim_pandoc_executable = ' . user_pandoc)
+  endif
+  try
+    let pandoc = scnvim#util#find_pandoc_executable()
+    call health#report_info('pandoc executable: ' . pandoc)
+  catch
+    call health#report_info(
+          \ 'could not find pandoc executable.',
+          \ 'set g:scnvim_pandoc_executable or add pandoc to your $PATH'
+          \ 'This is an optional dependency and only needed for SCDoc integration.',
+          \ )
+  endtry
+endfunction
+
 function! health#scnvim#check() abort
   call health#report_start('scnvim')
   call s:check_timers()
   call s:check_sclang_executable()
+  call s:check_pandoc_executable()
   call s:check_pynvim()
 endfunction

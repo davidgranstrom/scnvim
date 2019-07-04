@@ -66,6 +66,18 @@ function! scnvim#util#find_sclang_executable()
   throw "could not find sclang exeutable"
 endfunction
 
+function! scnvim#util#find_pandoc_executable()
+  let exe = get(g:, 'scnvim_pandoc_executable', '')
+  if !empty(exe)
+    " user defined
+    return expand(exe)
+  elseif !empty(exepath('pandoc'))
+    " in $PATH
+    return exepath('pandoc')
+  else
+    return ''
+endfunction
+
 function! scnvim#util#generate_tags() abort
   let is_running = scnvim#sclang#is_running()
   if is_running
@@ -127,14 +139,21 @@ function! scnvim#util#get_user_settings()
         \ 'auto_toggle': post_win_auto_toggle,
         \ }
 
+  let helpwin = {
+        \ 'id': 0,
+        \ }
+
   let sclang_executable = scnvim#util#find_sclang_executable()
+  let pandoc_executable = scnvim#util#find_pandoc_executable()
   let paths = {
         \ 'sclang_executable': sclang_executable,
+        \ 'pandoc_executable': pandoc_executable,
         \ }
 
   let settings = {
         \ 'paths': paths,
         \ 'post_window': postwin,
+        \ 'help_window': helpwin,
         \ }
 
   " cache settings

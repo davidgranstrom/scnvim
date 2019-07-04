@@ -64,29 +64,27 @@ Here is an example using [vim-plug](https://github.com/junegunn/vim-plug)
 
 1. Add this line to your init.vim
 ```vim
-Plug 'davidgranstrom/scnvim'
+Plug 'davidgranstrom/scnvim', { 'do': ':UpdateRemotePlugins' }
 ```
 2. `:PlugInstall`
 
-> Steps 3-4 require pynvim and can be omitted if you don't want to use the remote plugin features (see explanation below).
+3. Exit nvim
 
-3. `:UpdateRemotePlugins`
-4. Exit nvim and re-open
+4. Install the SCNvim SuperCollider classes
 
+The SuperCollider classes are located in the `sc/` directory of this repo.
 
-There is also a SuperCollider class that needs to be installed. It is located at `sc/Classes/SCNvim.sc` in this repo.
+This directory needs to be linked to your SuperCollider `Extensions` directory (run `Platform.userExtensionDir` in SuperCollider to see where it is located on your platform).
 
-This class needs to be linked to your Extensions directory (run `Platform.userExtensionDir` in SuperCollider to see where it is located on your platform).
-
-In your Extensions directory create a folder named `scide_scvim` and link/create an alias to `SCNvim.sc` class there.
+Create a `symlink` (symbolic link) like in the example below. It is **important** that the link is named `scide_scvim` (note the omitted 'n') to avoid conflicts with ScIDE.
 
 Example:
 
 ```shell
-ln -s <PATH_TO_SCNVIM_PLUGIN>/sc/Classes/SCNvim.sc ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim/SCNvim.sc
+ln -s <PATH_TO_SCNVIM_PLUGIN>/sc ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim
 ```
 
-Finally, open a new file with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
+5. Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
 
 ### Remote plugin
 
@@ -234,6 +232,9 @@ let g:scnvim_udp_port = 9670
 
 " set this variable if you don't want any default mappings
 let g:scnvim_no_mappings = 1
+
+" set this variable to browse SuperCollider documentation in nvim (requires `pandoc`)
+let g:scnvim_scdoc = 1
 ```
 
 ## Example configuration
