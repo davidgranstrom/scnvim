@@ -223,6 +223,10 @@ Set this variable if you don't want any default mappings
 >
   let g:scnvim_no_mappings = 1
 
+Browse SuperCollider documentation in nvim (see |scnvim-help-system| for more information)
+>
+  let g:scnvim_scdoc = 1
+
 ==============================================================================
 LICENSE                                                         *SCNvim-license*
 

@@ -232,6 +232,9 @@ let g:scnvim_udp_port = 9670
 
 " set this variable if you don't want any default mappings
 let g:scnvim_no_mappings = 1
+
+" set this variable to browse SuperCollider documentation in nvim (requires `pandoc`)
+let g:scnvim_scdoc = 1
 ```
 
 ## Example configuration
