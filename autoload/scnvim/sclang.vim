@@ -10,12 +10,12 @@ autocmd scnvim VimLeavePre * let s:vim_exiting = 1
 
 " interface
 function! scnvim#sclang#open()
-  if exists("s:sclang")
+  if exists("s:sclang_job")
     call scnvim#util#err("sclang is already running.")
     return
   endif
   try
-    let s:sclang = s:Sclang.new()
+    let s:sclang_job = s:Sclang.new()
   catch
     call scnvim#util#err(v:exception)
   endtry
@@ -24,7 +24,7 @@ endfunction
 function! scnvim#sclang#close()
   try
     let s:is_exiting = 1
-    call jobstop(s:sclang.id)
+    call jobstop(s:sclang_job.id)
   catch
     call scnvim#util#err("sclang is not running")
   endtry
@@ -49,7 +49,7 @@ function! scnvim#sclang#send_silent(data)
 endfunction
 
 function! scnvim#sclang#is_running()
-  return exists("s:sclang") && !empty(s:sclang)
+  return exists('s:sclang_job') && !empty(s:sclang_job)
 endfunction
 
 " job handlers
@@ -64,7 +64,7 @@ function! s:Sclang.new()
   let job = extend(copy(s:Sclang), options)
   let rundir = expand("%:p:h")
 
-  let job.bufnr = s:create_post_window()
+  let job.bufnr = scnvim#postwindow#create()
   let prg = settings.paths.sclang_executable
   let job.cmd = [prg, '-i', 'scvim', '-d', rundir]
   let job.id = jobstart(job.cmd, job)
@@ -97,13 +97,8 @@ function! s:Sclang.on_exit(id, data, event)
   if s:vim_exiting
     return
   endif
-  try
-    let bufnr = scnvim#sclang#get_post_window_bufnr()
-    execute 'bwipeout' . bufnr
-  catch
-    call scnvim#util#err(v:exception)
-  endtry
-  unlet s:sclang
+  call scnvim#postwindow#destroy()
+  unlet s:sclang_job
   if s:recompling_class_library
     let s:recompling_class_library = 0
     call scnvim#sclang#open()
@@ -111,34 +106,9 @@ function! s:Sclang.on_exit(id, data, event)
 endfunction
 
 " helpers
-function! scnvim#sclang#get_post_window_bufnr()
-  if exists("s:sclang") && !empty(s:sclang) && s:sclang.bufnr
-    return s:sclang.bufnr
-  else
-    throw "sclang not started"
-  endif
-endfunction
-
-function! s:create_post_window()
-  let settings = scnvim#util#get_user_settings()
-  let orientation = settings.post_window.orientation
-  let direction = settings.post_window.direction
-  let size = settings.post_window.size
-
-  let cmd = 'silent keepjumps keepalt '
-  let cmd .= printf('%s %s new', orientation, direction)
-  let cmd .= printf(' | %s resize %d', orientation, size)
-  execute cmd
-
-  setlocal filetype=scnvim
-  execute 'file [sclang]'
-  keepjumps keepalt wincmd p
-  return bufnr("$")
-endfunction
-
 function! s:send(cmd)
-  if exists("s:sclang")
-    call chansend(s:sclang.id, a:cmd)
+  if exists("s:sclang_job")
+    call chansend(s:sclang_job.id, a:cmd)
   endif
 endfunction
 
