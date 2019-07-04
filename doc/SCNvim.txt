@@ -4,20 +4,20 @@
 
 SCNvim                                      *SCNvim*
 
-1. Description                              |SCNvim-description|
+1. Description..............................|scnvim-description|
    1.1 Acknowledgments
-2. Installation                             |SCNvim-installation|
+2. Installation.............................|scnvim-installation|
    2.1 Requirements
    2.2 Installation
-3. Mappings                                 |SCNvim-mappings|
+3. Mappings.................................|scnvim-mappings|
    3.1 Remapping
-4. Commands                                 |SCNvim-commands|
-5. Help system                              |SCNvim-help-system|
-6. Configuration                            |SCNvim-configuration|
-7. License                                  |SCNvim-license|
+4. Commands.................................|scnvim-commands|
+5. Help system..............................|scnvim-help-system|
+6. Configuration............................|scnvim-configuration|
+7. License..................................|scnvim-license|
 
 ==============================================================================
-DESCRIPTION                                                 *SCNvim-description*
+DESCRIPTION                                                 *scnvim-description*
 
 SCNvim is a SuperCollider editor frontend for Neovim. It provides ways to
 evaluate code and inspect output from the post window among other features
@@ -31,7 +31,7 @@ This plugin borrows some code and ideas from the original scvim
 implementation, for example the code for indent and syntax highlighting.
 
 ==============================================================================
-INSTALLATION                                               *SCNvim-installation*
+INSTALLATION                                               *scnvim-installation*
 
 Requirements~
 
@@ -73,7 +73,7 @@ Finally, open a new file with a `.scd` or `.sc` extension and type
 `:SCNvimStart` to start SuperCollider.
 
 ==============================================================================
-MAPPINGS                                                       *SCNvim-mappings*
+MAPPINGS                                                       *scnvim-mappings*
 
 <C-e>                   Send current block or line.
                         (depending on context).
@@ -113,7 +113,7 @@ You can remap all of the default keybindings using the `<Plug>` mappings.
   imap <C-s> <c-o><Plug>(scnvim-send-line)
 
 ==============================================================================
-COMMANDS                                                       *SCNvim-commands*
+COMMANDS                                                       *scnvim-commands*
 
 Command                        Description
 -------                        -----------
@@ -125,7 +125,7 @@ Command                        Description
 `SCNvimStatusLine`               Display server status in 'statusline'
 
 ==============================================================================
-HELP SYSTEM                                                 *SCNvim-help-system*
+HELP SYSTEM                                                 *scnvim-help-system*
 
 SCNvim can be configured to render SCDoc help files (.schelp) to plain text
 and display the result in a split window, much like Nvim's default help system.
@@ -157,7 +157,7 @@ jump to different sections of the document.
 [1]: https://pandoc.org/
 
 ==============================================================================
-CONFIGURATION                                             *SCNvim-configuration*
+CONFIGURATION                                             *scnvim-configuration*
 
 The following variables are used to configure scnvim. This plugin should work
 out-of-the-box so it is not necessary to set them if you are happy with the
@@ -228,7 +228,7 @@ Browse SuperCollider documentation in nvim (see |scnvim-help-system| for more in
   let g:scnvim_scdoc = 1
 
 ==============================================================================
-LICENSE                                                         *SCNvim-license*
+LICENSE                                                         *scnvim-license*
 
 scnvim - SuperCollider integration for Neovim
 Copyright © 2018-2019 David Granström
