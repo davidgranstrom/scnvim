@@ -228,8 +228,8 @@ SCNvimDocEntry : SCDocEntry {
 	// overriden to output valid json
 	prJSONString {|stream, key, x|
 		if (x.isNil) { x = "" };
-		x = x.escapeChar(34.asAscii); // double quote
 		x = x.escapeChar(92.asAscii); // backslash
+		x = x.escapeChar(34.asAscii); // double quote
 		stream << "\"" << key << "\": \"" << x << "\",\n";
 	}
 
