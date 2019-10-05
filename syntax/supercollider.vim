@@ -41,6 +41,7 @@ syn match	scAoperator	"}"
 syn	match	scGlobvariable	"\~\l\w*" "~ followed by lowercase followed by wordchar
 syn	match scVar "\s*var\s"
 syn	match scVar "\s*classvar\s"
+syn	match scVar "\s*const\s"
 syn	match scArg "\s*arg\s"
 
 " symbols, strings, numbers
