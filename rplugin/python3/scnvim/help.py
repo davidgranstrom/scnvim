@@ -64,13 +64,16 @@ class SCNvimHelp():
         args = args[args.find("(") + 1:args.find(")")]
         buf = self.nvim.api.create_buf(False, True)
         self.nvim.api.buf_set_lines(buf, 0, -1, True, [args])
+        curline = self.nvim.call('line', '.')
+        anchor = 'SW' if curline != 1 else 'NW'
+        row = 0 if curline != 1 else 1
         options = {
             'relative': 'cursor',
             'width': len(args),
             'height': 1,
             'col': 0,
-            'row': 0,
-            'anchor': 'SW'
+            'row': row,
+            'anchor': anchor
         }
         win = self.nvim.api.open_win(buf, 0, options)
         self.nvim.api.set_var('scnvim_arghints_float_id', win)
