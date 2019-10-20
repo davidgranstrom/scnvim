@@ -149,11 +149,15 @@ function! scnvim#util#get_user_settings()
         \ 'sclang_executable': sclang_executable,
         \ 'pandoc_executable': pandoc_executable,
         \ }
+  let info = {
+        \ 'floating': exists('*nvim_open_win') && get(g:, 'scnvim_arghints_float', 1) == 1 ? v:true : v:false,
+        \ }
 
   let settings = {
         \ 'paths': paths,
         \ 'post_window': postwin,
         \ 'help_window': helpwin,
+        \ 'info': info,
         \ }
 
   " cache settings

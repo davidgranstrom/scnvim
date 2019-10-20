@@ -15,6 +15,8 @@ class SCNvimHelp():
         self.nvim = nvim
         self.docmap = {}
         self.msg = SCNvimMessage(nvim)
+        settings = nvim.call('scnvim#util#get_user_settings')
+        self.display_float = settings.get('info').get('floating')
 
     def open(self, uri, pattern):
         """open a vim buffer for uri with an optional regex pattern"""
