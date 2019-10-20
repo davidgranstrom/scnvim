@@ -56,8 +56,7 @@ class SCNvim():
                 method_args = data.get('method_args')
                 action = data.get('action')
                 if method_args:
-                    # self.nvim.async_call(self.msg.echo, method_args)
-                    self.nvim.async_call(self.help_system.open_arghints_float, method_args)
+                    self.nvim.async_call(self.help_system.display_arg_hints, method_args)
                 if status_line:
                     self.nvim.async_call(self.stl_update, status_line)
                 if action:

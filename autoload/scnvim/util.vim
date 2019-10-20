@@ -164,3 +164,11 @@ function! scnvim#util#get_user_settings()
   let g:scnvim_user_settings = settings
   return settings
 endfunction
+
+function! scnvim#util#try_close_float()
+  let winid = get(g:, 'scnvim_arghints_float_id')
+  if winid > 0
+    call nvim_win_close(winid, v:true)
+    let g:scnvim_arghints_float_id = 0
+  endif
+endfunction

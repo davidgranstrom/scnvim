@@ -51,15 +51,7 @@ augroup scnvim_qf_conceal
   autocmd BufWinEnter quickfix call s:apply_quickfix_conceal()
 augroup END
 
-function! s:try_close_float_win()
-  let winid = get(g:, 'scnvim_arghints_float_id')
-  if winid > 0
-    call nvim_win_close(winid, v:true)
-    let g:scnvim_arghints_float_id = 0
-  endif
-endfunction
-
 augroup scnvim_arghints_float
   autocmd!
-  autocmd InsertLeave * call s:try_close_float_win()
+  autocmd InsertLeave * call scnvim#util#try_close_float()
 augroup END
