@@ -28,22 +28,18 @@ setlocal shiftwidth=4
 " comments
 setlocal commentstring=\/\/%s
 
-" remote plugin
-if has('python3')
-  let port = get(g:, 'scnvim_udp_port', 9670)
-  let g:scnvim_python_port = __scnvim_server_start(port)
-  if !exists('g:scnvim_echo_args') || g:scnvim_echo_args == 1
-    augroup scnvim_echo_args
-      autocmd! * <buffer>
-      autocmd InsertCharPre <buffer> call scnvim#util#echo_args()
-    augroup END
-    " for argument hints
-    setlocal noshowmode
-    setlocal shortmess+=c
-  endif
+" auto commands
+let arghints = get(g:, 'scnvim_echo_args', 1)
+if arghints && has('python3')
+  augroup scnvim_echo_args
+    autocmd! * <buffer>
+    autocmd InsertCharPre <buffer> call scnvim#util#echo_args()
+  augroup END
+  " for argument hints
+  setlocal noshowmode
+  setlocal shortmess+=c
 endif
 
-" auto commands
 function! s:apply_quickfix_conceal()
   syntax match SCNvimConcealResults /^.*Help\/\|.txt\||.*|\|/ conceal
   setlocal conceallevel=2
