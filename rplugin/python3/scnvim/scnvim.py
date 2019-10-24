@@ -67,7 +67,7 @@ class SCNvim():
     @pynvim.function('__scnvim_server_start', sync=True)
     def server_start(self, args):
         """Main entry point"""
-        if self.server:
+        if self.port > 0:
             return self.port
 
         self.server = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
