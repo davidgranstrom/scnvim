@@ -60,17 +60,29 @@ The snippet engine used here is [UltiSnips][UltiSnips] together with [deoplete](
 
 ### Installation
 
-Here is an example using [vim-plug](https://github.com/junegunn/vim-plug)
+#### 1. Install the vim plugin
 
-1. Add this line to your init.vim
+*using [vim-plug](https://github.com/junegunn/vim-plug)*
+
+Add this line to your init.vim
 ```vim
 Plug 'davidgranstrom/scnvim', { 'do': ':UpdateRemotePlugins' }
 ```
-2. `:PlugInstall`
+Open nvim and run `:PlugInstall`
 
-3. Exit nvim
+*using the internal package manager*
 
-4. Install the SCNvim SuperCollider classes
+Manually clone to your plugin directory. If you used a different directory for other plugins, use that instead. 
+
+```shell
+mkdir -p ~/.local/share/nvim/site/pack/git-plugins/start && cd "$_" 
+git clone https://github.com/davidgranstrom/scnvim
+```
+
+Open nvim and run `:UpdateRemotePlugins`
+ 
+
+#### 2. Install the SCNvim SuperCollider classes
 
 The SuperCollider classes are located in the `sc/` directory of this repo.
 
@@ -86,7 +98,7 @@ ln -s <PATH_TO_SCNVIM_PLUGIN>/sc ~/Library/Application\ Support/SuperCollider/Ex
 
 5. Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
 
-### Remote plugin
+#### 3. Install remote plugin (optional)
 
 Some features of scnvim are implemented as a [remote plugin](https://neovim.io/doc/user/remote_plugin.html) which can communicate to SuperCollider via UDP.
 If you want to use the *echo args* or *statusline update* features you will need to install the python3 client [pynvim][pynvim].
