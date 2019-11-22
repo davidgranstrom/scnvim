@@ -95,6 +95,11 @@ Example:
 ```shell
 ln -s <PATH_TO_SCNVIM_PLUGIN>/sc ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim
 ```
+If the above does not work (resulting in "class not defined" errors when looking up help files for example), try adding the `-f` flag to force the symlink:
+
+```shell
+ln -sf <PATH_TO_SCNVIM_PLUGIN>/sc ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim
+```
 
 5. Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
 
