@@ -89,6 +89,8 @@ class SCNvim():
         self.port = port
         thread = Thread(target=self.server_loop)
         thread.start()
+        # fix for pynvim 0.4
+        self.nvim.api.set_var('scnvim_python_port', port)
         return port
 
     @pynvim.autocmd('VimLeavePre', pattern='*', sync=True)

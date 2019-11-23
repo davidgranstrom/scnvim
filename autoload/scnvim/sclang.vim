@@ -59,7 +59,7 @@ function! scnvim#sclang#initialize_remote_plugin() abort
     return
   endif
   let port = get(g:, 'scnvim_udp_port', 9670)
-  let g:scnvim_python_port = __scnvim_server_start(port)
+  call __scnvim_server_start(port)
 endfunction
 
 " job handlers
