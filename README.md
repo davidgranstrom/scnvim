@@ -294,7 +294,7 @@ function! s:set_sclang_statusline()
   setlocal stl+=%=
   setlocal stl+=%(%l,%c%)
   setlocal stl+=\ \|
-  setlocal stl+=%18.18{scnvim#statusline#server_status()}
+  setlocal stl+=%24.24{scnvim#statusline#server_status()}
 endfunction
 
 augroup scnvim_stl
