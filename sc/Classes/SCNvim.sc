@@ -26,8 +26,8 @@ SCNvim {
             var server = Server.default;
 
             if (server.serverRunning) {
-                peakCPU = server.peakCPU.asStringPrec(1);
-                avgCPU = server.avgCPU.asStringPrec(1);
+                peakCPU = server.peakCPU.trunc(0.01);
+                avgCPU = server.avgCPU.trunc(0.01);
                 numUGens = "%u".format(server.numUGens);
                 numSynths = "%s".format(server.numSynths);
 
