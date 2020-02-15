@@ -1,21 +1,11 @@
 local M = {}
 
 function M.json_encode(data)
-  local err, result = pcall(vim.fn.json_encode, data)
-  if err then
-    return result
-  else
-    return nil, result
-  end
+  return pcall(vim.fn.json_encode, data)
 end
 
 function M.json_decode(data)
-  local err, result = pcall(vim.fn.json_decode, data)
-  if err then
-    return result
-  else
-    return nil, result
-  end
+  return pcall(vim.fn.json_decode, data)
 end
 
 --- 0 - nothing

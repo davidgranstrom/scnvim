@@ -1,7 +1,9 @@
 local utils = require('utils')
+local help = require('help')
 
 local scnvim = {
-  utils = utils
+  utils = utils,
+  help = help
 }
 
 --- create a UDP server
