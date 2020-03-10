@@ -12,13 +12,13 @@ tracker](https://github.com/davidgranstrom/scnvim/issues), thanks!
 ## Features
 
 * Post window is displayed in a regular vim buffer
-  - Use vim key bindings to navigate/move/copy etc.
-  - Toggles back if hidden on a SuperCollider error
+  * Use vim key bindings to navigate/move/copy etc.
+  * Toggles back if hidden on a SuperCollider error
 * Interactive argument hints in the command-line area
 * Status line widgets
-  - Display SuperCollider server status in vim status line.
+  * Display SuperCollider server status in vim status line.
 * Snippet generator
-  - Generates snippets for all creation methods in SCClassLibrary.
+  * Generates snippets for all creation methods in SCClassLibrary.
 * Can be used with Neovim [GUI frontends](https://github.com/neovim/neovim/wiki/Related-projects#gui)
 * Supports lazy loading
 * Context aware evaluation (like `Cmd-Enter` in scIDE)
@@ -26,27 +26,27 @@ tracker](https://github.com/davidgranstrom/scnvim/issues), thanks!
 
 ## Showcase
 
-#### Post window displayed in a regular vim buffer
+### Post window displayed in a regular vim buffer
 
-Toggle the post window buffer by pressing `<Enter>` in normal mode or `<M-Enter>` in insert mode.
+* Toggle the post window buffer by pressing `<Enter>` in normal mode or `<M-Enter>` in insert mode.
 
 ![post window](https://user-images.githubusercontent.com/672917/51938975-b5380400-240e-11e9-8e28-428c7b811501.gif)
 
-#### Interactive argument hints in the command-line area
+### Interactive argument hints in the command-line area
 
-Arguments are automatically displayed after typing the opening brace.
+* Arguments are automatically displayed after typing the opening brace.
 
 ![argument hints](https://user-images.githubusercontent.com/672917/51938974-b5380400-240e-11e9-832a-829b48992bf0.gif)
 
-#### Status line widgets
+### Status line
 
-Displays server status in the status line
+* Displays server status in the status line
 
 ![server status](https://user-images.githubusercontent.com/672917/51938976-b5380400-240e-11e9-9799-58c1cde5c47c.gif)
 
-#### Snippet generator
+### Snippet generator
 
-The snippet engine used here is [UltiSnips][UltiSnips] together with [deoplete](https://github.com/Shougo/deoplete.nvim) for auto completion.
+* The snippet engine used here is [UltiSnips][UltiSnips] together with [deoplete](https://github.com/Shougo/deoplete.nvim) for auto completion.
 
 ![snippets](https://user-images.githubusercontent.com/672917/51938977-b5d09a80-240e-11e9-82fb-758471e45fa1.gif)
 
@@ -58,29 +58,32 @@ The snippet engine used here is [UltiSnips][UltiSnips] together with [deoplete](
 * [SuperCollider][supercollider]
 * [pynvim][pynvim] (optional)
 
-### Installation
+### Procedure
 
 #### 1. Install the vim plugin
 
-*using [vim-plug](https://github.com/junegunn/vim-plug)*
+You can install the plugin either via vim-plug or the internal package manager
 
-Add this line to your init.vim
-```vim
-Plug 'davidgranstrom/scnvim', { 'do': ':UpdateRemotePlugins' }
-```
-Open nvim and run `:PlugInstall`
+* using [vim-plug](https://github.com/junegunn/vim-plug)
 
-*using the internal package manager*
+  * Add this line to your init.vim
 
-Manually clone to your plugin directory. If you used a different directory for other plugins, use that instead. 
+    ```vim
+    Plug 'davidgranstrom/scnvim', { 'do': ':UpdateRemotePlugins' }
+    ```
 
-```shell
-mkdir -p ~/.local/share/nvim/site/pack/git-plugins/start && cd "$_" 
-git clone https://github.com/davidgranstrom/scnvim
-```
+  * Open nvim and run `:PlugInstall`
 
-Open nvim and run `:UpdateRemotePlugins`
- 
+* using the internal package manager
+
+  * Manually clone to your plugin directory. If you used a different directory for other plugins, use that instead.
+
+    ```shell
+    mkdir -p ~/.local/share/nvim/site/pack/git-plugins/start && cd "$_"
+    git clone https://github.com/davidgranstrom/scnvim
+    ```
+
+  * Open nvim and run `:UpdateRemotePlugins`
 
 #### 2. Install the SCNvim SuperCollider classes
 
@@ -90,13 +93,38 @@ This directory needs to be linked to your SuperCollider `Extensions` directory (
 
 Create a `symlink` (symbolic link) like in the example below. It is **important** that the link is named `scide_scvim` (note the omitted 'n') to avoid conflicts with ScIDE.
 
-Example:
+#### Examples
 
-```shell
-ln -s <PATH_TO_SCNVIM_PLUGIN>/sc ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim
-```
+* **macOS**
 
-5. Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
+  * make directory and create symlink
+
+    ```shell
+    mkdir -p ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim
+    ln -s <PATH_TO_SCNVIM_PLUGIN>/sc ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim
+    ```
+
+  * Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
+
+* **Linux**
+
+  * It is **important** to use absolute paths. If `~` or `$HOME` or other aliases for `/home/<user>` is used the symbolic link will be "dangling" which renders a situation where sclang crashes immediately when started.
+
+    * If scnvim was installed via [vim-plug](https://github.com/junegunn/vim-plug) use
+
+      ```shell
+      mkdir -p /home/<USER>/.local/SuperCollider/Extensions/scide_scvim
+      ln -s /home/<USER>/.vim/plugged/scnvim/sc /home/<user>/.local/SuperCollider/Extensions/scide_scvim
+      ```
+
+    * In other cases use
+
+      ```shell
+      mkdir -p <ABSOLUTE_PATH_TO_SUPERCOLLIDER_EXTENSIONS_FOLDER>/scide_scvim
+      ln -s <ABSOLUTE_PATH_TO_SCNVIM_PLUGIN>/sc <ABSOLUTE_PATH_TO_SUPERCOLLIDER_EXTENSIONS_FOLDER>/scide_scvim
+      ```
+
+  * Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
 
 #### 3. Install remote plugin (optional)
 
@@ -327,7 +355,7 @@ augroup END
 
 ## License
 
-```
+```plain
 scnvim - SuperCollider integration for Neovim
 Copyright © 2018-2019 David Granström
 
