@@ -23,6 +23,7 @@ tracker](https://github.com/davidgranstrom/scnvim/issues), thanks!
 * Supports lazy loading
 * Context aware evaluation (like `Cmd-Enter` in scIDE)
 * Flashy eval flash (configurable)
+* Partial `Document` support (e.g. `thisProcess.nowExecutingPath`)
 
 ## Showcase
 

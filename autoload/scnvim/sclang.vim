@@ -17,6 +17,7 @@ function! scnvim#sclang#open()
   try
     let s:sclang_job = s:Sclang.new()
     call scnvim#sclang#initialize_remote_plugin()
+    call scnvim#document#set_current_path()
   catch
     call scnvim#util#err(v:exception)
   endtry

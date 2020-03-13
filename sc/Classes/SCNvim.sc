@@ -1,5 +1,6 @@
 SCNvim {
     classvar <>netAddr;
+    classvar <>currentPath;
 
     *sendJSON {|object, vimPort|
         if (netAddr.isNil) {
@@ -165,33 +166,4 @@ SCNvim {
         file.close;
         "Generated snippets file: %".format(path).postln;
     }
-
-    *currentPath {
-        ^nil;
-        // will be implemented after "clientserver --remote" (#8326) is merged in Neovim
-        //
-        // var cmd, path;
-        // cmd = "expand(\"%:p\")";
-        // path = "% --remote-expr '%'".format(nvr, cmd).unixCmdGetStdOut;
-        // if (PathName(path).isAbsolutePath) {
-        //     ^path;
-        // }
-        // ^nil;
-    }
 }
-
-/*
-Document {
-    // needed for thisProcess.nowExecutingPath to work.. see Kernel::interpretCmdLine
-    var <path, <dataptr;
-
-    *new {|path, dataptr|
-        ^super.newCopyArgs(path, dataptr);
-    }
-
-    *current {
-        var path = SCNvim.currentPath;
-        ^Document(path, true);
-    }
-}
-*/
