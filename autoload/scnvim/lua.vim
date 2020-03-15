@@ -13,6 +13,6 @@ function! scnvim#lua#deinit() abort
 endfunction
 
 function! scnvim#lua#help()
-  call luaeval('require("scnvim").help.handle_method("", "/Users/dkg/Library/Application Support/SuperCollider/Help/docmap.json")')
+  call luaeval('require("scnvim").help.handle_method()')
   " scnvim.handle_method()
 endfunction

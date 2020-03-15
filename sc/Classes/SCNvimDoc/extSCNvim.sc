@@ -18,7 +18,7 @@
         ^result;
     }
 
-    *openHelpFor {|text, vimPort, pattern, pandocPath|
+    *openHelpFor {|text, pattern, pandocPath|
         var msg, uri, path;
         var outputPath;
 
@@ -44,11 +44,11 @@
             msg = "{\"action\":{\"help\":{\"method\":\"%\",\"helpTargetDir\":\"%\"}}}".format(uri.asString, SCDoc.helpTargetDir);
         };
 
-        SCNvim.sendJSON(msg, vimPort);
+        SCNvim.sendJSON(msg);
     }
 
-    *renderMethod {|uri, vimPort, pattern, pandocPath|
+    *renderMethod {|uri, pattern, pandocPath|
         var name = PathName(uri).fileNameWithoutExtension;
-        SCNvim.openHelpFor(name, vimPort, pattern, pandocPath);
+        SCNvim.openHelpFor(name, pattern, pandocPath);
     }
 }

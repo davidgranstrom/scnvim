@@ -7,15 +7,12 @@ function! scnvim#statusline#level_meter()
 endfunction
 
 function! scnvim#statusline#sclang_poll()
-  if exists('g:scnvim_python_port')
-    let cmd = printf('SCNvim.updateStatusLine(%d, %d)',
-          \ get(g:, 'scnvim_statusline_interval', 1),
-          \ g:scnvim_python_port
-          \ )
-    call scnvim#sclang#send_silent(cmd)
-  endif
+  let interval = get(g:, 'scnvim_statusline_interval', 1)
+  let cmd = printf('SCNvim.updateStatusLine(%d)', interval)
+  call scnvim#sclang#send_silent(cmd)
 endfunction
 
+" MARK: replaced by lua function
 " json encoded data
 function! scnvim#statusline#update(data) abort
   try

@@ -9,6 +9,10 @@ function M.json_decode(data)
   return pcall(vim.fn.json_decode, data)
 end
 
+function M.send_to_sc(args)
+  vim.api.nvim_call_function('scnvim#sclang#send_silent', {args})
+end
+
 local Log = {}
 
 function Log.error(message)

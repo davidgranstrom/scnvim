@@ -38,7 +38,7 @@ function! scnvim#util#echo_args()
     let result = join(reverse(result), '')
     if !empty(result)
       let result .= method
-      let cmd = printf('SCNvim.methodArgs("%s", %d)', result, g:scnvim_python_port)
+      let cmd = printf('SCNvim.methodArgs("%s")', result)
       call scnvim#sclang#send_silent(cmd)
     endif
   endif

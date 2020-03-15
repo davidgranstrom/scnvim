@@ -8,6 +8,7 @@ local scnvim = {
   udp = udp,
 }
 
+-- Method table
 local Methods = {}
 
 function Methods.update_status_line()

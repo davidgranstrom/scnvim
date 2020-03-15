@@ -1,26 +1,27 @@
 SCNvim {
     classvar <>netAddr;
     classvar <>currentPath;
+    classvar <>port;
 
-    *sendJSON {|object, vimPort|
+    *sendJSON {|data|
         if (netAddr.isNil) {
-            netAddr = NetAddr("127.0.0.1", vimPort);
+            netAddr = NetAddr("127.0.0.1", SCNvim.port);
         };
-        netAddr.sendRaw(object);
+        netAddr.sendRaw(data);
     }
 
-    *methodArgs {|method, vimPort|
+    *methodArgs {|method|
         var args, message;
         try {
             args = Help.methodArgs(method);
             message = "{\"method_args\":\"%\"}".format(args);
-            SCNvim.sendJSON(message, vimPort);
+            SCNvim.sendJSON(message);
         } {
             ^"[scnvim] Could not find args for %".format(method);
         }
     }
 
-    *updateStatusLine {arg interval=1, vimPort;
+    *updateStatusLine {arg interval=1;
         var stlFunc = {
             var serverStatus, levelMeter, data;
             var peakCPU, avgCPU, numUGens, numSynths;
@@ -40,7 +41,7 @@ SCNvim {
                 serverStatus = "\"server_status\":\"%\"".format(serverStatus);
                 levelMeter = "\"level_meter\":\"%\"".format(levelMeter);
                 data = "{\"status_line\":{%,%}}".format(serverStatus, levelMeter);
-                SCNvim.sendJSON(data, vimPort);
+                SCNvim.sendJSON(data);
             }
         };
 
