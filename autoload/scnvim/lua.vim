@@ -2,9 +2,17 @@
 " Author: David Granström
 " Description: Lua interface
 
+autocmd scnvim VimLeavePre * call scnvim#lua#deinit()
+
 function! scnvim#lua#init() abort
-  let port = luaeval('require("scnvim").init()')
-  echo "port is " . port 
-  " TODO: rename this to g:scnvim_port
-  let g:scnvim_python_port = port
+  call luaeval('require("scnvim").init()')
+endfunction
+
+function! scnvim#lua#deinit() abort
+  call luaeval('require("scnvim").deinit()')
+endfunction
+
+function! scnvim#lua#help()
+  call luaeval('require("scnvim").help.handle_method("", "/Users/dkg/Library/Application Support/SuperCollider/Help/docmap.json")')
+  " scnvim.handle_method()
 endfunction
