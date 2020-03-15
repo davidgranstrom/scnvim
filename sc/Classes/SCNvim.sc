@@ -40,7 +40,7 @@ SCNvim {
 
                 serverStatus = "\"server_status\":\"%\"".format(serverStatus);
                 levelMeter = "\"level_meter\":\"%\"".format(levelMeter);
-                data = "{\"status_line\":{%,%}}".format(serverStatus, levelMeter);
+                data = "{\"action\":\"status_line\",\"args\":{%,%}}".format(serverStatus, levelMeter);
                 SCNvim.sendJSON(data);
             }
         };

@@ -5,7 +5,6 @@ function M.json_encode(data)
 end
 
 function M.json_decode(data)
-  print(data)
   return pcall(vim.fn.json_decode, data)
 end
 

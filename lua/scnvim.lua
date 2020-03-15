@@ -11,8 +11,11 @@ local scnvim = {
 -- Method table
 local Methods = {}
 
-function Methods.update_status_line()
-  print('statusline updated')
+-- Update status line widgets
+function Methods.status_line(args)
+  if args then
+    vim.api.nvim_set_var('scnvim_stl_widgets', args)
+  end
 end
 
 local function on_receive(err, chunk)
