@@ -10,17 +10,6 @@ SCNvim {
         netAddr.sendRaw(data);
     }
 
-    *methodArgs {|method|
-        var args, message;
-        try {
-            args = Help.methodArgs(method);
-            message = "{\"method_args\":\"%\"}".format(args);
-            SCNvim.sendJSON(message);
-        } {
-            ^"[scnvim] Could not find args for %".format(method);
-        }
-    }
-
     *updateStatusLine {arg interval=1;
         var stlFunc = {
             var serverStatus, levelMeter, data;

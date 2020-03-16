@@ -1,4 +1,15 @@
 + SCNvim {
+    *methodArgs {|method|
+        var args, message;
+        try {
+            args = Help.methodArgs(method);
+            message = "{\"action\": \"method_args\", \"args\": \"%\"}".format(args);
+            SCNvim.sendJSON(message);
+        } {
+            ^"[scnvim] Could not find args for %".format(method);
+        }
+    }
+
     *prepareHelpFor {|text|
         var urlString, url, brokenAction;
         var result, tmp;

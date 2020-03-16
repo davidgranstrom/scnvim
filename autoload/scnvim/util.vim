@@ -3,7 +3,7 @@ function! scnvim#util#err(msg)
 endfunction
 
 function! scnvim#util#echo_args()
-  if v:char != '(' || !exists('g:scnvim_python_port')
+  if v:char != '('
     return
   endif
 
