@@ -69,7 +69,6 @@ SCNvim {
         file.putAll(classes);
         file.close;
         "Generated syntax file: %".format(path).postln;
-        "Classes: %".format(classes).postln;
     }
 
     // copied from SCVim.sc
@@ -113,12 +112,10 @@ SCNvim {
                 tags = tags.add(result);
             }
         };
-        "tags unsorted: %".format(tags).postln;
         tags = tags.sort;
         tagFile.putAll(tags);
         tagFile.close;
         "Generated tags file: %".format(tagPath).postln;
-        "tags sorted: %".format(tags).postln;
     }
 
     *generateSnippets {arg outputPath;
@@ -147,7 +144,6 @@ SCNvim {
                         index = signature.find("(");
                         className = signature[..index - 1];
                         className = className.replace("*", ".").replace(" ", "");
-
                         argList = signature[index..];
                         argList = argList.replace("(", "").replace(")", "");
                         argList = argList.split($,);
@@ -157,6 +153,34 @@ SCNvim {
                         snippet = className ++ argList;
                         snippet = "snippet %\n%\nendsnippet\n".format(snippetName, snippet);
                         snippets = snippets.add(snippet ++ Char.nl);
+                    } {
+                        // making subclass snippets for snippeded classes
+                        klass.subclasses.do{arg classes;
+                            classes.subclasses.do{arg subklass;
+                                if (subklass.asString.beginsWith("Meta_").not) {
+                                    subklass.superclass.class.methods.do{arg meth;
+                                        try {
+                                            snippetName = "%.%".format(subklass, meth.name);
+                                            signature = Help.methodArgs(snippetName);
+                                        };
+                                        if (signature.notNil and:{signature.isEmpty.not}) {
+                                            index = signature.find("(");
+                                            className = signature[..index - 1];
+                                            className = className.replace("*", ".").replace(" ", "");
+                                            argList = signature[index..];
+                                            argList = argList.replace("(", "").replace(")", "");
+                                            argList = argList.split($,);
+                                            argList = argList.collect {|a, i| "${%:%}".format(i+1, a) };
+                                            argList = "(" ++ argList.join(", ") ++ ")";
+
+                                            snippet = className ++ argList;
+                                            snippet = "snippet %\n%\nendsnippet\n".format(snippetName, snippet);
+                                            snippets = snippets.add(snippet ++ Char.nl);
+                                        }
+                                    };
+                                };  
+                            };
+                        };
                     };
                 };
             };
@@ -167,6 +191,5 @@ SCNvim {
         file.putAll(snippets);
         file.close;
         "Generated snippets file: %".format(path).postln;
-        "snippets: %".format(snippets).postln;
     }
 }
