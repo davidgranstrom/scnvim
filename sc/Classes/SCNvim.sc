@@ -69,6 +69,7 @@ SCNvim {
         file.putAll(classes);
         file.close;
         "Generated syntax file: %".format(path).postln;
+        "Classes: %".format(classes).postln;
     }
 
     // copied from SCVim.sc
@@ -112,11 +113,12 @@ SCNvim {
                 tags = tags.add(result);
             }
         };
-
+        "tags unsorted: %".format(tags).postln;
         tags = tags.sort;
         tagFile.putAll(tags);
         tagFile.close;
         "Generated tags file: %".format(tagPath).postln;
+        "tags sorted: %".format(tags).postln;
     }
 
     *generateSnippets {arg outputPath;
@@ -165,5 +167,6 @@ SCNvim {
         file.putAll(snippets);
         file.close;
         "Generated snippets file: %".format(path).postln;
+        "snippets: %".format(snippets).postln;
     }
 }
