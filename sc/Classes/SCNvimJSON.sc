@@ -48,17 +48,17 @@ SCNvimJSON {
         };
     }
 
-	*prAddAssoc {|key, value, isLastItem|
-		if (value.isNil) { value = "" };
-		if (value.isString) {
+    *prAddAssoc {|key, value, isLastItem|
+        if (value.isNil) { value = "" };
+        if (value.isString) {
             value = value.escapeChar(92.asAscii); // backslash
             value = value.escapeChar(34.asAscii); // double quote
         };
-		stream << "\"" << key;
-		if (value.isNumber) {
+        stream << "\"" << key;
+        if (value.isNumber) {
             stream << "\":" << value << "%".format(isLastItem.if("",","));
         } {
             stream << "\":\"" << value << "\"%".format(isLastItem.if("",","));
         }
-	}
+    }
 }
