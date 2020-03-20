@@ -49,10 +49,14 @@
             // removes .html.scnvim
             outputPath = path.drop(-12) ++ ".txt";
             "% \"%\" --from html --to plain -o \"%\"".format(pandocPath, path, outputPath).unixCmdGetStdOut;
-            msg = "{\"action\":{\"help\":{\"uri\":\"%\",\"pattern\":\"%\"}}}".format(outputPath, pattern);
+            msg = SCNvimJSON.stringify(
+                (action: "open_help_file", args: (uri: outputPath, pattern: pattern))
+            );
         } {
             // search for method
-            msg = "{\"action\":{\"help\":{\"method\":\"%\",\"helpTargetDir\":\"%\"}}}".format(uri.asString, SCDoc.helpTargetDir);
+            msg = SCNvimJSON.stringify(
+                (action: "help_find_method", args: (method: uri.asString, helpTargetDir: SCDoc.helpTargetDir))
+            );
         };
 
         SCNvim.sendJSON(msg);

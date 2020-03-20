@@ -24,6 +24,13 @@ function Methods.method_args(args)
   end
 end
 
+function Methods.open_help_file(args)
+  if args then
+    help.open(args.uri, args.pattern)
+  end
+end
+
+
 local function on_receive(err, chunk)
   assert(not err, err)
   if chunk then
