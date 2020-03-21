@@ -4,10 +4,16 @@ SCNvim {
     classvar <>port;
 
     *sendJSON {|data|
+        var json;
         if (netAddr.isNil) {
             netAddr = NetAddr("127.0.0.1", SCNvim.port);
         };
-        netAddr.sendRaw(data);
+        json = SCNvimJSON.stringify(data);
+        if (json.notNil) {
+            netAddr.sendRaw(json);
+        } {
+            "[scnvim] could not encode to json: %".format(data).warn;
+        }
     }
 
     *updateStatusLine {arg interval=1;
@@ -15,7 +21,6 @@ SCNvim {
             var serverStatus, levelMeter, data;
             var peakCPU, avgCPU, numUGens, numSynths;
             var server = Server.default;
-
             if (server.serverRunning) {
                 peakCPU = server.peakCPU.trunc(0.01);
                 avgCPU = server.avgCPU.trunc(0.01);
@@ -27,13 +32,10 @@ SCNvim {
                 );
                 levelMeter = "-inf dB";
 
-                serverStatus = "\"server_status\":\"%\"".format(serverStatus);
-                levelMeter = "\"level_meter\":\"%\"".format(levelMeter);
-                data = "{\"action\":\"status_line\",\"args\":{%,%}}".format(serverStatus, levelMeter);
+                data = (action: "status_line", args: (server_status: serverStatus, level_meter: levelMeter));
                 SCNvim.sendJSON(data);
             }
         };
-
         SkipJack(stlFunc, interval, name: "scnvim_statusline");
     }
 

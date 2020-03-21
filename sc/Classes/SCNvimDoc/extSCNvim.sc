@@ -3,7 +3,7 @@
         var args, message;
         try {
             args = Help.methodArgs(method);
-            message = "{\"action\": \"method_args\", \"args\": \"%\"}".format(args);
+            message = (action: "method_args", args: args);
             SCNvim.sendJSON(message);
         } {
             ^"[scnvim] Could not find args for %".format(method);
@@ -56,7 +56,7 @@
             msg = (action: "help_find_method", args: (method_name: uri.asString, helpTargetDir: SCDoc.helpTargetDir));
         };
 
-        SCNvim.sendJSON(SCNvimJSON.stringify(msg));
+        SCNvim.sendJSON(msg);
     }
 
     *renderMethod {|uri, pattern, pandocPath|
