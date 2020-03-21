@@ -48,18 +48,15 @@
             // help file
             // removes .html.scnvim
             outputPath = path.drop(-12) ++ ".txt";
+            // convert to plain text with pandoc
             "% \"%\" --from html --to plain -o \"%\"".format(pandocPath, path, outputPath).unixCmdGetStdOut;
-            msg = SCNvimJSON.stringify(
-                (action: "open_help_file", args: (uri: outputPath, pattern: pattern))
-            );
+            msg = (action: "help_open_file", args: (uri: outputPath, pattern: pattern));
         } {
             // search for method
-            msg = SCNvimJSON.stringify(
-                (action: "help_find_method", args: (method: uri.asString, helpTargetDir: SCDoc.helpTargetDir))
-            );
+            msg = (action: "help_find_method", args: (method_name: uri.asString, helpTargetDir: SCDoc.helpTargetDir));
         };
 
-        SCNvim.sendJSON(msg);
+        SCNvim.sendJSON(SCNvimJSON.stringify(msg));
     }
 
     *renderMethod {|uri, pattern, pandocPath|

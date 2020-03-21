@@ -8,20 +8,37 @@ function M.json_decode(data)
   return pcall(vim.fn.json_decode, data)
 end
 
+--- Send a command to SuperCollider
 function M.send_to_sc(args)
   vim.api.nvim_call_function('scnvim#sclang#send_silent', {args})
 end
 
-local Log = {}
+------------------
+--- String
+------------------
 
-function Log.error(message)
-  print(vim.inspect('[scnvim] ERROR: ' .. message))
+--- Match an exact occurence of word
+-- (replacement for \b word boundary)
+function M.str_match_exact(input, word)
+  return string.find(input, "%f[%a]" .. word .. "%f[%A]") ~= nil
 end
 
-function Log.info(message)
-  print(vim.inspect('[scnvim] ' .. message))
-end
+--- Get the system path separator
+-- '\' on Windows, '/' on all other systems
+M.path_sep = package.config:sub(1,1)
 
-M.log = Log
+------------------
+--- Table
+------------------
+
+--- Get table length
+function M.tbl_len(T)
+  local count = 0
+  for _ in pairs(T)
+  do
+    count = count + 1
+  end
+  return count
+end
 
 return M

@@ -2,35 +2,37 @@ local udp = require('udp')
 local utils = require('utils')
 local help = require('help')
 
-local scnvim = {
-  utils = utils,
-  help = help,
-  udp = udp,
-}
+local scnvim = {}
 
--- Method table
+--- Method table
+-- run the matching function from incoming 'action'
 local Methods = {}
 
--- Update status line widgets
+--- Update status line widgets
 function Methods.status_line(args)
-  if args then
-    vim.api.nvim_set_var('scnvim_stl_widgets', args)
-  end
+  if not args then return end
+  vim.api.nvim_set_var('scnvim_stl_widgets', args)
 end
 
+--- Print function signature
 function Methods.method_args(args)
-  if args then
-    print(args)
-  end
+  if not args then return end
+  print(args)
 end
 
-function Methods.open_help_file(args)
-  if args then
-    help.open(args.uri, args.pattern)
-  end
+--- Open a help file
+function Methods.help_open_file(args)
+  if not args then return end
+  help.open(args.uri, args.pattern)
 end
 
+--- Search for a method name
+function Methods.help_find_method(args)
+  if not args then return end
+  help.handle_method(args.method_name, args.helpTargetDir)
+end
 
+--- Callback for UDP commands
 local function on_receive(err, chunk)
   assert(not err, err)
   if chunk then
@@ -45,6 +47,7 @@ local function on_receive(err, chunk)
   end
 end
 
+--- Public interface
 function scnvim.init()
   udp.start_server(on_receive)
 end

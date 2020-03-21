@@ -11,8 +11,3 @@ endfunction
 function! scnvim#lua#deinit() abort
   call luaeval('require("scnvim").deinit()')
 endfunction
-
-function! scnvim#lua#help()
-  call luaeval('require("scnvim").help.handle_method()')
-  " scnvim.handle_method()
-endfunction
