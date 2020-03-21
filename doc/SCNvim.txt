@@ -35,7 +35,7 @@ INSTALLATION                                               *scnvim-installation*
 
 Requirements~
 
-Neovim (>= 0.4.x)
+Neovim (>= 0.4.3)
 SuperCollider (>= 3.9)
 pandoc (optional)
 

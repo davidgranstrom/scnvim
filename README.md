@@ -55,7 +55,7 @@ tracker](https://github.com/davidgranstrom/scnvim/issues), thanks!
 
 ### Requirements
 
-* [Neovim][neovim] >= 0.4.x
+* [Neovim][neovim] >= 0.4.3
 * [SuperCollider][supercollider]
 
 ### Procedure
