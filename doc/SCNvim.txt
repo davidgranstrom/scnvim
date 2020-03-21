@@ -35,42 +35,46 @@ INSTALLATION                                               *scnvim-installation*
 
 Requirements~
 
-Neovim (>= 0.3.1)
+Neovim (>= 0.4.x)
 SuperCollider (>= 3.9)
-pynvim (optional)
 pandoc (optional)
 
 Installation~
 
 Here is an example using vim-plug
 
+Install the vim plugin~
+
 1. Add this line to your init.vim
    `Plug 'davidgranstrom/scnvim'`
 2. `:PlugInstall`
 
-Steps 3-4 require pynvim and can be omitted if you don't want to use the
-remote plugin features (see explanation below).
+Install the SuperCollider classes~
 
-3. `:UpdateRemotePlugins`
-4. Exit nvim and re-open
+The SuperCollider classes are located in the `sc/` directory of this repo.
 
-There is also a SuperCollider class that needs to be installed. It is located
-at `sc/Classes/SCNvim.sc` of this plugin.
-
-This class needs to be linked to your Extensions directory. (run
-`Platform.userExtensionDir` in SuperCollider to see where it is located on
+This directory needs to be linked to your SuperCollider `Extensions` directory
+(run `Platform.userExtensionDir` in SuperCollider to see where it is located on
 your platform).
 
-In your Extensions directory create a folder named `scide_scvim` and
-link/create an alias to `SCNvim.sc` class there.
+1. Create a directory named `scide_scvim` in the Extensions directory.
+   It is **important** that the directory is named `scide_scvim` (note the
+   omitted 'n') to avoid conflicts with ScIDE.
+
+2. Create a `symlink` (symbolic link) to the `sc` directory of the plugin like
+   in the example below.
 
 Example~
 >
-  ln -s <PATH_TO_SCNVIM_PLUGIN>/sc/Classes/SCNvim.sc \
-  ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim/SCNvim.sc
+  # create scide_scvim directory
+  mkdir -p ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim
 
-Finally, open a new file with a `.scd` or `.sc` extension and type
-`:SCNvimStart` to start SuperCollider.
+  # create a symbolic link to 'sc' in the 'scide_scvim' directory named 'scnvim'
+  ln -s <ABSOLUTE_PATH_TO_SCNVIM_PLUGIN>/sc ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim/scnvim
+
+Start SCNvim~
+
+Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
 
 ==============================================================================
 MAPPINGS                                                       *scnvim-mappings*
@@ -214,10 +218,6 @@ Update rate for server info in status line (seconds)
 Set this variable if you don't want the "echo args" feature
 >
   let g:scnvim_echo_args = 0
-
-UDP port for (remote) python plugin, used for statusline server info and more.
->
-  let g:scnvim_udp_port = 9670
 
 Set this variable if you don't want any default mappings
 >

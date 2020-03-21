@@ -18,8 +18,6 @@ Begin polling link::Classes/Server#*default:: for CPU usage and other info.
 ARGUMENT::interval
 How often to poll the server. Doing this to often will impact the performance
 for both SuperCollider and Neovim.
-ARGUMENT::vimPort
-Port for the remote plugin UDP server.
 DISCUSSION::
 You need to configure your teletype::statusline:: in nvim to actually see any
 output. Please see the "Example configuration" section in the README of
