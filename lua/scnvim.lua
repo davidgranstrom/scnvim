@@ -37,8 +37,10 @@ local function on_receive(err, chunk)
   assert(not err, err)
   if chunk then
     vim.schedule_wrap(function()
-      local status, object = utils.json_decode(chunk)
-      assert(status, object)
+      -- uncomment for nvim 0.5.x
+      -- local status, object = utils.json_decode(chunk)
+      -- assert(status, object)
+      local object = utils.json_decode(chunk)
       local func = Methods[object.action]
       if func then
         func(object.args)
