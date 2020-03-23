@@ -27,3 +27,12 @@ noremap <unique><script><silent> <Plug>(scnvim-send-selection) :<c-u>call scnvim
 noremap <unique><script><silent> <Plug>(scnvim-postwindow-toggle) :<c-u>call scnvim#postwindow#toggle()<cr>
 noremap <unique><script><silent> <Plug>(scnvim-postwindow-clear) :<c-u>call scnvim#postwindow#clear()<cr>
 noremap <unique><script><silent> <Plug>(scnvim-hard-stop) :<c-u>call scnvim#hard_stop()<cr>
+
+" deprecated
+if exists('g:scnvim_udp_port')
+  echohl WarningMsg
+  echom '[scnvim] g:scnvim_udp_port is deprecated.
+        \ Use SCNvim.port if you need the port number
+        \ in SuperCollider.'
+  echohl None
+endif
