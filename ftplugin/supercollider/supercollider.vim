@@ -29,8 +29,8 @@ setlocal shiftwidth=4
 setlocal commentstring=\/\/%s
 
 " auto commands
-let arghints = get(g:, 'scnvim_echo_args', 1)
-if arghints && has('python3')
+let enable_arghints = get(g:, 'scnvim_echo_args', 1)
+if enable_arghints
   augroup scnvim_echo_args
     autocmd! * <buffer>
     autocmd InsertCharPre <buffer> call scnvim#util#echo_args()

@@ -55,15 +55,6 @@ function! scnvim#sclang#is_running()
   return exists('s:sclang_job') && !empty(s:sclang_job)
 endfunction
 
-" remote plugin
-function! scnvim#sclang#initialize_remote_plugin() abort
-  if !has('python3')
-    return
-  endif
-  let port = get(g:, 'scnvim_udp_port', 9670)
-  call __scnvim_server_start(port)
-endfunction
-
 " job handlers
 let s:Sclang = {}
 
