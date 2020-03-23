@@ -41,10 +41,10 @@ local function on_receive(err, chunk)
       -- local status, object = utils.json_decode(chunk)
       -- assert(status, object)
       local object = utils.json_decode(chunk)
+      assert(object, '[scnvim] Could not decode json chunk')
       local func = Methods[object.action]
-      if func then
-        func(object.args)
-      end
+      assert(func, '[scnvim] Unrecognized handler')
+      func(object.args)
     end)()
   end
 end
