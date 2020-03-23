@@ -1,4 +1,15 @@
 + SCNvim {
+    *methodArgs {|method|
+        var args, message;
+        try {
+            args = Help.methodArgs(method);
+            message = (action: "method_args", args: args);
+            SCNvim.sendJSON(message);
+        } {
+            ^"[scnvim] Could not find args for %".format(method);
+        }
+    }
+
     *prepareHelpFor {|text|
         var urlString, url, brokenAction;
         var result, tmp;
@@ -18,7 +29,7 @@
         ^result;
     }
 
-    *openHelpFor {|text, vimPort, pattern, pandocPath|
+    *openHelpFor {|text, pattern, pandocPath|
         var msg, uri, path;
         var outputPath;
 
@@ -37,18 +48,19 @@
             // help file
             // removes .html.scnvim
             outputPath = path.drop(-12) ++ ".txt";
+            // convert to plain text with pandoc
             "% \"%\" --from html --to plain -o \"%\"".format(pandocPath, path, outputPath).unixCmdGetStdOut;
-            msg = "{\"action\":{\"help\":{\"uri\":\"%\",\"pattern\":\"%\"}}}".format(outputPath, pattern);
+            msg = (action: "help_open_file", args: (uri: outputPath, pattern: pattern));
         } {
             // search for method
-            msg = "{\"action\":{\"help\":{\"method\":\"%\",\"helpTargetDir\":\"%\"}}}".format(uri.asString, SCDoc.helpTargetDir);
+            msg = (action: "help_find_method", args: (method_name: uri.asString, helpTargetDir: SCDoc.helpTargetDir));
         };
 
-        SCNvim.sendJSON(msg, vimPort);
+        SCNvim.sendJSON(msg);
     }
 
-    *renderMethod {|uri, vimPort, pattern, pandocPath|
+    *renderMethod {|uri, pattern, pandocPath|
         var name = PathName(uri).fileNameWithoutExtension;
-        SCNvim.openHelpFor(name, vimPort, pattern, pandocPath);
+        SCNvim.openHelpFor(name, pattern, pandocPath);
     }
 }

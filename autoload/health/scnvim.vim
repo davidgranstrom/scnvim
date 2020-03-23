@@ -2,6 +2,15 @@
 " Author: David Granström
 " Description: Health check
 
+function! s:check_minimum_nvim_version() abort
+  if !has('nvim-0.4.3')
+    call health#report_error(
+          \ 'has(nvim-0.4.3)',
+          \ 'scnvim requires nvim 0.4.3 or later'
+          \ )
+  endif
+endfunction
+
 function! s:check_timers() abort
   if has('timers')
     call health#report_ok('has("timers") - success')
@@ -30,17 +39,6 @@ function! s:check_sclang_executable() abort
   endtry
 endfunction
 
-function! s:check_pynvim() abort
-  if has('python3')
-    call health#report_info('has("python3") - success')
-  else
-    call health#report_warn(
-          \ 'could not find pynvim module for python3',
-          \ 'check :help provider-python for more information'
-          \ )
-  endif
-endfunction
-
 function! s:check_pandoc_executable() abort
   let user_pandoc = get(g:, 'scnvim_pandoc_executable')
   if !empty(user_pandoc)
@@ -60,8 +58,8 @@ endfunction
 
 function! health#scnvim#check() abort
   call health#report_start('scnvim')
+  call s:check_minimum_nvim_version()
   call s:check_timers()
   call s:check_sclang_executable()
   call s:check_pandoc_executable()
-  call s:check_pynvim()
 endfunction

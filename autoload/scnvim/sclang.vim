@@ -16,7 +16,7 @@ function! scnvim#sclang#open()
   endif
   try
     let s:sclang_job = s:Sclang.new()
-    call scnvim#sclang#initialize_remote_plugin()
+    call scnvim#lua#init()
     call scnvim#document#set_current_path()
   catch
     call scnvim#util#err(v:exception)
@@ -27,6 +27,7 @@ function! scnvim#sclang#close()
   try
     let s:is_exiting = 1
     call jobstop(s:sclang_job.id)
+    call scnvim#lua#deinit()
   catch
     call scnvim#util#err("sclang is not running")
   endtry
@@ -52,15 +53,6 @@ endfunction
 
 function! scnvim#sclang#is_running()
   return exists('s:sclang_job') && !empty(s:sclang_job)
-endfunction
-
-" remote plugin
-function! scnvim#sclang#initialize_remote_plugin() abort
-  if !has('python3')
-    return
-  endif
-  let port = get(g:, 'scnvim_udp_port', 9670)
-  call __scnvim_server_start(port)
 endfunction
 
 " job handlers
