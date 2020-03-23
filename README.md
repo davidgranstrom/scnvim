@@ -355,5 +355,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 [neovim]: https://github.com/neovim/neovim
 [supercollider]: https://github.com/supercollider/supercollider
-[pynvim]: https://github.com/neovim/pynvim
 [UltiSnips]: https://github.com/SirVer/ultisnips
