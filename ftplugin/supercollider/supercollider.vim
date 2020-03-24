@@ -2,7 +2,9 @@
 " Author: David Granström
 " Description: General settings
 
-if exists("b:did_scnvim")
+scriptencoding utf-8
+
+if exists('b:did_scnvim')
   finish
 endif
 let b:did_scnvim = 1
@@ -10,7 +12,7 @@ let b:did_scnvim = 1
 " tags
 let s:tagsFile = expand(get(g:, 'scnvim_root_dir') . '/scnvim-data/tags')
 if filereadable(s:tagsFile)
-  execute "setlocal tags+=" . s:tagsFile
+  execute 'setlocal tags+=' . s:tagsFile
 endif
 
 " matchit

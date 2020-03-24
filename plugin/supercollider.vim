@@ -2,6 +2,8 @@
 " Author: David Granström
 " Description: scnvim setup
 
+scriptencoding utf-8
+
 if exists('g:scnvim_loaded')
   finish
 endif

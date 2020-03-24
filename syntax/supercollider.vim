@@ -24,10 +24,10 @@
 " Version:	0.3
 " Modified:	2018-01-06
 
-if exists("b:current_syntax")
+if exists('b:current_syntax')
   finish
 endif
-let b:current_syntax = "supercollider"
+let b:current_syntax = 'supercollider'
 
 syn clear
 

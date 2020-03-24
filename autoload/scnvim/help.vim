@@ -2,7 +2,9 @@
 " Author: David Granström
 " Description: scnvim help system
 
-function! scnvim#help#open_help_for(subject)
+scriptencoding utf-8
+
+function! scnvim#help#open_help_for(subject) abort
   let internal = get(g:, 'scnvim_scdoc', 0)
   if internal
     let settings = scnvim#util#get_user_settings()
@@ -20,7 +22,7 @@ function! scnvim#help#open_help_for(subject)
   call scnvim#sclang#send_silent(cmd)
 endfunction
 
-function! scnvim#help#open(uri, pattern)
+function! scnvim#help#open(uri, pattern) abort
   let settings = scnvim#util#get_user_settings()
   let id = get(settings.help_window, 'id')
   if win_gotoid(id)
@@ -39,7 +41,7 @@ function! scnvim#help#open(uri, pattern)
   endif
 endfunction
 
-function! scnvim#help#open_from_quickfix(item_idx)
+function! scnvim#help#open_from_quickfix(item_idx) abort
   let list = getqflist()
   let item = get(list, a:item_idx - 1)
   if !empty(item)
@@ -53,7 +55,7 @@ function! scnvim#help#open_from_quickfix(item_idx)
   endif
 endfunction
 
-function! scnvim#help#render(uri, pattern)
+function! scnvim#help#render(uri, pattern) abort
   let settings = scnvim#util#get_user_settings()
   let pandoc_path = settings.paths.pandoc_executable
   let has_pandoc = !empty(pandoc_path)

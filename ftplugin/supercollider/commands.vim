@@ -2,7 +2,9 @@
 " Author: David Granström
 " Description: scnvim commands
 
-if exists("b:did_scnvim_commands")
+scriptencoding utf-8
+
+if exists('b:did_scnvim_commands')
   finish
 endif
 

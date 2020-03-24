@@ -2,6 +2,8 @@
 " Author: David Granström
 " Description: scnvim post window
 
+scriptencoding utf-8
+
 let s:bufnr = 0
 let s:bufname = get(g:, 'scnvim_postwin_title', '[sclang]')
 
@@ -16,9 +18,9 @@ function! scnvim#postwindow#create() abort
       let winnr = bufwinnr(s:bufnr)
       let should_close = 1
     endif
-    execute winnr . "wincmd w"
+    execute winnr . 'wincmd w'
     setlocal filetype=scnvim
-    execute "wincmd p"
+    execute 'wincmd p'
     " restore if postwindow was closed
     if should_close
       call scnvim#postwindow#close()
@@ -111,5 +113,5 @@ function! s:create_post_window() abort
   setlocal filetype=scnvim
   execute printf('file %s', s:bufname)
   keepjumps keepalt wincmd p
-  return bufnr("$")
+  return bufnr('$')
 endfunction

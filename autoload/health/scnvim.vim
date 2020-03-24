@@ -2,6 +2,8 @@
 " Author: David Granström
 " Description: Health check
 
+scriptencoding utf-8
+
 function! s:check_minimum_nvim_version() abort
   if !has('nvim-0.4.3')
     call health#report_error(
@@ -50,8 +52,8 @@ function! s:check_pandoc_executable() abort
   catch
     call health#report_info(
           \ 'could not find pandoc executable.',
-          \ 'set g:scnvim_pandoc_executable or add pandoc to your $PATH'
-          \ 'This is an optional dependency and only needed for SCDoc integration.',
+          \ 'set g:scnvim_pandoc_executable or add pandoc to your $PATH',
+          \ 'This is an optional dependency and only needed for SCDoc integration.'
           \ )
   endtry
 endfunction
