@@ -2,10 +2,12 @@
 " Author: David Granström
 " Description: scnvim interface
 
+scriptencoding utf-8
+
 function! scnvim#send_line(start, end) abort
   let is_single_line = a:start == 0 && a:end == 0
   if is_single_line
-    let line = line(".")
+    let line = line('.')
     let str = getline(line)
     call scnvim#sclang#send(str)
     call s:flash(line, line, 'n')
@@ -48,7 +50,7 @@ function! scnvim#hard_stop() abort
 endfunction
 
 " helpers
-function! s:get_visual_selection()
+function! s:get_visual_selection() abort
   let [lnum1, col1] = getpos("'<")[1:2]
   let [lnum2, col2] = getpos("'>")[1:2]
   if &selection ==# 'exclusive'
@@ -66,16 +68,16 @@ function! s:get_visual_selection()
         \ }
 endfunction
 
-function! s:skip_pattern()
+function! s:skip_pattern() abort
   return 'synIDattr(synID(line("."), col("."), 0), "name") ' .
           \ '=~? "scComment\\|scString\\|scSymbol"'
 endfunction
 
-function! s:find_match(start, end, flags)
+function! s:find_match(start, end, flags) abort
     return searchpairpos(a:start, '', a:end, a:flags, s:skip_pattern())
 endfunction
 
-function! s:get_block()
+function! s:get_block() abort
     " initialize to invalid ranges
     let start_pos = [0, 0]
     let end_pos = [0, 0]
@@ -105,7 +107,7 @@ function! s:get_block()
     return [start_pos[0], end_pos[0]]
 endfunction
 
-function! s:flash(start, end, mode)
+function! s:flash(start, end, mode) abort
   let repeats = get(g:, 'scnvim_eval_flash_repeats', 2)
   let duration = get(g:, 'scnvim_eval_flash_duration', 100)
   if repeats == 0 || duration == 0
@@ -119,12 +121,12 @@ function! s:flash(start, end, mode)
   endif
 endfunction
 
-function! s:flash_once(start, end, duration, mode)
+function! s:flash_once(start, end, duration, mode) abort
   let m = s:highlight_region(a:start, a:end, a:mode)
   call timer_start(a:duration, {-> s:clear_region(m) })
 endfunction
 
-function! s:highlight_region(start, end, mode)
+function! s:highlight_region(start, end, mode) abort
   if a:mode ==# 'n' || a:mode ==# 'V'
     if a:start == a:end
       let pattern = '\%' . a:start . 'l'
@@ -144,6 +146,6 @@ function! s:highlight_region(start, end, mode)
   return matchadd('SCNvimEval', pattern)
 endfunction
 
-function! s:clear_region(match)
+function! s:clear_region(match) abort
   call matchdelete(a:match)
 endfunction

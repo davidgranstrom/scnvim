@@ -2,6 +2,8 @@
 " Author: David Granström
 " Description: Lua interface
 
+scriptencoding utf-8
+
 autocmd scnvim VimLeavePre * call scnvim#lua#deinit()
 
 function! scnvim#lua#init() abort

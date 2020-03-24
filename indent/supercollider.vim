@@ -3,7 +3,7 @@
 " License GPLv3
 "
 " this indent function isn't that smart yet, hopefully it'll improve in the future
-if exists ("b:did_scvim_indent")
+if exists ('b:did_scvim_indent')
   finish
 endif
 
@@ -12,7 +12,7 @@ let b:did_scvim_indent = 1
 setlocal indentexpr=GetSCIndent()
 setlocal indentkeys+=0),0],0}
 
-if exists ("*GetSCIndent")
+if exists ('*GetSCIndent')
   finish
 endif
 
@@ -28,17 +28,17 @@ function! GetSCIndent()
 
   let ind = indent(lnum)
 
-  if prev_line =~ '\(\/\/.*\)\@\<![[({]\s*\([^])}]*\)\=$'
-    let ind = ind + &sw
+  if prev_line =~# '\(\/\/.*\)\@\<![[({]\s*\([^])}]*\)\=$'
+    let ind = ind + &shiftwidth
   endif
 
-  if curr_line =~ '\v^\s*[)}\]]'
+  if curr_line =~# '\v^\s*[)}\]]'
     "if synIDattr(synID(line("."), col("."), 0), "name") =~? "scComment" ||
     "	synIDattr(synID(line("."), col("."), 0), "name") =~? "scString" ||
     "	synIDattr(synID(line("."), col("."), 0), "name") =~? "scSymbol"
     "	"do nothing
     "else
-    let ind = ind - &sw
+    let ind = ind - &shiftwidth
     "end
   endif
 

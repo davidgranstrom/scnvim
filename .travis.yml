@@ -1,0 +1,17 @@
+language: python
+
+cache: pip
+
+before_install:
+  - pip install hererocks
+  - hererocks lua51 --lua 5.1.0 --luarocks latest
+  - source lua51/bin/activate
+
+install:
+  - pip install vim-vint
+  # - luarocks install busted
+  - luarocks install luacheck
+
+script:
+  - vint --style-problem --enable-neovim --stat .
+  - luacheck lua --globals vim

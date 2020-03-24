@@ -2,12 +2,14 @@
 " Author: David Granström
 " Description: scnvim mappings
 
-if exists("b:did_scnvim_mappings")
+scriptencoding utf-8
+
+if exists('b:did_scnvim_mappings')
   finish
 endif
 let b:did_scnvim_mappings = 1
 
-if !exists("g:scnvim_no_mappings") || !g:scnvim_no_mappings
+if !exists('g:scnvim_no_mappings') || !g:scnvim_no_mappings
   if !hasmapto('<Plug>(scnvim-send-line)', 'ni')
     nmap <buffer> <M-e> <Plug>(scnvim-send-line)
     imap <buffer> <M-e> <c-o><Plug>(scnvim-send-line)

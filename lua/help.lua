@@ -39,8 +39,8 @@ function M.handle_method(name, target_dir)
   local path = utils.vimcall('expand', {target_dir})
   local docmap = get_docmap(path .. utils.path_sep .. 'docmap.json')
   local results = {}
-  for key, value in pairs(docmap) do
-    for i, method in ipairs(value.methods) do
+  for _, value in pairs(docmap) do
+    for _, method in ipairs(value.methods) do
       local match = utils.str_match_exact(method, name)
       if match then
         local destpath = path .. utils.path_sep .. value.path .. '.txt'

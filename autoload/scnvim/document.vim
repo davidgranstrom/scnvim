@@ -2,6 +2,8 @@
 " Author: David Granström
 " Description: scnvim document
 
+scriptencoding utf-8
+
 function! scnvim#document#set_current_path() abort
   if scnvim#sclang#is_running()
     let path = expand('%:p')
