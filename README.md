@@ -1,5 +1,7 @@
 # scnvim
 
+[![Build Status](https://travis-ci.com/davidgranstrom/scnvim.svg?branch=master)](https://travis-ci.com/davidgranstrom/scnvim)
+
 [SuperCollider][supercollider] integration for [Neovim][neovim]
 
 ## Note
