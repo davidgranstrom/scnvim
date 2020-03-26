@@ -33,8 +33,11 @@ if enable_arghints
     autocmd InsertCharPre <buffer> call scnvim#util#echo_args_insert()
   augroup END
   " for argument hints
-  setlocal noshowmode
-  setlocal shortmess+=c
+  let no_float = get(g:, 'scnvim_arghints_float', 1)
+  if no_float == 0
+    setlocal noshowmode
+    setlocal shortmess+=c
+  endif
 endif
 
 function! s:apply_quickfix_conceal()
