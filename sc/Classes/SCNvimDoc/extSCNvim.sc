@@ -3,8 +3,14 @@
         var args, message;
         try {
             args = Help.methodArgs(method);
-            message = (action: "method_args", args: args);
-            SCNvim.sendJSON(message);
+            // TODO;
+            // this is just a quick fix.
+            // how should we handle methods implemented by many classes?
+            args = args.split(Char.nl);
+            if (args.size == 1) {
+                message = (action: "method_args", args: args[0]);
+                SCNvim.sendJSON(message);
+            }
         } {
             ^"[scnvim] Could not find args for %".format(method);
         }
