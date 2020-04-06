@@ -22,11 +22,6 @@ let b:match_words = '(:),[:],{:}'
 " help
 setlocal keywordprg=:SCNvimHelp
 
-" indentation
-setlocal tabstop=4
-setlocal softtabstop=4
-setlocal shiftwidth=4
-
 " comments
 setlocal commentstring=\/\/%s
 
