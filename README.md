@@ -111,12 +111,13 @@ This directory needs to be linked to your SuperCollider `Extensions` directory (
 
     ```shell
     # create scide_scvim directory
-    mkdir -p ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim
-
+    mkdir -p $HOME/.local/share/SuperCollider/Extensions/scide_scvim
+    
     # create a symbolic link to 'sc' in the 'scide_scvim' directory named 'scnvim'
-    ln -s /home/<USER>/.vim/plugged/scnvim/sc /home/<user>/.local/SuperCollider/Extensions/scide_scvim
+    ln -s /home/<USER>/.vim/plugged/scnvim/sc /home/<user>/.local/share/SuperCollider/Extensions/scide_scvim
     ```
-
+    
+    If the above symlink does not work (you can tell this by opening up a SuperCollider file and running `:SCNvimStart` - if something's wrong the post window will contain errors about SC not being able to find the SCNvim class files), make sure the path to the vim plugin is correct. On some NeoVim installations it's `/home/<USER>/.config/nvim/plugged/scnvim/sc`.
 
 #### 3. Starting SCNvim
 
