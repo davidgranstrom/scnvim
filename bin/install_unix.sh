@@ -1,6 +1,6 @@
 #!/bin/sh
 
-plugin_dir=$(dirname "$(pwd)")
+plugin_dir="$(pwd)"
 dest_dir="$1"
 
 # if destination is a symbolic link (old install instructions)
