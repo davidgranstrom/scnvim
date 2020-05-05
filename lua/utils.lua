@@ -40,8 +40,7 @@ function M.str_match_exact(input, word)
 end
 
 --- Get the system path separator
--- '\' on Windows, '/' on all other systems
-M.path_sep = package.config:sub(1,1)
+M.path_sep = vim.loop.os_uname().sysname == 'Windows' and '\\' or '/'
 
 ------------------
 --- Table
