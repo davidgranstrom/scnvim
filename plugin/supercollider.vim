@@ -31,10 +31,6 @@ noremap <unique><script><silent> <Plug>(scnvim-postwindow-toggle) :<c-u>call scn
 noremap <unique><script><silent> <Plug>(scnvim-postwindow-clear) :<c-u>call scnvim#postwindow#clear()<cr>
 noremap <unique><script><silent> <Plug>(scnvim-hard-stop) :<c-u>call scnvim#hard_stop()<cr>
 
-" install command needs to be callable from any buffer in order to use it as
-" post-update hook by plugin managers.
-command! SCNvimInstall call scnvim#lua#install()
-
 " deprecated
 if exists('g:scnvim_udp_port')
   echohl WarningMsg
