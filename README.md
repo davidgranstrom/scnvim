@@ -114,7 +114,7 @@ This directory needs to be linked to your SuperCollider `Extensions` directory (
     mkdir -p $HOME/.local/share/SuperCollider/Extensions/scide_scvim
     
     # create a symbolic link to 'sc' in the 'scide_scvim' directory named 'scnvim'
-    ln -s /home/<USER>/.config/nvim/plugged/scnvim/sc /home/<USER>/.local/share/SuperCollider/Extensions/scide_scvim
+    ln -s /home/<USER>/.config/nvim/plugged/scnvim/sc /home/<USER>/.local/share/SuperCollider/Extensions/scide_scvim/scnvim
     ```
 
     If the above symlink does not work (you can tell this by opening up a
