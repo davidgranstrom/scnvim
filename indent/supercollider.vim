@@ -2,7 +2,7 @@
 " https://github.com/supercollider/scvim
 " License GPLv3
 "
-" this indent function isn't that smart yet, hopefully it'll improve in the future
+
 if exists ('b:did_scvim_indent')
   finish
 endif
@@ -27,6 +27,11 @@ function! GetSCIndent()
   let prev_line = getline(lnum)
 
   let ind = indent(lnum)
+
+  " don't create indentation for code blocks
+  if prev_line =~# '^($'
+    return ind
+  end
 
   if prev_line =~# '\(\/\/.*\)\@\<![[({]\s*\([^])}]*\)\=$'
     let ind = ind + &shiftwidth
