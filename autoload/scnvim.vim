@@ -70,7 +70,7 @@ endfunction
 
 function! s:skip_pattern() abort
   return 'synIDattr(synID(line("."), col("."), 0), "name") ' .
-          \ '=~? "scComment\\|scString\\|scSymbol"'
+        \ '=~? "scLineComment\\|scComment\\|scString\\|scSymbol"'
 endfunction
 
 function! s:find_match(start, end, flags) abort
