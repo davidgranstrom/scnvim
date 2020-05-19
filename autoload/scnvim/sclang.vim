@@ -6,17 +6,16 @@ scriptencoding utf-8
 
 let s:recompling_class_library = 0
 let s:is_exiting = 0
-let s:vim_exiting = 0
-
-autocmd scnvim VimLeavePre * let s:vim_exiting = 1
 
 " interface
 function! scnvim#sclang#open() abort
-  if exists('s:sclang_job')
+  let is_running = scnvim#sclang#is_running()
+  if is_running
     call scnvim#util#err('sclang is already running.')
     return
   endif
   try
+    let s:is_exiting = 0
     let s:sclang_job = s:Sclang.new()
     call scnvim#lua#init()
     call scnvim#document#set_current_path()
@@ -26,18 +25,18 @@ function! scnvim#sclang#open() abort
 endfunction
 
 function! scnvim#sclang#close() abort
-  try
+  let is_running = scnvim#sclang#is_running()
+  if is_running
     let s:is_exiting = 1
-    call jobstop(s:sclang_job.id)
+    call scnvim#sclang#send_silent('0.exit')
+    call jobwait([s:sclang_job.id], 1000)
     call scnvim#lua#deinit()
-  catch
+  else
     call scnvim#util#err('sclang is not running')
-  endtry
-  let s:is_exiting = 0
+  endif
 endfunction
 
 function! scnvim#sclang#recompile() abort
-  call scnvim#sclang#send_silent('Server.quitAll;')
   let s:recompling_class_library = 1
   " on_exit callback will restart sclang
   call scnvim#sclang#close()
@@ -54,7 +53,7 @@ function! scnvim#sclang#send_silent(data) abort
 endfunction
 
 function! scnvim#sclang#is_running() abort
-  return exists('s:sclang_job') && !empty(s:sclang_job)
+  return exists('s:sclang_job') && jobwait([s:sclang_job.id], 0)[0] == -1
 endfunction
 
 " job handlers
@@ -85,6 +84,9 @@ endfunction
 
 let s:chunks = ['']
 function! s:Sclang.on_stdout(id, data, event) dict abort
+  if s:is_exiting
+    return
+  endif
   let s:chunks[-1] .= a:data[0]
   call extend(s:chunks, a:data[1:])
   for line in s:chunks
@@ -99,11 +101,7 @@ endfunction
 let s:Sclang.on_stderr = function(s:Sclang.on_stdout)
 
 function! s:Sclang.on_exit(id, data, event) abort
-  if s:vim_exiting
-    return
-  endif
   call scnvim#postwindow#destroy()
-  unlet s:sclang_job
   if s:recompling_class_library
     let s:recompling_class_library = 0
     call scnvim#sclang#open()
@@ -118,9 +116,6 @@ function! s:send(cmd) abort
 endfunction
 
 function! s:receive(self, data) abort
-  if s:is_exiting
-    return
-  endif
   let bufnr = get(a:self, 'bufnr')
   let winnr = bufwinid(bufnr)
   " scan for ERROR: marker in sclang stdout

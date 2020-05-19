@@ -19,6 +19,7 @@ augroup END
 
 autocmd scnvim ColorScheme * highlight default SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
 autocmd scnvim BufEnter,BufNewFile,BufRead *.scd,*.sc call scnvim#document#set_current_path()
+autocmd scnvim VimLeavePre * call scnvim#sclang#close()
 
 " eval flash default color
 highlight default SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
