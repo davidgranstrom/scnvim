@@ -85,7 +85,11 @@ local function get_path()
   if is_running == 0 then
     return nil, '[scnvim] Start sclang first :SCNvimStart'
   end
-  return data .. utils.path_sep .. 'scide_scnvim'
+  if ret
+    then return data .. utils.path_sep .. 'scide_scnvim'
+  else
+    return nil, '[scnvim] Could not get scnvim root directory.'
+  end
 end
 
 function scnvim.install()
