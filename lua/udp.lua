@@ -16,7 +16,12 @@ function M.start_server(on_receive)
   M.udp = handle
   -- let sclang know which port the server is running on
   local port = handle:getsockname().port
-  utils.send_to_sc('SCNvim.port = '..port)
+  local cmd = string.format([[
+    if (\SCNvim.asClass.notNil) {
+      \SCNvim.asClass.port = %d
+    }
+  ]], port)
+  utils.send_to_sc(cmd)
 end
 
 function M.stop_server()

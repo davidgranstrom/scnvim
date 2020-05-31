@@ -79,4 +79,33 @@ function scnvim.send(expr)
   utils.send_to_sc(expr)
 end
 
+local function get_path()
+  local ret, data = pcall(vim.api.nvim_get_var, 'scnvim_root_dir')
+  local is_running = utils.vimcall('scnvim#sclang#is_running', {})
+  if is_running == 0 then
+    return nil, '[scnvim] Start sclang first :SCNvimStart'
+  end
+  return data .. utils.path_sep .. 'scide_scnvim'
+end
+
+function scnvim.install()
+  local path = assert(get_path())
+  local cmd = string.format([[
+    LanguageConfig.addIncludePath("%s");
+    LanguageConfig.store;
+  ]], path)
+  utils.send_to_sc(cmd)
+  print('[scnvim] Installed, please recompile class library.')
+end
+
+function scnvim.uninstall()
+  local path = assert(get_path())
+  local cmd = string.format([[
+    LanguageConfig.removeIncludePath("%s");
+    LanguageConfig.store;
+  ]], path)
+  utils.send_to_sc(cmd)
+  print('[scnvim] Uninstalled, please recompile class library.')
+end
+
 return scnvim
