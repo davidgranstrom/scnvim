@@ -3,6 +3,7 @@ local utils = require('utils')
 local help = require('help')
 
 local scnvim = {}
+local eval_callback = nil
 
 --- Method table
 -- run the matching function from incoming 'action'
@@ -32,6 +33,15 @@ function Methods.help_find_method(args)
   help.handle_method(args.method_name, args.helpTargetDir)
 end
 
+--- Receive data from sclang
+function Methods.eval(result)
+  assert(result)
+  if eval_callback then
+    eval_callback(result)
+    eval_callback = nil
+  end
+end
+
 --- Callback for UDP commands
 local function on_receive(err, chunk)
   assert(not err, err)
@@ -56,6 +66,12 @@ end
 
 function scnvim.deinit()
   udp.stop_server()
+end
+
+function scnvim.eval(expr, cb)
+  local cmd = string.format('SCNvim.eval("%s");', pesc(expr))
+  eval_callback = cb
+  utils.send_to_sc(cmd)
 end
 
 return scnvim
