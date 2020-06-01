@@ -24,6 +24,8 @@
 " Version:	0.3
 " Modified:	2018-01-06
 
+scriptencoding utf-8
+
 if exists('b:current_syntax')
   finish
 endif
