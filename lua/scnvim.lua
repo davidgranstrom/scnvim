@@ -60,6 +60,7 @@ local function on_receive(err, chunk)
 end
 
 --- Public interface
+
 function scnvim.init()
   udp.start_server(on_receive)
 end
@@ -69,9 +70,13 @@ function scnvim.deinit()
 end
 
 function scnvim.eval(expr, cb)
-  local cmd = string.format('SCNvim.eval("%s");', pesc(expr))
+  local cmd = string.format('SCNvim.eval("%s");', expr)
   eval_callback = cb
   utils.send_to_sc(cmd)
+end
+
+function scnvim.send(expr)
+  utils.send_to_sc(expr)
 end
 
 return scnvim
