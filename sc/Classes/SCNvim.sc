@@ -16,6 +16,12 @@ SCNvim {
         }
     }
 
+    *eval {|expr|
+        var result = expr.interpret;
+        result = (action: "eval", args: result);
+        SCNvim.sendJSON(result);
+    }
+
     *updateStatusLine {arg interval=1;
         var stlFunc = {
             var serverStatus, levelMeter, data;

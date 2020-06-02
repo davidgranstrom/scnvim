@@ -21,7 +21,9 @@ end
 
 function M.stop_server()
   if M.udp then
+    M.udp:recv_stop()
     M.udp:close()
+    M.udp = nil
   end
 end
 

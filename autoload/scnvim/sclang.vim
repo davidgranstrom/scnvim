@@ -4,19 +4,20 @@
 
 scriptencoding utf-8
 
-let s:recompling_class_library = 0
 let s:is_exiting = 0
-let s:vim_exiting = 0
+let s:Sclang = {}
 
-autocmd scnvim VimLeavePre * let s:vim_exiting = 1
+autocmd scnvim VimLeavePre * call scnvim#sclang#close()
 
 " interface
+
 function! scnvim#sclang#open() abort
-  if exists('s:sclang_job')
+  if scnvim#sclang#is_running()
     call scnvim#util#err('sclang is already running.')
     return
   endif
   try
+    let s:is_exiting = 0
     let s:sclang_job = s:Sclang.new()
     call scnvim#lua#init()
     call scnvim#document#set_current_path()
@@ -26,21 +27,26 @@ function! scnvim#sclang#open() abort
 endfunction
 
 function! scnvim#sclang#close() abort
-  try
+  if scnvim#sclang#is_running()
     let s:is_exiting = 1
-    call jobstop(s:sclang_job.id)
+    call scnvim#sclang#send_silent('0.exit')
+    call jobwait([s:sclang_job.id], 1000)
     call scnvim#lua#deinit()
-  catch
+  else
     call scnvim#util#err('sclang is not running')
-  endtry
-  let s:is_exiting = 0
+  endif
 endfunction
 
 function! scnvim#sclang#recompile() abort
-  call scnvim#sclang#send_silent('Server.quitAll;')
-  let s:recompling_class_library = 1
-  " on_exit callback will restart sclang
-  call scnvim#sclang#close()
+lua << EOF
+local scnvim = require('scnvim')
+scnvim.eval('SCNvim.port', function(res)
+  local path = vim.api.nvim_call_function('expand', {'%:p'})
+  scnvim.send('thisProcess.recompile')
+  scnvim.send(string.format('SCNvim.port = %d', res))
+  scnvim.send(string.format('SCNvim.currentPath = "%s"', path))
+end)
+EOF
 endfunction
 
 function! scnvim#sclang#send(data) abort
@@ -54,23 +60,19 @@ function! scnvim#sclang#send_silent(data) abort
 endfunction
 
 function! scnvim#sclang#is_running() abort
-  return exists('s:sclang_job') && !empty(s:sclang_job)
+  return exists('s:sclang_job') && has_key(s:sclang_job, 'id') && jobwait([s:sclang_job.id], 0)[0] == -1
 endfunction
 
 " job handlers
-let s:Sclang = {}
 
 function! s:Sclang.new() abort
-  let options = {
-        \ 'name': 'sclang',
-        \ 'bufnr': 0,
-        \ }
+  let options = { 'name': 'sclang' }
   let settings = scnvim#util#get_user_settings()
   let job = extend(copy(s:Sclang), options)
   let rundir = expand('%:p:h')
+  let prg = settings.paths.sclang_executable
 
   let job.bufnr = scnvim#postwindow#create()
-  let prg = settings.paths.sclang_executable
   let job.cmd = [prg, '-i', 'scvim', '-d', rundir]
   let job.id = jobstart(job.cmd, job)
 
@@ -79,7 +81,6 @@ function! s:Sclang.new() abort
   elseif job.id == -1
     throw 'could not find sclang executable'
   endif
-
   return job
 endfunction
 
@@ -99,20 +100,14 @@ endfunction
 let s:Sclang.on_stderr = function(s:Sclang.on_stdout)
 
 function! s:Sclang.on_exit(id, data, event) abort
-  if s:vim_exiting
-    return
-  endif
   call scnvim#postwindow#destroy()
   unlet s:sclang_job
-  if s:recompling_class_library
-    let s:recompling_class_library = 0
-    call scnvim#sclang#open()
-  endif
 endfunction
 
 " helpers
+
 function! s:send(cmd) abort
-  if exists('s:sclang_job')
+  if scnvim#sclang#is_running()
     call chansend(s:sclang_job.id, a:cmd)
   endif
 endfunction
