@@ -86,9 +86,6 @@ endfunction
 
 let s:chunks = ['']
 function! s:Sclang.on_stdout(id, data, event) dict abort
-  if s:is_exiting
-    return
-  endif
   let s:chunks[-1] .= a:data[0]
   call extend(s:chunks, a:data[1:])
   for line in s:chunks
@@ -116,6 +113,9 @@ function! s:send(cmd) abort
 endfunction
 
 function! s:receive(self, data) abort
+  if s:is_exiting
+    return
+  endif
   let bufnr = get(a:self, 'bufnr')
   let winnr = bufwinid(bufnr)
   " scan for ERROR: marker in sclang stdout
