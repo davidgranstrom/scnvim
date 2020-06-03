@@ -81,7 +81,11 @@ function scnvim.send(expr)
 end
 
 function scnvim.install()
-  install.install_classes()
+  install.link_classes()
+end
+
+function scnvim.uninstall()
+  install.unlink_classes()
 end
 
 return scnvim

@@ -11,25 +11,10 @@ local home_dir = uv.os_homedir()
 local extension_dirs = {
   Darwin = home_dir .. '/Library/Application Support/SuperCollider/Extensions',
   Linux = home_dir .. '/.local/share/SuperCollider/Extensions',
-  Windows = '%LOCALAPPDATA%\\SuperCollider\\Extensions',
+  Windows = '%LOCALAPPDATA%/SuperCollider/Extensions',
 }
 
 -- Utils
-
-local function get_ext_dir()
-  local sysname = uv.os_uname().sysname
-  local dir = extension_dirs[sysname]
-  if not dir then
-    return nil, 'Could not get SuperCollider Extensions dir'
-  end
-  return dir
-end
-
--- return Extensions dir with path separator post-fix
-local function get_scide_dir()
-  local ext_dir = assert(get_ext_dir())
-  return ext_dir .. utils.path_sep .. 'scide_scvim'
-end
 
 local function is_symlink(path)
   local stat = uv.fs_lstat(path)
@@ -47,38 +32,43 @@ local function is_dir(path)
   return false
 end
 
--- Stages
-
---- Remove 'scide_scvim' symlink if it exists, otherwise do nothing.
-local function unlink_old_install()
-  local lpath = get_scide_dir()
-  if is_symlink(lpath) then
-    return assert(uv.fs_unlink(lpath), 'Could not unlink ' .. lpath)
+local function get_ext_dir()
+  local sysname = uv.os_uname().sysname
+  local dir = extension_dirs[sysname]
+  if not dir then
+    return nil, 'Could not get SuperCollider Extensions dir'
   end
-  return true
+  return dir
 end
 
---- Create a symlink to the SCNvim classes
-local function link_classes()
-  local scide_dir = get_scide_dir()
-  local link_target = scide_dir .. utils.path_sep .. 'scnvim'
-  if not is_dir(scide_dir) then
-    -- libuv does not have mkdir -p
-    utils.vimcall('mkdir', {scide_dir, 'p'})
-  end
-  -- create the link
-  if not is_symlink(link_target) then
-    local source = scnvim_root_dir .. utils.path_sep .. 'sc'
-    assert(uv.fs_symlink(source, link_target, {'dir', true}))
-  end
-  return true
+local function get_target_dir()
+  local ext_dir = assert(get_ext_dir())
+  return ext_dir .. '/scide_scnvim'
 end
 
 -- Interface
 
-function M.install_classes()
-  assert(unlink_old_install())
-  assert(link_classes())
+--- Create a symlink to the SCNvim classes
+function M.link_classes()
+  local link_target = get_target_dir()
+  local target_exists = uv.fs_stat(link_target)
+  -- create the link
+  if not target_exists then
+    local source = scnvim_root_dir .. '/scide_scnvim'
+    assert(uv.fs_symlink(source, link_target, {'dir', true}))
+    print('[scnvim] Installed to: ' .. link_target)
+  end
+end
+
+--- Remove symlink to the SCNvim classes
+function M.unlink_classes()
+  local link_target = get_target_dir()
+  local target_exists = uv.fs_stat(link_target)
+  -- remove the link
+  if is_symlink(link_target) then
+    assert(uv.fs_unlink(link_target))
+    print('[scnvim] Uninstalled ' .. link_target)
+  end
 end
 
 return M

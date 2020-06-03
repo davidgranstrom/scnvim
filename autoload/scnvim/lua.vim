@@ -11,7 +11,3 @@ endfunction
 function! scnvim#lua#deinit() abort
   lua require('scnvim').deinit()
 endfunction
-
-function! scnvim#lua#install() abort
-  lua require('scnvim').install()
-endfunction
