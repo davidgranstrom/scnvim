@@ -134,10 +134,9 @@ HELP SYSTEM                                                 *scnvim-help-system*
 SCNvim can be configured to render SCDoc help files (.schelp) to plain text
 and display the result in a split window, much like Nvim's default help system.
 
-The scnvim help system uses `pandoc` to convert the HTML help file into plain
-text with some additional vim-help markup. Pandoc is therefor a dependency for
-this feature, it is available for download in most package managers. See the
-pandoc homepage[1] for more information.
+The scnvim help system needs a program to convert HTML help files into plain
+text. By default it looks for `pandoc`[1], so it should be enough to have `pandoc`
+accessible in your `$PATH`.
 
 Set the global variable `g:scnvim_scdoc` in your `init.vim` to enable the
 help system.
@@ -157,6 +156,25 @@ more about how the 'quickfix' window works.
 To see an overview (outline) of the content of the help file press `gO`. This
 will open a window local quickfix window (a 'location-list'), use this list to
 jump to different sections of the document.
+
+Customization ~
+
+If you want to use another program as html to plain text converter, or if you
+have `pandoc` installed but not accessible in your `$PATH` you can set
+`g:scnvim_scdoc_render_prg` to point to an executable of your choice. If you
+are not using `pandoc` you will also need to supply an argument string which
+will be used for file input and output. The default format string is:
+>
+  let g:scnvim_scdoc_render_args = '% --from html --to plain -o %'
+<
+Note the two sclang format symbols ('%'), the first '%' represents the input file
+(html) and the second one is the output file (txt).
+
+A complete custom example using `html2text`:
+>
+  let g:scnvim_scdoc_render_prg = '/usr/local/bin/html2text'
+  let g:scnvim_scdoc_render_args = '% -o %'
+<
 
 [1]: https://pandoc.org/
 

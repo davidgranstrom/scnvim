@@ -68,17 +68,22 @@ function! scnvim#util#find_sclang_executable() abort
   throw 'could not find sclang exeutable'
 endfunction
 
-function! scnvim#util#find_pandoc_executable() abort
-  let exe = get(g:, 'scnvim_pandoc_executable', '')
+function! scnvim#util#find_scdoc_render_prg() abort
+  let exe = get(g:, 'scnvim_scdoc_render_prg', '')
   if !empty(exe)
     " user defined
     return expand(exe)
   elseif !empty(exepath('pandoc'))
-    " in $PATH
+    " default
     return exepath('pandoc')
   else
     return ''
   endif
+endfunction
+
+function! scnvim#util#get_scdoc_render_args() abort
+  " default render args
+  return get(g:, 'scnvim_scdoc_render_args', '% --from html --to plain -o %')
 endfunction
 
 function! scnvim#util#generate_tags() abort
@@ -147,10 +152,10 @@ function! scnvim#util#get_user_settings() abort
         \ }
 
   let sclang_executable = scnvim#util#find_sclang_executable()
-  let pandoc_executable = scnvim#util#find_pandoc_executable()
+  let scdoc_render_prg = scnvim#util#find_scdoc_render_prg()
   let paths = {
         \ 'sclang_executable': sclang_executable,
-        \ 'pandoc_executable': pandoc_executable,
+        \ 'scdoc_render_prg': scdoc_render_prg,
         \ }
 
   let settings = {

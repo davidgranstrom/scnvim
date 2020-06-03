@@ -39,3 +39,11 @@ if exists('g:scnvim_udp_port')
         \ in SuperCollider.'
   echohl None
 endif
+
+if exists('g:scnvim_pandoc_executable')
+  echohl WarningMsg
+  echom '[scnvim] g:scnvim_pandoc_executable is deprecated.
+        \ Use g:scnvim_scdoc_render_prg instead.
+        \ See :h scnvim-help-system for more details.'
+  echohl None
+endif
