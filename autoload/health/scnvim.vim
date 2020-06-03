@@ -41,19 +41,23 @@ function! s:check_sclang_executable() abort
   endtry
 endfunction
 
-function! s:check_pandoc_executable() abort
-  let user_pandoc = get(g:, 'scnvim_pandoc_executable')
-  if !empty(user_pandoc)
-    call health#report_info('using g:scnvim_pandoc_executable = ' . user_pandoc)
+function! s:check_scdoc_render_prg() abort
+  let scdoc_prg = get(g:, 'scnvim_scdoc_render_prg')
+  if !empty(scdoc_prg)
+    call health#report_info('using g:scnvim_scdoc_render_prg = ' . scdoc_prg)
   endif
+  let scdoc_args = scnvim#util#get_scdoc_render_args()
+  if !empty(scdoc_args)
+    call health#report_info('using g:scnvim_scdoc_render_args = ' . scdoc_args)
+  endif
+  " default
   try
-    let pandoc = scnvim#util#find_pandoc_executable()
-    call health#report_info('pandoc executable: ' . pandoc)
+    let exe = scnvim#util#find_scdoc_render_prg()
+    call health#report_info('scdoc render program: ' . exe)
   catch
     call health#report_info(
-          \ 'could not find pandoc executable.',
-          \ 'set g:scnvim_pandoc_executable or add pandoc to your $PATH',
-          \ 'This is an optional dependency and only needed for SCDoc integration.'
+          \ 'Could not find scdoc render program. See :h scnvim-help-system for more information.
+          \  This is an optional dependency and only needed for SCDoc integration.'
           \ )
   endtry
 endfunction
@@ -63,5 +67,5 @@ function! health#scnvim#check() abort
   call s:check_minimum_nvim_version()
   call s:check_timers()
   call s:check_sclang_executable()
-  call s:check_pandoc_executable()
+  call s:check_scdoc_render_prg()
 endfunction

@@ -8,13 +8,13 @@ function! scnvim#help#open_help_for(subject) abort
   let internal = get(g:, 'scnvim_scdoc', 0)
   if internal
     let settings = scnvim#util#get_user_settings()
-    let pandoc_path = settings.paths.pandoc_executable 
-    let has_pandoc = !empty(pandoc_path)
-    if has_pandoc
-      let cmd = printf('SCNvim.openHelpFor("%s", "", "%s");',
-            \ a:subject, pandoc_path)
+    let scdoc_renderer = settings.paths.scdoc_render_prg
+    let scdoc_render_args = scnvim#util#get_scdoc_render_args()
+    if !empty(scdoc_renderer)
+      let cmd = printf('SCNvim.openHelpFor("%s", "", "%s", "%s");',
+            \ a:subject, scdoc_renderer, scdoc_render_args)
     else
-      call scnvim#util#err('Could not find pandoc executable.')
+      call scnvim#util#err('Could not find g:scnvim_scdoc_render_prg')
     endif
   else
     let cmd = printf('HelpBrowser.openHelpFor("%s");', a:subject)
@@ -57,13 +57,13 @@ endfunction
 
 function! scnvim#help#render(uri, pattern) abort
   let settings = scnvim#util#get_user_settings()
-  let pandoc_path = settings.paths.pandoc_executable
-  let has_pandoc = !empty(pandoc_path)
-  if has_pandoc
-    let cmd = printf("SCNvim.renderMethod(\"%s\", \"%s\", \"%s\")",
-          \ a:uri, a:pattern, pandoc_path)
+  let scdoc_renderer = settings.paths.scdoc_render_prg
+  let scdoc_render_args = scnvim#util#get_scdoc_render_args()
+  if !empty(scdoc_renderer)
+    let cmd = printf('SCNvim.renderMethod("%s", "%s", "%s", "%s")',
+          \ a:uri, a:pattern, scdoc_renderer, scdoc_render_args)
     call scnvim#sclang#send_silent(cmd)
   else
-    call scnvim#util#err('Could not find pandoc executable.')
+    call scnvim#util#err('Could not find g:scnvim_scdoc_render_prg')
   endif
 endfunction
