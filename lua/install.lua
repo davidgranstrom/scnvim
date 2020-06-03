@@ -49,7 +49,7 @@ end
 -- Interface
 
 --- Create a symlink to the SCNvim classes
-function M.link_classes()
+function M.link()
   local link_target = get_target_dir()
   local target_exists = uv.fs_stat(link_target)
   -- create the link
@@ -61,14 +61,19 @@ function M.link_classes()
 end
 
 --- Remove symlink to the SCNvim classes
-function M.unlink_classes()
+function M.unlink()
   local link_target = get_target_dir()
-  local target_exists = uv.fs_stat(link_target)
   -- remove the link
   if is_symlink(link_target) then
     assert(uv.fs_unlink(link_target))
     print('[scnvim] Uninstalled ' .. link_target)
   end
+end
+
+--- Check if classes are link
+function M.check()
+  local link_target = get_target_dir()
+  return is_symlink(link_target) and link_target or nil
 end
 
 return M

@@ -13,6 +13,18 @@ function! s:check_minimum_nvim_version() abort
   endif
 endfunction
 
+function! s:check_linkage() abort
+  let path = luaeval("require('scnvim').check_install()")
+  if path != v:null
+    call health#report_ok('SCNvim classes installed: ' . path)
+  else
+    call health#report_error(
+          \ 'SCNvim SuperCollider classes are not installed',
+          \ ':call scnvim#install()'
+          \ )
+  end
+endfunction
+
 function! s:check_timers() abort
   if has('timers')
     call health#report_ok('has("timers") - success')
@@ -65,6 +77,7 @@ endfunction
 function! health#scnvim#check() abort
   call health#report_start('scnvim')
   call s:check_minimum_nvim_version()
+  call s:check_linkage()
   call s:check_timers()
   call s:check_sclang_executable()
   call s:check_scdoc_render_prg()
