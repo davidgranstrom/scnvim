@@ -24,14 +24,6 @@ local function is_symlink(path)
   return false
 end
 
-local function is_dir(path)
-  local stat = uv.fs_stat(path)
-  if stat then
-    return stat.type == 'directory'
-  end
-  return false
-end
-
 local function get_ext_dir()
   local sysname = uv.os_uname().sysname
   -- Windows is Windows_NT or WindowsNT
