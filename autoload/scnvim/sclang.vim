@@ -112,6 +112,8 @@ function! s:send(cmd) abort
   endif
 endfunction
 
+let s:max_lines = get(g:, 'scnvim_postwin_scrollback', 5000)
+
 function! s:receive(self, data) abort
   if s:is_exiting
     return
@@ -131,8 +133,13 @@ function! s:receive(self, data) abort
 
   call nvim_buf_set_lines(bufnr, -1, -1, v:true, [a:data])
 
+  let num_lines = nvim_buf_line_count(bufnr)
+  if s:max_lines > 0 && num_lines > s:max_lines
+    call nvim_buf_set_lines(bufnr, 0, s:max_lines / 2, v:true, [])
+    let num_lines = nvim_buf_line_count(bufnr)
+  endif
+
   if post_window_visible
-    let numlines = nvim_buf_line_count(bufnr)
-    call nvim_win_set_cursor(winnr, [numlines, 0])
+    call nvim_win_set_cursor(winnr, [num_lines, 0])
   endif
 endfunction

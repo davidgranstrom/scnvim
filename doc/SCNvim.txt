@@ -206,6 +206,11 @@ Automatically open post window on a SuperCollider error
 >
   let g:scnvim_postwin_auto_toggle = 1
 
+Set the scrollback limit for the post window. (default: 5000 lines)
+A value of -1 means infinite scrollback (use with care in high output situations).
+>
+  let g:scnvim_postwin_scrollback = 5000
+
 Eval flash~
 
 Duration of the highlight in milliseconds. A value of 0 disables eval flash.
