@@ -64,7 +64,7 @@ function M.unlink()
   end
 end
 
---- Check if classes are link
+--- Check if classes are linked
 function M.check()
   local link_target = get_target_dir()
   return is_symlink(link_target) and link_target or nil
