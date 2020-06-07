@@ -62,70 +62,45 @@ tracker](https://github.com/davidgranstrom/scnvim/issues), thanks!
 
 ### Procedure
 
-#### 1. Install the vim plugin
-
 * Using [vim-plug](https://github.com/junegunn/vim-plug)
 
-  * Add this line to your init.vim
+  1. Add this line to your init.vim
 
     ```vim
-    Plug 'davidgranstrom/scnvim'
+    Plug 'davidgranstrom/scnvim', { 'do': {-> scnvim#install() } }
     ```
 
-  * Open nvim and run `:PlugInstall`
+  2. Open nvim and run `:PlugInstall`
 
 * Using the internal package manager
 
-  * Manually clone to your plugin directory. If you used a different directory for other plugins, use that instead.
+  1. Manually clone to your plugin directory. If you used a different directory for other plugins, use that instead.
 
     ```shell
     mkdir -p ~/.local/share/nvim/site/pack/git-plugins/start && cd "$_"
     git clone https://github.com/davidgranstrom/scnvim
     ```
 
-#### 2. Install the SCNvim SuperCollider classes
+  2. Open nvim and run `:call scnvim#install()`
 
-The SuperCollider classes are located in the `sc/` directory of this repo.
-
-This directory needs to be linked to your SuperCollider `Extensions` directory (run `Platform.userExtensionDir` in SuperCollider to see where it is located on your platform).
-
-1. Create a directory named `scide_scvim` in the Extensions directory. It is **important** that the directory is named `scide_scvim` (note the omitted 'n') to avoid conflicts with ScIDE.
-
-2. Create a `symlink` (symbolic link) to the `sc` directory of the plugin like in the example below.
-
-#### Examples
-
-* **macOS**
-
-    ```shell
-    # create scide_scvim directory
-    mkdir -p ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim
-
-    # create a symbolic link to 'sc' in the 'scide_scvim' directory named 'scnvim'
-    ln -s ~/.config/nvim/plugged/scnvim/sc ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim/scnvim
-    ```
-
-* **Linux**
-
-    It is **important** to use absolute paths. If `~` or `$HOME` or other aliases for `/home/<user>` is used the symbolic link will be "dangling" which renders a situation where sclang crashes immediately when started.
-
-    ```shell
-    # create scide_scvim directory
-    mkdir -p $HOME/.local/share/SuperCollider/Extensions/scide_scvim
-    
-    # create a symbolic link to 'sc' in the 'scide_scvim' directory named 'scnvim'
-    ln -s /home/<USER>/.config/nvim/plugged/scnvim/sc /home/<USER>/.local/share/SuperCollider/Extensions/scide_scvim/scnvim
-    ```
-
-    If the above symlink does not work (you can tell this by opening up a
-    SuperCollider file and running `:SCNvimStart` - if something's wrong the
-    post window will contain errors about SC not being able to find the SCNvim
-    class files), make sure the path to the vim plugin is correct. Depending on
-    how you have configured nvim, it might be `/home/<USER>/.vim/plugged/scnvim/sc`.
-
-#### 3. Starting SCNvim
+#### Starting SCNvim
 
 Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
+
+### Uninstall
+
+1. Run `:call scnvim#uninstall()`
+    - You should get a message that the `SCNvim.sc` classes have been unlinked.
+
+2. Remove the plugin according to how you've installed it (see Procedure above.)
+
+### Troubleshooting
+
+If something doesn't work with the installation method above, the first thing
+to try is `:checkhealth` in nvim. This will give you an indication on what's
+not working, and information on how to resolve the issue.
+
+If you want to do a manual installation instead take a look in the [wiki](https://github.com/davidgranstrom/scnvim/wiki/Manual-installation-of-SuperCollider-classes).
 
 ## Syntax highlighting
 
