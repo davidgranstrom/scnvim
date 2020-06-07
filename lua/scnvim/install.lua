@@ -2,7 +2,7 @@
 --- Cross platform installation of SCNvim SuperCollider classes.
 
 local M = {}
-local utils = require('utils')
+local utils = require('scnvim/utils')
 local uv = vim.loop
 
 local scnvim_root_dir = vim.api.nvim_get_var('scnvim_root_dir')

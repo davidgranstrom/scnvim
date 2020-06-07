@@ -1,7 +1,6 @@
-local udp = require('udp')
-local utils = require('utils')
-local help = require('help')
-local install = require('install')
+local udp = require('scnvim/udp')
+local utils = require('scnvim/utils')
+local help = require('scnvim/help')
 
 local scnvim = {}
 local eval_callback = nil
@@ -78,18 +77,6 @@ end
 
 function scnvim.send(expr)
   utils.send_to_sc(expr)
-end
-
-function scnvim.install()
-  install.link()
-end
-
-function scnvim.uninstall()
-  install.unlink()
-end
-
-function scnvim.check_install()
-  return install.check()
 end
 
 return scnvim

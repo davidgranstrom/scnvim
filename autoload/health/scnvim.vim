@@ -14,7 +14,7 @@ function! s:check_minimum_nvim_version() abort
 endfunction
 
 function! s:check_linkage() abort
-  let path = luaeval("require('scnvim').check_install()")
+  let path = luaeval("require('scnvim/install').check()")
   if path != v:null
     call health#report_ok('SCNvim classes installed: ' . path)
   else

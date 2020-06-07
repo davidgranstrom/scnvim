@@ -52,11 +52,11 @@ endfunction
 " installation
 
 function! scnvim#install() abort
-  lua require('scnvim').install()
+  lua require('scnvim/install').link()
 endfunction
 
 function! scnvim#uninstall() abort
-  lua require('scnvim').uninstall()
+  lua require('scnvim/install').unlink()
 endfunction
 
 " helpers
