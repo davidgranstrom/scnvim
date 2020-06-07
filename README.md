@@ -4,6 +4,13 @@
 
 [SuperCollider][supercollider] integration for [Neovim][neovim]
 
+## Breaking change for version 1.0.0
+
+If you're reading this because SuperCollider cannot find `SCNvim` on startup,
+all you have to do is `:call scnvim#install()` to fix the linkage.
+
+Head over to the [new installation instructions]() and update your config!
+
 ## Note
 
 Please note that this plugin is still in active development. It should be
