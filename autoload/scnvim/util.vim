@@ -1,7 +1,13 @@
 scriptencoding utf-8
 
+let s:is_win = has('win32')
+
 function! scnvim#util#err(msg) abort
   echohl ErrorMsg | echom '[scnvim] ' . a:msg | echohl None
+endfunction
+
+function! scnvim#util#win_escape(path)
+  return (s:is_win && !&shellslash) ? escape(a:path, '\') : a:path
 endfunction
 
 function! scnvim#util#echo_args() abort
@@ -90,6 +96,7 @@ function! scnvim#util#generate_tags() abort
   let is_running = scnvim#sclang#is_running()
   if is_running
     let root_dir = get(g:, 'scnvim_root_dir')
+    let root_dir = scnvim#util#win_escape(root_dir)
     call scnvim#sclang#send_silent(printf('SCNvim.generateAssets("%s")', root_dir))
   else
     call scnvim#util#err('sclang is not started')
