@@ -6,7 +6,7 @@ function! scnvim#util#err(msg) abort
   echohl ErrorMsg | echom '[scnvim] ' . a:msg | echohl None
 endfunction
 
-function! scnvim#util#win_escape(path)
+function! scnvim#util#win_escape(path) abort
   return (s:is_win && !&shellslash) ? escape(a:path, '\') : a:path
 endfunction
 
