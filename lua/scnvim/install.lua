@@ -13,12 +13,16 @@ local function get_scnvim_root_dir()
   table.remove(package_path, path_len)
   table.remove(package_path, path_len - 1)
   local dir = ''
-  for _,element in ipairs(package_path) do
-    if element ~= '' then
-      dir = dir .. utils.path_sep .. element
+  for _, element in ipairs(package_path) do
+    -- first element is empty on unix
+    if element == '' then
+      dir = utils.path_sep
+    else
+      dir = dir .. element .. utils.path_sep
     end
   end
   assert(dir ~= '', '[scnvim] Could not get scnvim root path')
+  dir = dir:sub(1, -2) -- delete trailing slash
   return dir
 end
 
