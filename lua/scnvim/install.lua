@@ -5,8 +5,30 @@ local M = {}
 local utils = require('scnvim/utils')
 local uv = vim.loop
 
-local scnvim_root_dir = vim.api.nvim_get_var('scnvim_root_dir')
+-- Get the root directory of the plugin
+local function get_scnvim_root_dir()
+  local package_path = package.searchpath('scnvim', package.path)
+  package_path = vim.split(package_path, utils.path_sep, true)
+  local path_len = utils.tbl_len(package_path)
+  table.remove(package_path, path_len)
+  table.remove(package_path, path_len - 1)
+  local dir = ''
+  for _, element in ipairs(package_path) do
+    -- first element is empty on unix
+    if element == '' then
+      dir = utils.path_sep
+    else
+      dir = dir .. element .. utils.path_sep
+    end
+  end
+  assert(dir ~= '', '[scnvim] Could not get scnvim root path')
+  dir = dir:sub(1, -2) -- delete trailing slash
+  return dir
+end
+
+local scnvim_root_dir = get_scnvim_root_dir()
 local home_dir = uv.os_homedir()
+
 -- indexed with keys returned by uname
 local extension_dirs = {
   Darwin = home_dir .. '/Library/Application Support/SuperCollider/Extensions',
