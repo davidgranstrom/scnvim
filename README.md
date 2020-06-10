@@ -9,7 +9,9 @@
 If you're reading this because SuperCollider cannot find `SCNvim` on startup,
 all you have to do is `:call scnvim#install()` to fix the linkage.
 
-Head over to the [new installation instructions]() and update your config!
+Head over to the [new installation instructions](https://github.com/davidgranstrom/scnvim#installation) and update your config!
+
+You may also now safely delete the old symlink in `Extensions/scide_scvim/scnvim`.
 
 ## Note
 
