@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/davidgranstrom/scnvim.svg?branch=master)](https://travis-ci.com/davidgranstrom/scnvim)
 
-[SuperCollider][supercollider] integration for [Neovim][neovim]
+[Neovim][neovim] frontend for [SuperCollider][supercollider]
 
 ## Breaking change for version 1.0.0
 
@@ -12,13 +12,6 @@ all you have to do is `:call scnvim#install()` to fix the linkage.
 Head over to the [new installation instructions](https://github.com/davidgranstrom/scnvim#installation) and update your config!
 
 You may also now safely delete the old symlink in `Extensions/scide_scvim/scnvim`.
-
-## Note
-
-Please note that this plugin is still in active development. It should be
-stable enough by now for everyday use. If you encounter any bugs, or have ideas
-for new features, please report them on the [issue
-tracker](https://github.com/davidgranstrom/scnvim/issues), thanks!
 
 ## Features
 
@@ -34,33 +27,7 @@ tracker](https://github.com/davidgranstrom/scnvim/issues), thanks!
 * Supports lazy loading
 * Context aware evaluation (like `Cmd-Enter` in scIDE)
 * Flashy eval flash (configurable)
-* Partial `Document` support (e.g. `thisProcess.nowExecutingPath`)
-
-## Showcase
-
-### Post window displayed in a regular vim buffer
-
-* Toggle the post window buffer by pressing `<Enter>` in normal mode or `<M-Enter>` in insert mode.
-
-![post window](https://user-images.githubusercontent.com/672917/51938975-b5380400-240e-11e9-8e28-428c7b811501.gif)
-
-### Interactive argument hints in the command-line area
-
-* Arguments are automatically displayed after typing the opening brace.
-
-![argument hints](https://user-images.githubusercontent.com/672917/51938974-b5380400-240e-11e9-832a-829b48992bf0.gif)
-
-### Status line
-
-* Displays server status in the status line
-
-![server status](https://user-images.githubusercontent.com/672917/51938976-b5380400-240e-11e9-9799-58c1cde5c47c.gif)
-
-### Snippet generator
-
-* The snippet engine used here is [UltiSnips][UltiSnips] together with [deoplete](https://github.com/Shougo/deoplete.nvim) for auto completion.
-
-![snippets](https://user-images.githubusercontent.com/672917/51938977-b5d09a80-240e-11e9-82fb-758471e45fa1.gif)
+* Partial `Document` support (e.g. `thisProcess.nowExecutingPath` etc.)
 
 ## Installation
 
