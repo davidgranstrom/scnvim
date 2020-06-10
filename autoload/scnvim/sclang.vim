@@ -41,10 +41,9 @@ function! scnvim#sclang#recompile() abort
 lua << EOF
 local scnvim = require('scnvim')
 scnvim.eval('SCNvim.port', function(res)
-  local path = vim.api.nvim_call_function('expand', {'%:p'})
   scnvim.send('thisProcess.recompile')
   scnvim.send(string.format('SCNvim.port = %d', res))
-  scnvim.send(string.format('SCNvim.currentPath = "%s"', path))
+  vim.api.nvim_call_function('scnvim#document#set_current_path', {})
 end)
 EOF
 endfunction
@@ -113,6 +112,7 @@ function! s:send(cmd) abort
 endfunction
 
 let s:max_lines = get(g:, 'scnvim_postwin_scrollback', 5000)
+let s:not_win = !has('win32')
 
 function! s:receive(self, data) abort
   if s:is_exiting
@@ -131,7 +131,8 @@ function! s:receive(self, data) abort
     endif
   endif
 
-  call nvim_buf_set_lines(bufnr, -1, -1, v:true, [a:data])
+  let data = s:not_win ? a:data : substitute(a:data, '\r', '', '')
+  call nvim_buf_set_lines(bufnr, -1, -1, v:true, [data])
 
   let num_lines = nvim_buf_line_count(bufnr)
   if s:max_lines > 0 && num_lines > s:max_lines
