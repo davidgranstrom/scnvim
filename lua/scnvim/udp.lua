@@ -3,6 +3,7 @@ local uv = vim.loop
 
 local M = {
   udp = nil,
+  port = 0,
 }
 
 local HOST = '127.0.0.1'
@@ -16,6 +17,7 @@ function M.start_server(on_receive)
   M.udp = handle
   -- let sclang know which port the server is running on
   local port = handle:getsockname().port
+  M.port = port
   utils.send_to_sc('SCNvim.port = '..port)
 end
 
