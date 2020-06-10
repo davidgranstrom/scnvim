@@ -1,6 +1,6 @@
-local udp = require('udp')
-local utils = require('utils')
-local help = require('help')
+local udp = require('scnvim/udp')
+local utils = require('scnvim/utils')
+local help = require('scnvim/help')
 
 local scnvim = {}
 local eval_callback = nil

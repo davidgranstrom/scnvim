@@ -1,7 +1,7 @@
 --- scnvim help system
 -- @module help
 
-local utils = require('utils')
+local utils = require('scnvim/utils')
 local uv = vim.loop
 local M = {}
 

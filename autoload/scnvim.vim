@@ -49,7 +49,18 @@ function! scnvim#hard_stop() abort
   call scnvim#sclang#send_silent('thisProcess.hardStop')
 endfunction
 
+" installation
+
+function! scnvim#install() abort
+  lua require('scnvim/install').link()
+endfunction
+
+function! scnvim#uninstall() abort
+  lua require('scnvim/install').unlink()
+endfunction
+
 " helpers
+
 function! s:get_visual_selection() abort
   let [lnum1, col1] = getpos("'<")[1:2]
   let [lnum2, col2] = getpos("'>")[1:2]
