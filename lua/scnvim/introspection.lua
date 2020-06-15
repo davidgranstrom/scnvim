@@ -1,5 +1,5 @@
 local M = {}
-local utils = require('utils')
+local utils = require('scnvim/utils')
 local api = vim.api
 
 local function call(fn, args)
