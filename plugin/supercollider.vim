@@ -11,7 +11,6 @@ let g:scnvim_loaded = 1
 
 let g:scnvim_root_dir = expand('<sfile>:h:h')
 let g:scnvim_stl_widgets = {}
-let g:scnvim_arghints_float_id = 0
 
 " augroup to be used w/ ftplugin
 augroup scnvim
