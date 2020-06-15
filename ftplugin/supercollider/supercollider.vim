@@ -30,7 +30,9 @@ let enable_arghints = get(g:, 'scnvim_echo_args', 1)
 if enable_arghints
   augroup scnvim_echo_args
     autocmd! * <buffer>
-    autocmd InsertCharPre <buffer> call scnvim#util#echo_args_insert()
+    " autocmd InsertCharPre <buffer> call scnvim#util#echo_args_insert()
+    " autocmd InsertCharPre <buffer> call luaeval('require("scnvim").introspection.highlight_arg()')
+    autocmd InsertCharPre <buffer> call luaeval('require("scnvim/introspection").echo_args()')
   augroup END
   " for argument hints
   let no_float = get(g:, 'scnvim_arghints_float', 1)
