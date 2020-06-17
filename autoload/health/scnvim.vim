@@ -1,6 +1,6 @@
 " File: autoload/health/scnvim.vim
 " Author: David Granström
-" Description: Health check
+" Description: Health checks
 
 scriptencoding utf-8
 
@@ -54,24 +54,19 @@ function! s:check_sclang_executable() abort
 endfunction
 
 function! s:check_scdoc_render_prg() abort
-  let scdoc_prg = get(g:, 'scnvim_scdoc_render_prg')
+  let scdoc_prg = scnvim#util#find_scdoc_render_prg()
   if !empty(scdoc_prg)
     call health#report_info('using g:scnvim_scdoc_render_prg = ' . scdoc_prg)
+    let scdoc_args = scnvim#util#get_scdoc_render_args()
+    if !empty(scdoc_args)
+      call health#report_info('using g:scnvim_scdoc_render_args = ' . scdoc_args)
+    endif
+  else
+    call health#report_info(join([
+          \ 'Could not find scdoc render program. See :h scnvim-help-system for more information.',
+          \ 'This is an optional dependency and only needed for SCDoc integration.'
+          \ ], "\n"))
   endif
-  let scdoc_args = scnvim#util#get_scdoc_render_args()
-  if !empty(scdoc_args)
-    call health#report_info('using g:scnvim_scdoc_render_args = ' . scdoc_args)
-  endif
-  " default
-  try
-    let exe = scnvim#util#find_scdoc_render_prg()
-    call health#report_info('scdoc render program: ' . exe)
-  catch
-    call health#report_info(
-          \ 'Could not find scdoc render program. See :h scnvim-help-system for more information.
-          \  This is an optional dependency and only needed for SCDoc integration.'
-          \ )
-  endtry
 endfunction
 
 function! health#scnvim#check() abort
