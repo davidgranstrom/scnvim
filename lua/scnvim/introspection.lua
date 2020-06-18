@@ -1,8 +1,10 @@
 local M = {}
 local utils = require('scnvim/utils')
 local api = vim.api
+local scnvim
 
 M.float_id = 0
+M.introspection = {}
 
 local function call(fn, args)
   return utils.vimcall(fn, args or {})
@@ -116,6 +118,17 @@ function M.try_close_float()
     vim.api.nvim_win_close(M.float_id, true)
     M.float_id = 0
   end
+end
+
+function M.create()
+  local tmppath = call('tempname')
+  local expr = string.format('SCNvim.createIntrospection(\\"%s\\")', tmppath)
+  scnvim = scnvim or require 'scnvim'
+  scnvim.eval(expr, function()
+    utils.readFile(tmppath, vim.schedule_wrap(function(data)
+      M.introspection = utils.json_decode(data)
+    end))
+  end)
 end
 
 return M

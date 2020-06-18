@@ -24,7 +24,7 @@
         SCDoc.renderer = SCNvimDocRenderer;
 
         urlString = SCNvimDoc.findHelpFile(text);
-		url = URI(urlString);
+        url = URI(urlString);
         brokenAction = {
             "Sorry no help for %".format(text).postln;
             ^nil;
@@ -68,5 +68,57 @@
     *renderMethod {|uri, pattern, renderPrg, renderArgs|
         var name = PathName(uri).fileNameWithoutExtension;
         SCNvim.openHelpFor(name, pattern, renderPrg, renderArgs);
+    }
+
+    *createIntrospection {|path|
+        var file, size;
+        var res = [];
+        Class.allClasses.do { |class|
+            var classData;
+            classData = [
+                class.name.asString,
+                class.class.name.asString,
+                class.superclass !? {class.superclass.name.asString},
+                class.filenameSymbol.asString,
+                class.charPos,
+                class.methods.collect { |m| this.serializeMethodDetailed(m) };
+            ];
+            res = res.add(classData);
+        };
+        size = res.size;
+        file = File.open(path, "w");
+        file.write("[");
+        res.do {|item, i|
+            item = item.collect {|x| if (x.isNil) { "null" } { x } };
+            file.write(item.cs);
+            if (i < (size - 1)) {
+                file.write(",");
+            }
+        };
+        file.write("]");
+        file.close;
+    }
+
+    *serializeMethodDetailed { arg method;
+        var args, data;
+        args = [];
+        if (method.argNames.size > 1) {
+            args = args ++ [
+                method.argNames.as(Array).asString,
+                method.prototypeFrame.collect { |val|
+                    val !? {
+                        if (val.class === Float) { val.asString } { val.cs }
+                    }
+                };
+            ].lace [2..];
+        };
+        data = [
+            method.ownerClass.name.asString,
+            method.name.asString,
+            method.filenameSymbol.asString,
+            method.charPos,
+            args
+        ];
+        ^data;
     }
 }
