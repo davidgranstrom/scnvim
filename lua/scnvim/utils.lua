@@ -1,3 +1,8 @@
+--- Utility functions.
+-- @module scnvim/utils
+-- @author David Granström
+-- @license GPLv3
+
 local M = {}
 
 ------------------

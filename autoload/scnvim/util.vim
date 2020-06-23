@@ -78,10 +78,10 @@ function! scnvim#util#find_scdoc_render_prg() abort
   let exe = get(g:, 'scnvim_scdoc_render_prg', '')
   if !empty(exe)
     " user defined
-    return expand(exe)
+    return scnvim#util#escape_path(expand(exe))
   elseif !empty(exepath('pandoc'))
     " default
-    return exepath('pandoc')
+    return scnvim#util#escape_path(exepath('pandoc'))
   else
     return ''
   endif

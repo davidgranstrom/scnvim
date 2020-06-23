@@ -19,7 +19,7 @@ function! scnvim#sclang#open() abort
   try
     let s:is_exiting = 0
     let s:sclang_job = s:Sclang.new()
-    call scnvim#lua#init()
+    lua require('scnvim').init()
     call scnvim#document#set_current_path()
   catch
     call scnvim#util#err(v:exception)
@@ -31,21 +31,24 @@ function! scnvim#sclang#close() abort
     let s:is_exiting = 1
     call scnvim#sclang#send_silent('0.exit')
     call jobwait([s:sclang_job.id], 1000)
-    call scnvim#lua#deinit()
+    lua require('scnvim').deinit()
   else
     call scnvim#util#err('sclang is not running')
   endif
 endfunction
 
 function! scnvim#sclang#recompile() abort
+if scnvim#sclang#is_running()
 lua << EOF
 local scnvim = require('scnvim')
-scnvim.eval('SCNvim.port', function(res)
-  scnvim.send('thisProcess.recompile')
-  scnvim.send(string.format('SCNvim.port = %d', res))
-  vim.api.nvim_call_function('scnvim#document#set_current_path', {})
-end)
+local udp = require('scnvim/udp')
+scnvim.send('thisProcess.recompile')
+scnvim.send(string.format('SCNvim.port = %d', udp.port))
+vim.api.nvim_call_function('scnvim#document#set_current_path', {})
 EOF
+else
+  call scnvim#util#err('sclang is not running')
+endif
 endfunction
 
 function! scnvim#sclang#send(data) abort

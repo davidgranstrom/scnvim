@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/davidgranstrom/scnvim.svg?branch=master)](https://travis-ci.com/davidgranstrom/scnvim)
 
-[SuperCollider][supercollider] integration for [Neovim][neovim]
+[Neovim][neovim] frontend for [SuperCollider][supercollider]
 
 ## Breaking change for version 1.0.0
 
@@ -12,13 +12,6 @@ all you have to do is `:call scnvim#install()` to fix the linkage.
 Head over to the [new installation instructions](https://github.com/davidgranstrom/scnvim#installation) and update your config!
 
 You may also now safely delete the old symlink in `Extensions/scide_scvim/scnvim`.
-
-## Note
-
-Please note that this plugin is still in active development. It should be
-stable enough by now for everyday use. If you encounter any bugs, or have ideas
-for new features, please report them on the [issue
-tracker](https://github.com/davidgranstrom/scnvim/issues), thanks!
 
 ## Features
 
@@ -34,33 +27,7 @@ tracker](https://github.com/davidgranstrom/scnvim/issues), thanks!
 * Supports lazy loading
 * Context aware evaluation (like `Cmd-Enter` in scIDE)
 * Flashy eval flash (configurable)
-* Partial `Document` support (e.g. `thisProcess.nowExecutingPath`)
-
-## Showcase
-
-### Post window displayed in a regular vim buffer
-
-* Toggle the post window buffer by pressing `<Enter>` in normal mode or `<M-Enter>` in insert mode.
-
-![post window](https://user-images.githubusercontent.com/672917/51938975-b5380400-240e-11e9-8e28-428c7b811501.gif)
-
-### Interactive argument hints in the command-line area
-
-* Arguments are automatically displayed after typing the opening brace.
-
-![argument hints](https://user-images.githubusercontent.com/672917/51938974-b5380400-240e-11e9-832a-829b48992bf0.gif)
-
-### Status line
-
-* Displays server status in the status line
-
-![server status](https://user-images.githubusercontent.com/672917/51938976-b5380400-240e-11e9-9799-58c1cde5c47c.gif)
-
-### Snippet generator
-
-* The snippet engine used here is [UltiSnips][UltiSnips] together with [deoplete](https://github.com/Shougo/deoplete.nvim) for auto completion.
-
-![snippets](https://user-images.githubusercontent.com/672917/51938977-b5d09a80-240e-11e9-82fb-758471e45fa1.gif)
+* Partial `Document` support (e.g. `thisProcess.nowExecutingPath` etc.)
 
 ## Installation
 
@@ -176,7 +143,7 @@ To remap any of the default mappings use the `nmap` command together with the na
 
 E.g. `nmap <F5> <Plug>(scnvim-send-block)`
 
-To disable all default mappings specify `let g:scnvim_no_mappings = 1` in your vimrc/init.vim
+To disable all default mappings add `let g:scnvim_no_mappings = 1` to your init.vim
 
 ## Commands
 
@@ -246,76 +213,6 @@ let g:scnvim_no_mappings = 1
 
 " set this variable to browse SuperCollider documentation in nvim (requires `pandoc`)
 let g:scnvim_scdoc = 1
-```
-
-## Example configuration
-
-This is not a recommended configuration but rather a way to show how a minimal `init.vim` could look to configure the plugin.
-
-```vim
-" vim-plug
-call plug#begin('path/to/plugin/directory')
-  Plug 'davidgranstrom/scnvim'
-  " (optional) for snippets
-  Plug 'SirVer/ultisnips'
-call plug#end()
-
-" scnvim
-"
-" post window at the bottom
-let g:scnvim_postwin_orientation = 'h'
-
-" remap send block
-nmap <F5> <Plug>(scnvim-send-block)
-
-" remap post window toggle
-nmap <Space>o <Plug>(scnvim-postwindow-toggle)
-
-" eval flash colors
-highlight SCNvimEval guifg=black guibg=cyan ctermfg=black ctermbg=cyan
-" this autocmd keeps the custom highlight when changing colorschemes
-augroup scnvim_vimrc
-  autocmd!
-  autocmd ColorScheme *
-        \ highlight SCNvimEval guifg=black guibg=cyan ctermfg=black ctermbg=cyan
-augroup END
-
-" hard coded path to sclang executable
-let g:scnvim_sclang_executable = '~/bin/sclang'
-
-" enable snippets support
-let g:UltiSnipsSnippetDirectories = ['UltiSnips', 'scnvim-data']
-
-" create a custom status line for supercollider buffers
-function! s:set_sclang_statusline()
-  setlocal stl=
-  setlocal stl+=%f
-  setlocal stl+=%=
-  setlocal stl+=%(%l,%c%)
-  setlocal stl+=\ \|
-  setlocal stl+=%24.24{scnvim#statusline#server_status()}
-endfunction
-
-augroup scnvim_stl
-  autocmd!
-  autocmd FileType supercollider call <SID>set_sclang_statusline()
-augroup END
-
-" lightline.vim example
-" let g:lightline = {}
-" let g:lightline.component_function = {
-"   \ 'server_status': 'scnvim#statusline#server_status',
-"   \ }
-"
-" function! s:set_sclang_lightline_stl()
-"   let g:lightline.active = {
-"   \ 'left':  [ [ 'mode', 'paste' ],
-"   \          [ 'readonly', 'filename', 'modified' ] ],
-"   \ 'right': [ [ 'lineinfo' ],
-"   \            [ 'percent' ],
-"   \            [ 'server_status'] ]
-"   \ }
-" endfunction
 ```
 
 ## Thanks to
