@@ -1,11 +1,14 @@
---- SCNvim installation module
---- Cross platform installation of SCNvim SuperCollider classes.
+--- scnvim installation module.
+-- Cross platform installation of SCNvim SuperCollider classes.
+-- @module scnvim/install
+-- @author David Granström
+-- @license GPLv3
 
 local M = {}
 local utils = require('scnvim/utils')
 local uv = vim.loop
 
--- Get the root directory of the plugin
+--- Get the root directory of the plugin.
 local function get_scnvim_root_dir()
   local package_path = package.searchpath('scnvim', package.path)
   package_path = vim.split(package_path, utils.path_sep, true)

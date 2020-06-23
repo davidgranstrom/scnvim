@@ -1,5 +1,7 @@
---- scnvim help system
--- @module help
+--- scnvim help system.
+-- @module scnvim/help
+-- @author David Granström
+-- @license GPLv3
 
 local utils = require('scnvim/utils')
 local uv = vim.loop
