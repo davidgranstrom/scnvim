@@ -105,8 +105,6 @@ function! s:Sclang.new() abort
       let job.cmd = job.cmd + ['-s']
   endif
 
-  echo job.cmd
-
   " Run Generated Command
   let job.id = jobstart(job.cmd, job)
 
