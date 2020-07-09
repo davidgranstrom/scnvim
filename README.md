@@ -214,7 +214,7 @@ let g:scnvim_no_mappings = 1
 " set this variable to browse SuperCollider documentation in nvim (requires `pandoc`)
 let g:scnvim_scdoc = 1
 
-" pass flags directly to sclang - options can be found by running 'sclang -h'
+" pass flags directly to sclang - see help file for more details, caveats, and further examples
 let g:scnvim_sclang_options = ['-u', 9999]
 
 ```

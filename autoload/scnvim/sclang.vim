@@ -75,37 +75,7 @@ function! s:Sclang.new() abort
   let prg = settings.paths.sclang_executable
 
   let job.bufnr = scnvim#postwindow#create()
-  let job.cmd = [prg, '-i', 'scnvim', '-d', rundir]
-
-  " Get Optional Command Line Parameters
-  let heap_growth = get(g:, 'scnvim_sclang_heap_growth', '')
-  let heap_size = get(g:, 'scnvim_sclang_heap_size', '')
-  let library_config_file = get(g:, 'scnvim_sclang_library_configuration_file', '')
-  let udp_listening_port = get(g:, 'scnvim_sclang_udp_listening_port', '')
-  let run_main_run_on_startup = get(g:, 'scnvim_sclang_run_main_run_on_startup', 0)
-  let run_main_stop_on_shutdown = get(g:, 'scnvim_sclang_run_main_stop_on_shutdown', 0)
-
-  " Append Optional Command Line Parameters if populated
-  if !empty(heap_growth)
-      let job.cmd = job.cmd + ['-g', expand(heap_growth)]
-  endif
-  if !empty(heap_size)
-      let job.cmd = job.cmd + ['-m', expand(heap_size)]
-  endif
-  if !empty(library_config_file)
-      let job.cmd = job.cmd + ['-l', expand(library_config_file)]
-  endif
-  if !empty(udp_listening_port)
-      let job.cmd = job.cmd + ['-u', expand(udp_listening_port)]
-  endif
-  if run_main_run_on_startup == 1
-      let job.cmd = job.cmd + ['-r']
-  endif
-  if run_main_stop_on_shutdown == 1
-      let job.cmd = job.cmd + ['-s']
-  endif
-
-  " Run Generated Command
+  let job.cmd = [prg, '-i', 'scnvim', '-d', rundir] + get(g:, 'scnvim_sclang_options', [])
   let job.id = jobstart(job.cmd, job)
 
   if job.id == 0
