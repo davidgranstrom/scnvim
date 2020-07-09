@@ -193,21 +193,6 @@ let g:scnvim_eval_flash_repeats = 2
 highlight SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
 ```
 
-### Sclang Executable Options
-```vim
-" Set heap growth [km] - sclang default = 256k
-let g:scnvim_sclang_heap_growth = '256k'
-" Set initial heap size [km] - sclang default =  2m
-let g:scnvim_sclang_heap_size = '2m'
-" Set library configuration file
-let g:scnvim_sclang_library_configuration_file = '/path/to/library/config.yaml'
-" Set UDP listening port - sclang default = 57120
-let g:scnvim_sclang_udp_listening_port = 57120
-" Call Main.run on startup
-let g:scnvim_sclang_run_main_run_on_startup = 0
-" Call Main.stop on shutdown
-let g:scnvim_sclang_run_main_stop_on_shutdown = 0
-
 ### Extras
 
 ```vim
@@ -228,6 +213,9 @@ let g:scnvim_no_mappings = 1
 
 " set this variable to browse SuperCollider documentation in nvim (requires `pandoc`)
 let g:scnvim_scdoc = 1
+
+" pass flags directly to sclang - options can be found by running 'sclang -h'
+let g:scnvim_sclang_options = ['-u', 9999]
 
 ```
 
