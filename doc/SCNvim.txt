@@ -250,6 +250,28 @@ Browse SuperCollider documentation in nvim (see |scnvim-help-system| for more in
 >
   let g:scnvim_scdoc = 1
 
+Sclang Options Customization ~
+
+If you wanted to pass options to the call that SCNVim uses when it starts
+sclang, you can use `g:scnvim_sclang_options` to add additional parameters.
+For example, if you wanted to change the udp port that sclang uses, you could
+set:
+>
+    let g:scnvim_sclang_options = ['-u', 9999]
+
+or if you wanted to change the yaml file it uses on startup, you could set:
+>
+    let g:scnvim_sclang_options = ['-l', "/path/to/config.yaml"]
+
+if you wanted to set both, you could use:
+>
+    let g:scnvim_sclang_options = ['-l', '/path/to/config.yaml', '-u', 9999]
+
+Note that the -i and the -d flags are already set by SCNVim, so they do not
+need to be used, and some parameters (i.e. -a, -v, -i and -D) will cause
+sclang to not behave nicely with SCNvim. This option is provided to the
+advanced user without any error checks, so be careful.
+
 ==============================================================================
 LICENSE                                                         *scnvim-license*
 

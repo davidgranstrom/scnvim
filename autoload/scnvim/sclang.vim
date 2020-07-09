@@ -75,7 +75,7 @@ function! s:Sclang.new() abort
   let prg = settings.paths.sclang_executable
 
   let job.bufnr = scnvim#postwindow#create()
-  let job.cmd = [prg, '-i', 'scnvim', '-d', rundir]
+  let job.cmd = [prg, '-i', 'scnvim', '-d', rundir] + get(g:, 'scnvim_sclang_options', [])
   let job.id = jobstart(job.cmd, job)
 
   if job.id == 0
