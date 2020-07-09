@@ -269,9 +269,9 @@ if you wanted to set both, you could use:
 
 Note that the -i and the -d flags are already set by SCNVim, so they do not
 need to be used, and some parameters (i.e. -a, -v, -i and -D) will cause
-sclang to not behave nicely with SCNvim. This option is provided as an
-advanced option without any error checks, so be careful when adding this
-option to your config.
+sclang to not behave nicely with SCNvim. This option is provided to the
+advanced user without any error checks, so be careful when adding to your
+config.
 
 
 ==============================================================================
