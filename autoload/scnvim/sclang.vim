@@ -38,17 +38,14 @@ function! scnvim#sclang#close() abort
 endfunction
 
 function! scnvim#sclang#recompile() abort
-if scnvim#sclang#is_running()
-lua << EOF
-local scnvim = require('scnvim')
-local udp = require('scnvim/udp')
-scnvim.send('thisProcess.recompile')
-scnvim.send(string.format('SCNvim.port = %d', udp.port))
-vim.api.nvim_call_function('scnvim#document#set_current_path', {})
-EOF
-else
-  call scnvim#util#err('sclang is not running')
-endif
+  if scnvim#sclang#is_running()
+    let port = luaeval('require("scnvim/udp").port')
+    call scnvim#sclang#send_silent("\x18") " recompile class library
+    call scnvim#sclang#send_silent('SCNvim.port = '.port)
+    call scnvim#document#set_current_path()
+  else
+    call scnvim#util#err('sclang is not running')
+  endif
 endfunction
 
 function! scnvim#sclang#send(data) abort
