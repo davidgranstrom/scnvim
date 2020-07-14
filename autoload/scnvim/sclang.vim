@@ -30,7 +30,11 @@ function! scnvim#sclang#close() abort
   if scnvim#sclang#is_running()
     let s:is_exiting = 1
     call scnvim#sclang#send_silent('0.exit')
-    call jobwait([s:sclang_job.id], 1000)
+    let result = jobwait([s:sclang_job.id], 1000)
+    " send SIGTERM if we can't call `0.exit`
+    if result[0] == -1
+      call jobstop(s:sclang_job.id)
+    endif
     lua require('scnvim').deinit()
   else
     call scnvim#util#err('sclang is not running')
