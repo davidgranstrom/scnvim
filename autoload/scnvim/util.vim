@@ -10,11 +10,14 @@ function! scnvim#util#escape_path(path) abort
   return (s:is_win && !&shellslash) ? escape(a:path, '\') : a:path
 endfunction
 
-function! scnvim#util#echo_args() abort
+function! scnvim#util#echo_args_insert() abort
   if v:char !=# '('
     return
   endif
+  call scnvim#util#echo_args()
+endfunction
 
+function! scnvim#util#echo_args() abort
   let l_num = line('.')
   let c_col = col('.') - 2
   let line = getline(l_num)
