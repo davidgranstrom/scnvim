@@ -39,8 +39,8 @@ if !exists('g:scnvim_no_mappings') || !g:scnvim_no_mappings
     imap <buffer> <M-L> <c-o><Plug>(scnvim-postwindow-clear)
   endif
 
-  if !hasmapto('<Plug>(scnvim-print-signature)', 'ni')
-    nmap <buffer> <C-k> <Plug>(scnvim-print-signature)
-    imap <buffer> <C-k> <c-o><Plug>(scnvim-print-signature)
+  if !hasmapto('<Plug>(scnvim-show-signature)', 'ni')
+    nmap <buffer> <C-k> <Plug>(scnvim-show-signature)
+    imap <buffer> <C-k> <c-o><Plug>(scnvim-show-signature)
   endif
 endif
