@@ -138,6 +138,7 @@ if (\SCNvim.asClass.notNil) {
 | `<CR>`  | Toggle post window buffer | `<Plug>(scnvim-postwindow-toggle)` | Insert, Normal |
 | `<M-L>` | Clear post window buffer | `<Plug>(scnvim-postwindow-clear)` | Insert, Normal |
 | `K` | Open documentation | Uses vim `keywordprg` | Normal |
+| `C-k` | Show function signature for object under cursor | `<Plug>(scnvim-show-signature)` | Insert, Normal |
 
 To remap any of the default mappings use the `nmap` command together with the name of the mapping.
 

@@ -96,17 +96,21 @@ MAPPINGS                                                       *scnvim-mappings*
                         Mode: Insert, Normal
                         Name: `<Plug>(scnvim-hard-stop)`
 
-<CR>                    Toggle post window buffer
+<CR>                    Toggle post window buffer.
                         Mode: Insert, Normal
                         Name: `<Plug>(scnvim-postwindow-toggle)`
 
-<M-L>                   Clear post window buffer
+<M-L>                   Clear post window buffer.
                         Mode:  Insert, Normal
                         Name: `<Plug>(scnvim-postwindow-clear)`
 
-K                       Open documentation
+K                       Open documentation.
                         See `keywordprg`
                         Mode: Normal
+
+<C-k>                   Show function signature for object under cursor.
+                        Mode:  Insert, Normal
+                        Name: `<Plug>(scnvim-show-signature)`
 
 Remapping~
 
