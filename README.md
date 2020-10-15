@@ -1,33 +1,31 @@
 # scnvim
 
-[![Build Status](https://travis-ci.com/davidgranstrom/scnvim.svg?branch=master)](https://travis-ci.com/davidgranstrom/scnvim)
+[Neovim][neovim] frontend for [SuperCollider][supercollider].
 
-[Neovim][neovim] frontend for [SuperCollider][supercollider]
-
-## Breaking change for version 1.0.0
-
-If you're reading this because SuperCollider cannot find `SCNvim` on startup,
-all you have to do is `:call scnvim#install()` to fix the linkage.
-
-Head over to the [new installation instructions](https://github.com/davidgranstrom/scnvim#installation) and update your config!
-
-You may also now safely delete the old symlink in `Extensions/scide_scvim/scnvim`.
+[![Build Status](https://travis-ci.com/davidgranstrom/scnvim.svg?branch=master)](https://travis-ci.com/davidgranstrom/scnvim) | [Documentation](https://github.com/davidgranstrom/scnvim/wiki) | [Showcase](https://github.com/davidgranstrom/scnvim/wiki/Showcase)
 
 ## Features
 
 * Post window is displayed in a regular vim buffer
-  * Use vim key bindings to navigate/move/copy etc.
-  * Toggles back if hidden on a SuperCollider error
-* Interactive argument hints in the command-line area
+  - Use vim key bindings to navigate/move/copy etc.
+  - Toggles back if hidden on a SuperCollider error
+* Automatic display of method arguments
 * Status line widgets
-  * Display SuperCollider server status in vim status line.
+  - Display SuperCollider server status in the status line.
 * Snippet generator
-  * Generates snippets for all creation methods in SCClassLibrary.
+  - Generates snippets for creation methods in SCClassLibrary.
 * Can be used with Neovim [GUI frontends](https://github.com/neovim/neovim/wiki/Related-projects#gui)
-* Supports lazy loading
-* Context aware evaluation (like `Cmd-Enter` in scIDE)
+* Supports [on-demand loading](https://github.com/junegunn/vim-plug#on-demand-loading-of-plugins)
+* Context aware evaluation (like `Cmd-Enter` in ScIDE)
 * Flashy eval flash (configurable)
-* Partial `Document` support (e.g. `thisProcess.nowExecutingPath` etc.)
+* Partial `Document` support (e.g. `thisProcess.nowExecutingPath`, `.load` etc.)
+
+## Supported platforms
+
+* Linux
+* macOS
+* Windows (tested with `nvim-qt`)
+  - Also see this [important note](#note-to-windows-users).
 
 ## Installation
 
@@ -36,109 +34,50 @@ You may also now safely delete the old symlink in `Extensions/scide_scvim/scnvim
 * [Neovim][neovim] >= 0.4.3
 * [SuperCollider][supercollider]
 
-### Procedure
+### Install
 
-* Using [vim-plug](https://github.com/junegunn/vim-plug)
+1. [Install SuperCollider](https://supercollider.github.io/download).
+2. If using [vim-plug](https://github.com/junegunn/vim-plug), add this line to your `init.vim`
 
-  1. Add this line to your init.vim
+```vim
+Plug 'davidgranstrom/scnvim', { 'do': {-> scnvim#install() } }
+```
 
-    ```vim
-    Plug 'davidgranstrom/scnvim', { 'do': {-> scnvim#install() } }
-    ```
+Source `init.vim` (or restart `nvim`) and then run `:PlugInstall`.
 
-  2. Open nvim and run `:PlugInstall`
-
-* Using the internal package manager
-
-  1. Manually clone to your plugin directory. If you used a different directory for other plugins, use that instead.
-
-    ```shell
-    mkdir -p ~/.local/share/nvim/site/pack/git-plugins/start && cd "$_"
-    git clone https://github.com/davidgranstrom/scnvim
-    ```
-
-  2. Open nvim and run `:call scnvim#install()`
-
-#### Starting SCNvim
-
-Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
+Modify the above to match your package manager of choice, or do a manual install using [vim packages](https://github.com/davidgranstrom/scnvim/wiki/Manual-installation).
 
 ### Uninstall
 
 1. Run `:call scnvim#uninstall()`
-    - You should get a message that the `SCNvim.sc` classes have been unlinked.
+    - You could always delete the symbolic link (`scide_scnvim`) from your `Extensions` directory manually if you forget this step.
 
-2. Remove the plugin according to how you've installed it (see Procedure above.)
+2. Remove the plugin according to how you've installed it (see `Install` above.)
 
 ### Troubleshooting
 
 If something doesn't work with the installation method above, the first thing
-to try is `:checkhealth` in nvim. This will give you an indication on what's
-not working, and information on how to resolve the issue.
+to try is `:checkhealth scnvim`. This will give you an indication on what's not
+working, and information on how to resolve the issue.
 
-If you want to do a manual installation instead take a look in the [wiki](https://github.com/davidgranstrom/scnvim/wiki/Manual-installation-of-SuperCollider-classes).
+If you want to do complete a manual installation look [here](https://github.com/davidgranstrom/scnvim/wiki/Manual-installation) and [here](https://github.com/davidgranstrom/scnvim/wiki/Manual-installation-of-SuperCollider-classes).
 
-## Syntax highlighting
+## Starting SCNvim
 
-Run `:SCNvimTags` after starting SuperCollider to generate a file used for syntax highlighting.
-
-The command will also generate a file with snippet definitions for all
-object creation methods and also a `tags` file which can be used to navigate to
-references using the built-in vim command `C-]` (jump to definition).
-
-If you write or install new classes you will need to run this command again to update the syntax/tags/snippets files.
-
-## Snippets
-
-Run `:SCNvimTags` to generate the snippet definitions.
-
-You will also need a snippet engine like [UltiSnips][UltiSnips] in order to use the snippets. To let [UltiSnips][UltiSnips] know about the snippets put the following line in your init.vim:
-
-```vim
-let g:UltiSnipsSnippetDirectories = ['UltiSnips', 'scnvim-data']
-```
-
-## Status line widgets
-
-scnvim provides some functions suitable to use in your vim statusline.
-
-* `scnvim#statusline#server_status`
-
-Run `:SCNvimStatusLine` to get feedback in the status line.
-
-See the [example configuration](#example-configuration) on how they can be used.
-
-This command calls `SCNvim.statusLineUpdate(<interval>, <port>)` in
-SuperCollider, where `<port>` is the UDP port of the remote plugin. Currently
-there is no way to support multiple (SuperCollider) sessions without guessing
-the port number for the remote plugin. The `:SCNvimStatusLine` command ensures
-that SuperCollider always connects to the correct port.
-
-But if you mostly use single sessions, and know that the port is likely to be
-available, you could probably add this to your `startup.scd` to automatically
-call the function on server boot.
-
-```supercollider
-// scnvim
-if (\SCNvim.asClass.notNil) {
-    Server.default.doWhenBooted {
-        \SCNvim.asClass.updateStatusLine(1, \SCNvim.asClass.port);
-    }
-}
-```
+Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
 
 ## Mappings
 
-| Map | Description | Name | Mode |
-| --- | --- | --- | --- |
-| `<C-e>` | Send current block or line (depending on context) |`<Plug>(scnvim-send-block)` | Insert, Normal |
-| `<C-e>` | Send current selection |`<Plug>(scnvim-send-selection)` | Visual |
-| `<M-e>` | Send current line | `<Plug>(scnvim-send-line)` | Insert, Normal |
-| `<F12>` | Hard stop | `<Plug>(scnvim-hard-stop)` | Insert, Normal |
-| `<CR>`  | Toggle post window buffer | `<Plug>(scnvim-postwindow-toggle)` | Insert, Normal |
-| `<M-L>` | Clear post window buffer | `<Plug>(scnvim-postwindow-clear)` | Insert, Normal |
-| `K` | Open documentation | Uses vim `keywordprg` | Normal |
-| `C-k` | Show function signature for object under cursor | `<Plug>(scnvim-show-signature)` | Insert, Normal |
+| Map     | Description                                                    | Name                               | Mode           |
+|:--------|:---------------------------------------------------------------|:-----------------------------------|:---------------|
+| `<C-e>` | Send current block or line (depending on context)              |`<Plug>(scnvim-send-block)`         | Insert, Normal |
+| `<C-e>` | Send current selection                                         |`<Plug>(scnvim-send-selection)`     | Visual         |
+| `<M-e>` | Send current line                                              | `<Plug>(scnvim-send-line)`         | Insert, Normal |
+| `<F12>` | Hard stop                                                      | `<Plug>(scnvim-hard-stop)`         | Insert, Normal |
+| `<CR>`  | Toggle post window buffer                                      | `<Plug>(scnvim-postwindow-toggle)` | Insert, Normal |
+| `<M-L>` | Clear post window buffer                                       | `<Plug>(scnvim-postwindow-clear)`  | Insert, Normal |
+| `K`     | Open documentation                                             | Uses vim `keywordprg`              | Normal         |
+| `C-k`   | Show function signature for object under cursor                | `<Plug>(scnvim-show-signature)`    | Insert, Normal |
 
 To remap any of the default mappings use the `nmap` command together with the name of the mapping.
 
@@ -146,90 +85,44 @@ E.g. `nmap <F5> <Plug>(scnvim-send-block)`
 
 To disable all default mappings add `let g:scnvim_no_mappings = 1` to your init.vim
 
+To disable a specific mapping add use `<nop>`. E.g. `nnoremap <nop> <Plug>(scnvim-show-signature)`.
+
 ## Commands
 
-| Command | Description |
-| --- | --- |
-| `SCNvimStart` | Start SuperCollider |
-| `SCNvimStop` | Stop SuperCollider |
-| `SCNvimRecompile` | Recompile SCClassLibrary |
-| `SCNvimTags` | Create auto-generated utility files |
-| `SCNvimHelp <subject>` | Open HelpBrowser for \<subject\> |
-| `SCNvimStatusLine` | Display server status in status line |
+| Command                | Description                          | 
+|:-----------------------|:-------------------------------------|
+| `SCNvimStart`          | Start SuperCollider                  |
+| `SCNvimStop`           | Stop SuperCollider                   |
+| `SCNvimRecompile`      | Recompile SCClassLibrary             |
+| `SCNvimTags`           | Create auto-generated utility files  |
+| `SCNvimHelp <subject>` | Open HelpBrowser for \<subject\>     |
+| `SCNvimStatusLine`     | Display server status in status line |
 
-## Configuration
+### Additional setup
 
-The following variables are used to configure scnvim. This plugin should work
-out-of-the-box so it is not necessary to set them if you are happy with the
-defaults.
+Run `:SCNvimTags` after starting SuperCollider to enable syntax highlighting
+(note that the current buffer must be reloaded for this to take effect).
 
-Run `:checkhealth` to diagnose common problems with your config.
+**Note** There is a known bug where `sclang` will crash immediately after running
+`:SCNvimTags`. This will hopefully be resolved in the future.
 
-### Post window
+The plugin should work "out of the box", but if you want even more fine-grained
+control please have a look at this [section](https://github.com/davidgranstrom/scnvim/wiki/Additional-configuration) in the wiki.
 
-```vim
-" vertical 'v' or horizontal 'h' split
-let g:scnvim_postwin_orientation = 'v'
+## Note to Windows users
 
-" position of the post window 'right' or 'left'
-let g:scnvim_postwin_direction = 'right'
+To be able to boot the server you will need to add the following to your `startup.scd`:
 
-" default is half the terminal size for vertical and a third for horizontal
-let g:scnvim_postwin_size = 25
-
-" automatically open post window on a SuperCollider error
-let g:scnvim_postwin_auto_toggle = 1
+```supercollider
+if (\SCNvim.asClass.notNil) {
+  Server.program = (Platform.resourceDir +/+ "scsynth.exe").quote;
+}
 ```
-
-### Eval flash
-
-```vim
-" duration of the highlight
-let g:scnvim_eval_flash_duration = 100
-
-" number of flashes. A value of 0 disables this feature.
-let g:scnvim_eval_flash_repeats = 2
-
-" configure the color
-highlight SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
-```
-
-### Extras
-
-```vim
-" path to the sclang executable
-" scnvim will look in some known locations for sclang, but if it can't find it use this variable instead
-" (also improves startup time slightly)
-let g:scnvim_sclang_executable = ''
-
-" update rate for server info in status line (seconds)
-" (don't set this to low or vim will get slow)
-let g:scnvim_statusline_interval = 1
-
-" set this variable if you don't want the "echo args" feature
-let g:scnvim_echo_args = 0
-
-" set this variable if you don't want any default mappings
-let g:scnvim_no_mappings = 1
-
-" set this variable to browse SuperCollider documentation in nvim (requires `pandoc`)
-let g:scnvim_scdoc = 1
-
-" pass flags directly to sclang - see help file for more details, caveats, and further examples
-let g:scnvim_sclang_options = ['-u', 9999]
-
-```
-
-## Thanks to
-
-[scvim](https://github.com/supercollider/scvim)
-
-[vim-tidal](https://github.com/tidalcycles/vim-tidal)
 
 ## License
 
 ```plain
-scnvim - SuperCollider integration for Neovim
+scnvim - Neovim frontend for SuperCollider
 Copyright © 2018-2019 David Granström
 
 This program is free software: you can redistribute it and/or modify
@@ -248,4 +141,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 [neovim]: https://github.com/neovim/neovim
 [supercollider]: https://github.com/supercollider/supercollider
-[UltiSnips]: https://github.com/SirVer/ultisnips
