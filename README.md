@@ -19,6 +19,8 @@
 * Context aware evaluation (like `Cmd-Enter` in ScIDE)
 * Flashy eval flash (configurable)
 * Partial `Document` support (e.g. `thisProcess.nowExecutingPath`, `.load` etc.)
+* Display SuperCollider documentation inside nvim
+  - Be able to evaluate examples
 
 ## Supported platforms
 
