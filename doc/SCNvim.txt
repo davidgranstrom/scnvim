@@ -1,20 +1,17 @@
-*SCNvim.txt*    For nvim version 0.3.1 or later.
+*SCNvim.txt*    For nvim version 0.3.4 or later.
 
-        SuperCollider integration for Neovim
+        Neovim frontend for SuperCollider
 
-SCNvim                                      *SCNvim*
+SCNvim                                      *scnvim*
 
 1. Description..............................|scnvim-description|
    1.1 Acknowledgments
-2. Installation.............................|scnvim-installation|
-   2.1 Requirements
-   2.2 Installation
-3. Mappings.................................|scnvim-mappings|
-   3.1 Remapping
-4. Commands.................................|scnvim-commands|
-5. Help system..............................|scnvim-help-system|
-6. Configuration............................|scnvim-configuration|
-7. License..................................|scnvim-license|
+2. Mappings.................................|scnvim-mappings|
+   2.1 Remapping
+3. Commands.................................|scnvim-commands|
+4. Help system..............................|scnvim-help-system|
+5. Configuration............................|scnvim-configuration|
+6. License..................................|scnvim-license|
 
 ==============================================================================
 DESCRIPTION                                                 *scnvim-description*
@@ -29,52 +26,6 @@ Acknowledgments~
 
 This plugin borrows some code and ideas from the original scvim
 implementation, for example the code for indent and syntax highlighting.
-
-==============================================================================
-INSTALLATION                                               *scnvim-installation*
-
-Requirements~
-
-Neovim (>= 0.4.3)
-SuperCollider (>= 3.9)
-pandoc (optional)
-
-Installation~
-
-Here is an example using vim-plug
-
-Install the vim plugin~
-
-1. Add this line to your init.vim
-   `Plug 'davidgranstrom/scnvim'`
-2. `:PlugInstall`
-
-Install the SuperCollider classes~
-
-The SuperCollider classes are located in the `sc/` directory of this repo.
-
-This directory needs to be linked to your SuperCollider `Extensions` directory
-(run `Platform.userExtensionDir` in SuperCollider to see where it is located on
-your platform).
-
-1. Create a directory named `scide_scvim` in the Extensions directory.
-   It is **important** that the directory is named `scide_scvim` (note the
-   omitted 'n') to avoid conflicts with ScIDE.
-
-2. Create a `symlink` (symbolic link) to the `sc` directory of the plugin like
-   in the example below.
-
-Example~
->
-  # create scide_scvim directory
-  mkdir -p ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim
-
-  # create a symbolic link to 'sc' in the 'scide_scvim' directory named 'scnvim'
-  ln -s <ABSOLUTE_PATH_TO_SCNVIM_PLUGIN>/sc ~/Library/Application\ Support/SuperCollider/Extensions/scide_scvim/scnvim
-
-Start SCNvim~
-
-Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
 
 ==============================================================================
 MAPPINGS                                                       *scnvim-mappings*
