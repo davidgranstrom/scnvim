@@ -39,7 +39,7 @@
 ### Install
 
 1. [Install SuperCollider](https://supercollider.github.io/download).
-2. If using [vim-plug](https://github.com/junegunn/vim-plug), add this line to your `init.vim`
+2. Add this line to your `init.vim` if you are using [vim-plug](https://github.com/junegunn/vim-plug).
 
 ```vim
 Plug 'davidgranstrom/scnvim', { 'do': {-> scnvim#install() } }
@@ -68,7 +68,11 @@ If you want to do complete a manual installation look [here](https://github.com/
 
 Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
 
-## Mappings
+## Configuration
+
+The following sections can be accessed in `:help scnvim` as well.
+
+### Mappings
 
 | Map     | Description                                                    | Name                               | Mode           |
 |:--------|:---------------------------------------------------------------|:-----------------------------------|:---------------|
@@ -78,18 +82,25 @@ Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStar
 | `<F12>` | Hard stop                                                      | `<Plug>(scnvim-hard-stop)`         | Insert, Normal |
 | `<CR>`  | Toggle post window buffer                                      | `<Plug>(scnvim-postwindow-toggle)` | Insert, Normal |
 | `<M-L>` | Clear post window buffer                                       | `<Plug>(scnvim-postwindow-clear)`  | Insert, Normal |
-| `K`     | Open documentation                                             | Uses vim `keywordprg`              | Normal         |
 | `C-k`   | Show function signature for object under cursor                | `<Plug>(scnvim-show-signature)`    | Insert, Normal |
+| `K`     | Open documentation                                             | Uses vim `keywordprg`              | Normal         |
 
 To remap any of the default mappings use the `nmap` command together with the name of the mapping.
 
-E.g. `nmap <F5> <Plug>(scnvim-send-block)`
+**Examples**
 
-To disable all default mappings add `let g:scnvim_no_mappings = 1` to your init.vim
+```vim
+nmap <F5> <Plug>(scnvim-send-block)
+```
 
-To disable a specific mapping add use `<nop>`. E.g. `nnoremap <nop> <Plug>(scnvim-show-signature)`.
+To disable a specific mapping use `<nop>`.
+```vim
+nnoremap <nop> <Plug>(scnvim-show-signature)
+```
 
-## Commands
+To disable all default mappings use `let g:scnvim_no_mappings = 1`
+
+### Commands
 
 | Command                | Description                          | 
 |:-----------------------|:-------------------------------------|
