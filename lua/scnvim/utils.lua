@@ -31,7 +31,7 @@ end
 
 --- Send a command to SuperCollider
 function M.send_to_sc(args)
-  M.vimcall('scnvim#sclang#send_silent', {args})
+  -- M.vimcall('scnvim#sclang#send_silent', {args})
 end
 
 ------------------

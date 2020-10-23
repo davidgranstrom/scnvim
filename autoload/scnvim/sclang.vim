@@ -12,33 +12,35 @@ autocmd scnvim VimLeavePre * call scnvim#sclang#close()
 " interface
 
 function! scnvim#sclang#open() abort
-  if scnvim#sclang#is_running()
-    call scnvim#util#err('sclang is already running.')
-    return
-  endif
-  try
-    let s:is_exiting = 0
-    let s:sclang_job = s:Sclang.new()
-    lua require('scnvim').init()
-    call scnvim#document#set_current_path()
-  catch
-    call scnvim#util#err(v:exception)
-  endtry
+  lua require'scnvim/sclang'.start()
+  " if scnvim#sclang#is_running()
+  "   call scnvim#util#err('sclang is already running.')
+  "   return
+  " endif
+  " try
+  "   let s:is_exiting = 0
+  "   let s:sclang_job = s:Sclang.new()
+  "   lua require('scnvim').init()
+  "   call scnvim#document#set_current_path()
+  " catch
+  "   call scnvim#util#err(v:exception)
+  " endtry
 endfunction
 
 function! scnvim#sclang#close() abort
-  if scnvim#sclang#is_running()
-    let s:is_exiting = 1
-    call scnvim#sclang#send_silent('0.exit')
-    let result = jobwait([s:sclang_job.id], 1000)
-    " send SIGTERM if we can't call `0.exit`
-    if result[0] == -1
-      call jobstop(s:sclang_job.id)
-    endif
-    lua require('scnvim').deinit()
-  else
-    call scnvim#util#err('sclang is not running')
-  endif
+  lua require'scnvim/sclang'.stop()
+  " if scnvim#sclang#is_running()
+  "   let s:is_exiting = 1
+  "   call scnvim#sclang#send_silent('0.exit')
+  "   let result = jobwait([s:sclang_job.id], 1000)
+  "   " send SIGTERM if we can't call `0.exit`
+  "   if result[0] == -1
+  "     call jobstop(s:sclang_job.id)
+  "   endif
+  "   lua require('scnvim').deinit()
+  " else
+  "   call scnvim#util#err('sclang is not running')
+  " endif
 endfunction
 
 function! scnvim#sclang#recompile() abort
@@ -53,13 +55,15 @@ function! scnvim#sclang#recompile() abort
 endfunction
 
 function! scnvim#sclang#send(data) abort
-  let cmd = printf("%s\x0c", a:data)
-  call s:send(cmd)
+  " let cmd = printf("%s\x0c", a:data)
+  " call s:send(cmd)
+  call luaeval('require"scnvim/sclang".send(unpack(_A))', [a:data, v:false]) 
 endfunction
 
 function! scnvim#sclang#send_silent(data) abort
-  let cmd = printf("%s\x1b", a:data)
-  call s:send(cmd)
+  " let cmd = printf("%s\x1b", a:data)
+  " call s:send(cmd)
+  call luaeval('require"scnvim/sclang".send(unpack(_A))', [a:data, v:true]) 
 endfunction
 
 function! scnvim#sclang#is_running() abort
