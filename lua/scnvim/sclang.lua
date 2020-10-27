@@ -8,7 +8,7 @@ local utils = require('scnvim/utils')
 
 local M = {}
 local uv = vim.loop
-local handle, pid
+local handle
 local postwin_bufnr
 
 local stdin = uv.new_pipe(false)
@@ -43,20 +43,22 @@ local function print_to_postwin(line)
 end
 
 local on_stdout = function() 
-  local accum = ''
+  local stack = {''}
   return function(err, data)
     assert(not err, err)
     if data then
-      accum = accum .. data
-      -- got a complete line
-      if vim.endswith(accum, '\n') then
-        local lines = vim.gsplit(accum, '[\n\r]')
+      table.insert(stack, data)
+      -- TODO: not sure if \r is needed.. need to check on windows.
+      local got_line = vim.endswith(data, '\n') or vim.endswith(data, '\r')
+      if got_line then
+        local str = table.concat(stack, "")
+        local lines = vim.gsplit(str, '[\n\r]')
         for line in lines do
           if line ~= '' then
             print_to_postwin(line)
           end
         end
-        accum = ''
+        stack = {''}
       end
     end
   end
