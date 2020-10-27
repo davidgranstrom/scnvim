@@ -31,25 +31,32 @@ local function get_options(path)
   return options
 end
 
+-- TODO: move to separate class
+-- look at nvim_buf_attach() to listen for events
 local function print_to_postwin(line)
   if postwin_bufnr then
     vim.api.nvim_buf_set_lines(postwin_bufnr, -1, -1, true, {line})
+    local num_lines = vim.api.nvim_buf_line_count(postwin_bufnr)
+    local id = vim.call('bufwinid', postwin_bufnr)
+    vim.api.nvim_win_set_cursor(id, {num_lines, 0})
   end
 end
 
 local on_stdout = function() 
-  local s = ''
+  local accum = ''
   return function(err, data)
     assert(not err, err)
     if data then
-      s = s .. data
-      local lines = vim.gsplit(s, '[\r\n]')
-      for line in lines do
-        if line ~= '' then
-          print_to_postwin(line)
-        else
-          s = ''
+      accum = accum .. data
+      -- got a complete line
+      if vim.endswith(accum, '\n') then
+        local lines = vim.gsplit(accum, '[\n\r]')
+        for line in lines do
+          if line ~= '' then
+            print_to_postwin(line)
+          end
         end
+        accum = ''
       end
     end
   end
@@ -103,7 +110,7 @@ end
 
 function M.stop()
   if M.is_running() then
-    -- scnvim.send('0.exit')
+    M.send('0.exit', true)
   else
     vim.call('scnvim#util#err', {'sclang is not running'})
   end
