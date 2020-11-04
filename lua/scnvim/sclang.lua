@@ -69,6 +69,7 @@ function M.is_running()
 end
 
 function M.send(data, silent)
+  silent = silent or false
   if M.is_running() then
     stdin:write({data, string.char(silent and 0x1b or 0x0c)})
   end
