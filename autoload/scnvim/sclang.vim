@@ -44,25 +44,22 @@ function! scnvim#sclang#close() abort
 endfunction
 
 function! scnvim#sclang#recompile() abort
-  if scnvim#sclang#is_running()
-    let port = luaeval('require("scnvim/udp").port')
-    call scnvim#sclang#send_silent("\x18") " recompile class library
-    call scnvim#sclang#send_silent('SCNvim.port = '.port)
-    call scnvim#document#set_current_path()
-  else
-    call scnvim#util#err('sclang is not running')
-  endif
+  lua require'scnvim/sclang'.recompile()
+  " if scnvim#sclang#is_running()
+  "   let port = luaeval('require("scnvim/udp").port')
+  "   call scnvim#sclang#send_silent("\x18") " recompile class library
+  "   call scnvim#sclang#send_silent('SCNvim.port = '.port)
+  "   call scnvim#document#set_current_path()
+  " else
+  "   call scnvim#util#err('sclang is not running')
+  " endif
 endfunction
 
 function! scnvim#sclang#send(data) abort
-  " let cmd = printf("%s\x0c", a:data)
-  " call s:send(cmd)
   call luaeval('require"scnvim/sclang".send(unpack(_A))', [a:data, v:false]) 
 endfunction
 
 function! scnvim#sclang#send_silent(data) abort
-  " let cmd = printf("%s\x1b", a:data)
-  " call s:send(cmd)
   call luaeval('require"scnvim/sclang".send(unpack(_A))', [a:data, v:true]) 
 endfunction
 

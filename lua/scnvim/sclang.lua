@@ -3,11 +3,12 @@
 -- @author David Granström
 -- @license GPLv3
 
+local uv = vim.loop
 local scnvim = require('scnvim')
 local utils = require('scnvim/utils')
+local udp = require('scnvim/udp')
 
 local M = {}
-local uv = vim.loop
 local handle
 local postwin_bufnr
 
@@ -31,14 +32,17 @@ local function get_options(path)
   return options
 end
 
+local postwinid = nil
 -- TODO: move to separate class
 -- look at nvim_buf_attach() to listen for events
 local function print_to_postwin(line)
   if postwin_bufnr then
     vim.api.nvim_buf_set_lines(postwin_bufnr, -1, -1, true, {line})
     local num_lines = vim.api.nvim_buf_line_count(postwin_bufnr)
-    local id = vim.call('bufwinid', postwin_bufnr)
-    vim.api.nvim_win_set_cursor(id, {num_lines, 0})
+    if not postwinid then
+      postwinid = vim.call('bufwinid', postwin_bufnr)
+    end
+    vim.api.nvim_win_set_cursor(postwinid, {num_lines, 0})
   end
 end
 
@@ -90,20 +94,34 @@ function M.on_exit()
   safe_close(handle)
 end
 
+local function start_process()
+  local settings = vim.call('scnvim#util#get_user_settings')
+  local sclang = settings.paths.sclang_executable
+  local options = get_options()
+  return uv.spawn(sclang, options, vim.schedule_wrap(M.on_exit))
+end
+
+function M.recompile()
+  if not M.is_running() then
+    vim.call('scnvim#util#err', {'sclang is already running'})
+    return
+  end
+  M.send(string.char(0x18), true)
+  M.send(string.format('SCNvim.port = %d', udp.port), true)
+  vim.call('scnvim#document#set_current_path')
+end
+
 function M.start()
   if M.is_running() then
     vim.call('scnvim#util#err', {'sclang is already running'})
     return
   end
 
-  local settings = vim.call('scnvim#util#get_user_settings')
-  local sclang = settings.paths.sclang_executable
-  local options = get_options()
-  handle = uv.spawn(sclang, options, vim.schedule_wrap(M.on_exit))
+  handle = start_process()
   assert(handle, 'Could not open sclang process')
+  scnvim.init()
 
   postwin_bufnr = vim.call('scnvim#postwindow#create') -- TODO: should also move to lua
-  scnvim.init()
   vim.call('scnvim#document#set_current_path') -- TODO: should also move to lua
 
   local onread = on_stdout()
