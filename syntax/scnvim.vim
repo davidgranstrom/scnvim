@@ -70,8 +70,4 @@ if (g:scnvim_colour_post_window == 1)
 	hi def link compiling Comment
 
 	hi def link result String
-
-	" supercollider.vim links
-	" hi def link scFloat Float
-	" hi def link scObject Identifier
 endif
