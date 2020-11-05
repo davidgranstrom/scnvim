@@ -10,65 +10,68 @@
 scriptencoding utf-8
 
 if exists('b:current_syntax')
-  finish
+	finish
 endif
 let b:current_syntax = 'scnvim'
 
-syn clear
-syn case match " Not case sensitive
+if (g:scnvim_colour_post_window == 1)
 
-" Result of execution
-syn region result start=/->/ end=/\n/
+	" syn clear
+	syn case match " Not case sensitive
 
-"""""""""""""""""""
-" Error and warning messages
-"""""""""""""""""""
-syn keyword errors ERROR
-syn keyword warns WARNING RECEIVER ARGS PATH CALL STACK Info
+	" Result of execution
+	syn region result start=/->/ end=/\n/
 
-" for instance blocks in stack errors ala <Instance of Object> 
-syn region instanceError start=/</ end=/>/
+	"""""""""""""""""""
+	" Error and warning messages
+	"""""""""""""""""""
+	syn keyword errors ERROR
+	syn keyword warns WARNING RECEIVER ARGS PATH CALL STACK Info
 
-" Seperator after error
-syn match separator /-----------------------------------/
+	" for instance blocks in stack errors ala <Instance of Object> 
+	syn region instanceError start=/</ end=/>/
 
-" Syntax error position
-syn match syntaxErrLine /line \d\+/ contained
-syn match syntaxErrChar /char \d\+:/ contained
-syn match syntaxErrCursor / ^/ contained
-syn region syntaxErrorContent start=/line \d\+ char \d\+/ end=/ ^/ contains=syntaxErrLine,syntaxErrChar
+	" Seperator after error
+	syn match separator /-----------------------------------/
 
-"""""""""""""""""""
-" Misc
-"""""""""""""""""""
+	" Syntax error position
+	syn match syntaxErrLine /line \d\+/ contained
+	syn match syntaxErrChar /char \d\+:/ contained
+	syn match syntaxErrCursor / ^/ contained
+	syn region syntaxErrorContent start=/line \d\+ char \d\+/ end=/ ^/ contains=syntaxErrLine,syntaxErrChar
 
-" Welcome message
-" syn region welcome start=/\*\*\*/ end=/\*\*\*/
-syn match welcomeWords "Welcome to SuperCollider"
-syn region welcome start=/\*\*\*/ end=/$/ contains=welcomeWords
+	"""""""""""""""""""
+	" Misc
+	"""""""""""""""""""
 
-syn region compiling start=/\ccompil/ end=/$/
+	" Welcome message
+	" syn region welcome start=/\*\*\*/ end=/\*\*\*/
+	syn match welcomeWords "Welcome to SuperCollider"
+	syn region welcome start=/\*\*\*/ end=/$/ contains=welcomeWords
 
-"""""""""""""""""""
-" Linking
-"""""""""""""""""""
+	syn region compiling start=/\ccompil/ end=/$/
 
-" Special scnvim links
-hi def link errors ErrorMsg
-hi def link syntaxErrLine Underlined
-hi def link syntaxErrChar Underlined
-hi def link syntaxErrCursor TerminalCursor
-hi def link syntaxErrorContent WarningMsg
-hi def link instanceError WarningMsg
-hi def link warns WarningMsg
-hi def link separator Comment
+	"""""""""""""""""""
+	" Linking
+	"""""""""""""""""""
 
-hi def link welcome Title
-hi def link welcomeWords Title
-hi def link compiling Comment
+	" Special scnvim links
+	hi def link errors ErrorMsg
+	hi def link syntaxErrLine Underlined
+	hi def link syntaxErrChar Underlined
+	hi def link syntaxErrCursor TerminalCursor
+	hi def link syntaxErrorContent WarningMsg
+	hi def link instanceError WarningMsg
+	hi def link warns WarningMsg
+	hi def link separator scComment
 
-hi def link result String
+	hi def link welcome Title
+	hi def link welcomeWords Title
+	hi def link compiling Comment
 
-" supercollider.vim links
-" hi def link scFloat Float
-" hi def link scObject Identifier
+	hi def link result String
+
+	" supercollider.vim links
+	" hi def link scFloat Float
+	" hi def link scObject Identifier
+endif
