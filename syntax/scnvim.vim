@@ -14,7 +14,7 @@ if exists('b:current_syntax')
 endif
 let b:current_syntax = 'scnvim'
 
-if (g:scnvim_colour_post_window == 1)
+if (g:scnvim_postwin_syntax_hl == 1)
 
 	" syn clear
 	syn case match " Not case sensitive
