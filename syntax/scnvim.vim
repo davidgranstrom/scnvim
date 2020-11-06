@@ -9,6 +9,11 @@
 
 scriptencoding utf-8
 
+" Check if syntax highlighting for the post window is active
+if !get(g:, 'scnvim_postwin_syntax_hl', 1)
+  finish
+end
+
 if exists('b:current_syntax')
 	finish
 endif
