@@ -14,6 +14,7 @@ if !get(g:, 'scnvim_postwin_syntax_hl', 1)
   finish
 end
 
+" Check if this syntax file has been loaded before
 if exists('b:current_syntax')
 	finish
 endif
