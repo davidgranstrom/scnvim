@@ -57,6 +57,9 @@ if (g:scnvim_postwin_syntax_hl == 1)
 
 	syn region compiling start=/\ccompil/ end=/$/
 
+	" Matches boot messages
+	syn match serverMessage /^\w*\W*:/
+	syn match ipAddr /\d\+.\d\+.\d\+.\d\+:\d\+/
 	"""""""""""""""""""
 	" Linking
 	"""""""""""""""""""
@@ -70,6 +73,9 @@ if (g:scnvim_postwin_syntax_hl == 1)
 	hi def link instanceError WarningMsg
 	hi def link warns WarningMsg
 	hi def link separator scComment
+
+	hi def link ipAddr Underlined
+	hi def link serverMessage Title
 
 	hi def link welcome Title
 	hi def link welcomeWords Title
