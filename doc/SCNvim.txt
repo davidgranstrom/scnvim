@@ -143,6 +143,10 @@ defaults.
 Run `:checkhealth` to diagnose common problems with your config.
 
 Post window~
+Disable syntax colouring in the post window 
+Default is 1 (on)
+>
+  let g:scnvim_postwin_syntax_hl = 0
 
 Vertical "v" or horizontal "h" split.
 >
@@ -204,10 +208,6 @@ Set this variable if you don't want any default mappings
 Browse SuperCollider documentation in nvim (see |scnvim-help-system| for more information)
 >
   let g:scnvim_scdoc = 1
-
-Disable syntax colouring in the post window (on by default)
->
-  let g:scnvim_postwin_syntax_hl = 0
 
 Sclang Options Customization ~
 
