@@ -32,7 +32,8 @@ if (g:scnvim_postwin_syntax_hl == 1)
 	" Error and warning messages
 	"""""""""""""""""""
 	syn keyword errors ERROR
-	syn keyword warns WARNING RECEIVER ARGS PATH CALL STACK Info
+	syn keyword warns WARNING RECEIVER ARGS PATH CALL STACK
+	syn keyword info Info
 
 	" for instance blocks in stack errors ala <Instance of Object> 
 	syn region instanceError start=/</ end=/>/
@@ -76,6 +77,8 @@ if (g:scnvim_postwin_syntax_hl == 1)
 
 	hi def link ipAddr Underlined
 	hi def link serverMessage Title
+	hi def link info Title
+
 
 	hi def link welcome Title
 	hi def link welcomeWords Title
