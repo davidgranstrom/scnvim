@@ -205,6 +205,10 @@ Browse SuperCollider documentation in nvim (see |scnvim-help-system| for more in
 >
   let g:scnvim_scdoc = 1
 
+Disable syntax colouring in the post window (on by default)
+>
+  let g:scnvim_postwin_syntax_hl = 0
+
 Sclang Options Customization ~
 
 If you wanted to pass options to the call that SCNVim uses when it starts
