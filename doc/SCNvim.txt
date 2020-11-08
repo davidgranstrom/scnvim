@@ -143,6 +143,10 @@ defaults.
 Run `:checkhealth` to diagnose common problems with your config.
 
 Post window~
+Disable syntax colouring in the post window 
+Default is 1 (on)
+>
+  let g:scnvim_postwin_syntax_hl = 0
 
 Vertical "v" or horizontal "h" split.
 >
