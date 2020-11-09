@@ -48,7 +48,7 @@ SCNvimDocRenderer : SCDocHTMLRenderer {
 		doc.fullPath !? {
             stream << "<div>helpfile source: " << doc.fullPath << "</div>";
 		};
-        stream << "<div> vim:tw=78:et:ft=help.supercollider:norl:<\div>";
+        stream << "<div> vim:tw=78:et:ft=scnvimhelp:norl:<\div>";
         stream << "</body></html>";
 	}
 
@@ -226,10 +226,16 @@ SCNvimDocRenderer : SCDocHTMLRenderer {
 				stream << this.htmlForLink(node.text);
 			},
 			\CODEBLOCK, {
-                stream << "<pre><code>"
-                << ">\n"
+                stream 
+				<< "/* SCNVIM_SNIP_START */"
+				<< "\n"
+				<< "<pre><code>"
+                // << ">\n"
 				<< this.escapeSpecialChars(node.text)
-                << "</code></pre>";
+				<< "\n"
+                << "</code></pre>"
+				<< "\n"
+				<< "/* SCNVIM_SNIP_END */";
 			},
 			\CODE, {
                 stream << "<code>"
