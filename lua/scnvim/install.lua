@@ -10,7 +10,7 @@ local uv = vim.loop
 
 --- Get the root directory of the plugin.
 local function get_scnvim_root_dir()
-  local package_path = ''
+  local package_path
   if utils.vimcall('has', {'nvim-0.5'}) then
     -- something changed in 0.5, runtime paths are no longer added to package.path
     package_path = debug.getinfo(1).source:gsub('@', '')
@@ -28,7 +28,7 @@ local function get_scnvim_root_dir()
   end
   local path_len = utils.tbl_len(package_path)
   if index == 1 or index == path_len then
-    error('[scnvim] could not find plugin root dir') 
+    error('[scnvim] could not find plugin root dir')
   end
   local path = {}
   for i, v in ipairs(package_path) do
