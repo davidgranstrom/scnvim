@@ -9,7 +9,7 @@ runtime! syntax/help.vim
 let b:current_syntax = ''
 unlet b:current_syntax
 syntax include @SC syntax/supercollider.vim
-syntax region scSnip matchgroup=Snip start="//SCNVIM_SNIP_START" end="//SCNVIM_SNIP_END" contains=@SC
+syntax region scSnipCodeBlock matchgroup=Snip start="\* SCNVIM_SNIP_START \*/" end="\* SCNVIM_SNIP_END \*/" contains=@SC
 hi link Snip Comment
 
 let b:current_syntax = 'scnvimhelp' 
