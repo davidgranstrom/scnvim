@@ -227,7 +227,7 @@ SCNvimDocRenderer : SCDocHTMLRenderer {
 			},
 			\CODEBLOCK, {
                 stream 
-				<< "/* SCNVIM_SNIP_START */"
+				<< "//SCNVIM_SNIP_START"
 				<< "\n"
 				<< "<pre><code>"
                 // << ">\n"
@@ -235,7 +235,7 @@ SCNvimDocRenderer : SCDocHTMLRenderer {
 				<< "\n"
                 << "</code></pre>"
 				<< "\n"
-				<< "/* SCNVIM_SNIP_END */";
+				<< "//SCNVIM_SNIP_END";
 			},
 			\CODE, {
                 stream << "<code>"
