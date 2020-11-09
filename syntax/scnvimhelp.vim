@@ -12,4 +12,4 @@ syntax include @SC syntax/supercollider.vim
 syntax region scSnipCodeBlock matchgroup=Snip start="\* SCNVIM_SNIP_START \*/" end="\* SCNVIM_SNIP_END \*/" contains=@SC
 hi link Snip Comment
 
-let b:current_syntax = 'scnvimhelp' 
+let b:current_syntax = 'scnvimhelp.help' 

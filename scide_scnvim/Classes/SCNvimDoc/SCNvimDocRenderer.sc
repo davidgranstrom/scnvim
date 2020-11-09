@@ -48,7 +48,7 @@ SCNvimDocRenderer : SCDocHTMLRenderer {
 		doc.fullPath !? {
             stream << "<div>helpfile source: " << doc.fullPath << "</div>";
 		};
-        stream << "<div> vim:tw=78:et:ft=scnvimhelp:norl:<\div>";
+        stream << "<div> vim:tw=78:et:ft=scnvimhelp.help:norl:<\div>";
         stream << "</body></html>";
 	}
 
