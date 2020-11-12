@@ -5,15 +5,14 @@
 
 local uv = vim.loop
 local utils = require('scnvim/utils')
+local postwin = require('scnvim/postwin')
 local udp = require('scnvim/udp')
-
 local M = {}
-local handle
-local postwin_bufnr
 
 local stdin = uv.new_pipe(false)
 local stdout = uv.new_pipe(false)
 local stderr = uv.new_pipe(false)
+local handle
 
 local function get_options(path)
   local options = {}
@@ -31,34 +30,20 @@ local function get_options(path)
   return options
 end
 
-local postwinid = nil
--- TODO: move to separate class
--- look at nvim_buf_attach() to listen for events
-local function print_to_postwin(line)
-  if postwin_bufnr then
-    vim.api.nvim_buf_set_lines(postwin_bufnr, -1, -1, true, {line})
-    local num_lines = vim.api.nvim_buf_line_count(postwin_bufnr)
-    if not postwinid then
-      postwinid = vim.call('bufwinid', postwin_bufnr)
-    end
-    vim.api.nvim_win_set_cursor(postwinid, {num_lines, 0})
-  end
-end
-
 local on_stdout = function() 
   local stack = {''}
   return function(err, data)
     assert(not err, err)
     if data then
       table.insert(stack, data)
+      local str = table.concat(stack, "")
       -- TODO: not sure if \r is needed.. need to check on windows.
-      local got_line = vim.endswith(data, '\n') or vim.endswith(data, '\r')
+      local got_line = vim.endswith(str, '\n') or vim.endswith(str, '\r')
       if got_line then
-        local str = table.concat(stack, "")
         local lines = vim.gsplit(str, '[\n\r]')
         for line in lines do
           if line ~= '' then
-            print_to_postwin(line)
+            postwin.print(line)
           end
         end
         stack = {''}
@@ -91,6 +76,7 @@ function M.on_exit()
   safe_close(stdout)
   safe_close(stderr)
   safe_close(handle)
+  postwin.destroy()
 end
 
 local function start_process()
@@ -115,12 +101,11 @@ function M.start()
     vim.call('scnvim#util#err', {'sclang is already running'})
     return
   end
-
+  postwin.create()
   handle = start_process()
   assert(handle, 'Could not open sclang process')
   udp.start_server()
 
-  postwin_bufnr = vim.call('scnvim#postwindow#create') -- TODO: should also move to lua
   vim.call('scnvim#document#set_current_path') -- TODO: should also move to lua
 
   local onread = on_stdout()

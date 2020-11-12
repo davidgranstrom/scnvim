@@ -40,7 +40,8 @@ function M.str_match_exact(input, word)
 end
 
 --- Get the system path separator
-M.path_sep = vim.loop.os_uname().sysname:match('Windows') and '\\' or '/'
+M.is_windows = vim.loop.os_uname().sysname:match('Windows')
+M.path_sep = M.is_windows and '\\' or '/'
 
 ------------------
 --- Table
