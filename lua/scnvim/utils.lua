@@ -29,11 +29,6 @@ function M.json_decode(data)
   return M.vimcall('json_decode', {data})
 end
 
---- Send a command to SuperCollider
-function M.send_to_sc(args)
-  -- M.vimcall('scnvim#sclang#send_silent', {args})
-end
-
 ------------------
 --- String
 ------------------

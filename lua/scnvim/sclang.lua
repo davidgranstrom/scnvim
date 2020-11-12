@@ -4,7 +4,6 @@
 -- @license GPLv3
 
 local uv = vim.loop
-local scnvim = require('scnvim')
 local utils = require('scnvim/utils')
 local udp = require('scnvim/udp')
 
@@ -119,7 +118,7 @@ function M.start()
 
   handle = start_process()
   assert(handle, 'Could not open sclang process')
-  scnvim.init()
+  udp.start_server()
 
   postwin_bufnr = vim.call('scnvim#postwindow#create') -- TODO: should also move to lua
   vim.call('scnvim#document#set_current_path') -- TODO: should also move to lua
