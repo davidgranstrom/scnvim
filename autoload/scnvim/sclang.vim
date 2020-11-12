@@ -64,7 +64,6 @@ function! scnvim#sclang#send_silent(data) abort
 endfunction
 
 function! scnvim#sclang#is_running() abort
-  " return exists('s:sclang_job') && has_key(s:sclang_job, 'id') && jobwait([s:sclang_job.id], 0)[0] == -1
   return luaeval('require"scnvim/sclang".is_running()')
 endfunction
 

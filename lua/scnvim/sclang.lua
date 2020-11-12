@@ -4,33 +4,11 @@
 -- @license GPLv3
 
 local uv = vim.loop
-local utils = require('scnvim/utils')
 local postwin = require('scnvim/postwin')
 local udp = require('scnvim/udp')
 local M = {}
 
-local stdin = uv.new_pipe(false)
-local stdout = uv.new_pipe(false)
-local stderr = uv.new_pipe(false)
-local handle
-
-local function get_options(path)
-  local options = {}
-  options.stdio = {
-    stdin,
-    stdout,
-    stderr,
-  }
-  options.cwd = vim.call('expand', '%:p:h')
-  -- TODO: get sclang user options
-  options.args = {'-i', 'scnvim', '-d', options.cwd}
-  -- windows specific settings
-  options.verbatim = true
-  options.hide = true
-  return options
-end
-
-local on_stdout = function() 
+local on_stdout = function()
   local stack = {''}
   return function(err, data)
     assert(not err, err)
@@ -53,13 +31,13 @@ local on_stdout = function()
 end
 
 function M.is_running()
-  return handle and handle:is_active()
+  return M.proc and M.proc:is_active()
 end
 
 function M.send(data, silent)
   silent = silent or false
   if M.is_running() then
-    stdin:write({data, string.char(silent and 0x1b or 0x0c)})
+    M.stdin:write({data, string.char(silent and 0x1b or 0x0c)})
   end
 end
 
@@ -70,19 +48,39 @@ local function safe_close(handle)
 end
 
 function M.on_exit()
-  stdout:read_stop()
-  stderr:read_stop()
-  safe_close(stdin)
-  safe_close(stdout)
-  safe_close(stderr)
-  safe_close(handle)
+  M.stdout:read_stop()
+  M.stderr:read_stop()
+  safe_close(M.stdin)
+  safe_close(M.stdout)
+  safe_close(M.stderr)
+  safe_close(M.proc)
   postwin.destroy()
+  M.proc = nil
+end
+
+function M.options()
+  M.stdin = uv.new_pipe(false)
+  M.stdout = uv.new_pipe(false)
+  M.stderr = uv.new_pipe(false)
+  local options = {}
+  options.stdio = {
+    M.stdin,
+    M.stdout,
+    M.stderr,
+  }
+  options.cwd = vim.call('expand', '%:p:h')
+  -- TODO: get sclang user options
+  options.args = {'-i', 'scnvim', '-d', options.cwd}
+  -- windows specific settings
+  options.verbatim = true
+  options.hide = true
+  return options
 end
 
 local function start_process()
   local settings = vim.call('scnvim#util#get_user_settings')
   local sclang = settings.paths.sclang_executable
-  local options = get_options()
+  local options = M.options()
   return uv.spawn(sclang, options, vim.schedule_wrap(M.on_exit))
 end
 
@@ -98,26 +96,24 @@ end
 
 function M.start()
   if M.is_running() then
-    vim.call('scnvim#util#err', {'sclang is already running'})
+    vim.call('scnvim#util#err', 'sclang is already running')
     return
   end
   postwin.create()
-  handle = start_process()
-  assert(handle, 'Could not open sclang process')
+  M.proc = start_process()
+  assert(M.proc, 'Could not open sclang process')
   udp.start_server()
-
   vim.call('scnvim#document#set_current_path') -- TODO: should also move to lua
-
   local onread = on_stdout()
-  stdout:read_start(vim.schedule_wrap(onread))
-  stderr:read_start(vim.schedule_wrap(onread))
+  M.stdout:read_start(vim.schedule_wrap(onread))
+  M.stderr:read_start(vim.schedule_wrap(onread))
 end
 
 function M.stop()
   if M.is_running() then
     M.send('0.exit', true)
   else
-    vim.call('scnvim#util#err', {'sclang is not running'})
+    vim.call('scnvim#util#err', 'sclang is not running')
   end
 end
 
