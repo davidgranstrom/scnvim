@@ -10,13 +10,19 @@ local M = {}
 
 --- Utilities
 
+local cmd_char = {
+  interpret_print = string.char(0x0c),
+  interpret = string.char(0x1b),
+  recompile = string.char(0x18),
+}
+
 local on_stdout = function()
   local stack = {''}
   return function(err, data)
     assert(not err, err)
     if data then
       table.insert(stack, data)
-      local str = table.concat(stack, "")
+      local str = table.concat(stack, '')
       -- TODO: not sure if \r is needed.. need to check on windows.
       local got_line = vim.endswith(str, '\n') or vim.endswith(str, '\r')
       if got_line then
@@ -70,7 +76,10 @@ end
 function M.send(data, silent)
   silent = silent or false
   if M.is_running() then
-    M.stdin:write({data, string.char(silent and 0x1b or 0x0c)})
+    M.stdin:write({
+      data,
+      not silent and cmd_char.interpret_print or cmd_char.interpret
+    })
   end
 end
 
@@ -102,7 +111,7 @@ function M.recompile()
     vim.call('scnvim#util#err', {'sclang is already running'})
     return
   end
-  M.send(string.char(0x18), true)
+  M.send(cmd_char.recompile, true)
   M.send(string.format('SCNvim.port = %d', udp.port), true)
   vim.call('scnvim#document#set_current_path')
 end
