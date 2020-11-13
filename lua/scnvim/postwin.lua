@@ -37,7 +37,7 @@ function M.is_open()
   return is_valid() and vim.fn.bufwinnr(M.bufnr) > 0
 end
 
-function M.print(line)
+function M.post(line)
   if not is_valid() then
     return
   end
@@ -55,9 +55,11 @@ function M.print(line)
   vim.api.nvim_buf_set_lines(M.bufnr, -1, -1, true, {line})
 
   local num_lines = vim.api.nvim_buf_line_count(M.bufnr)
-  if num_lines > max_lines then
-    vim.api.nvim_buf_set_lines(M.bufnr, 0, max_lines, true, {})
-    num_lines = vim.api.nvim_buf_line_count(M.bufnr)
+  if max_lines > 0 then
+    if num_lines > max_lines then
+      vim.api.nvim_buf_set_lines(M.bufnr, 0, max_lines, true, {})
+      num_lines = vim.api.nvim_buf_line_count(M.bufnr)
+    end
   end
 
   if M.is_open() then

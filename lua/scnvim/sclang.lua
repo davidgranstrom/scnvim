@@ -8,13 +8,13 @@ local postwin = require('scnvim/postwin')
 local udp = require('scnvim/udp')
 local M = {}
 
---- Utilities
-
 local cmd_char = {
   interpret_print = string.char(0x0c),
   interpret = string.char(0x1b),
   recompile = string.char(0x18),
 }
+
+--- Utilities
 
 local on_stdout = function()
   local stack = {''}
@@ -29,7 +29,7 @@ local on_stdout = function()
         local lines = vim.gsplit(str, '[\n\r]')
         for line in lines do
           if line ~= '' then
-            postwin.print(line)
+            postwin.post(line)
           end
         end
         stack = {''}
@@ -42,6 +42,19 @@ local function safe_close(handle)
   if handle and not handle:is_closing() then
     handle:close()
   end
+end
+
+local function on_exit()
+  M.stdout:read_stop()
+  M.stderr:read_stop()
+  M.stdin:shutdown(function()
+    safe_close(M.stdin)
+  end)
+  safe_close(M.stdout)
+  safe_close(M.stderr)
+  safe_close(M.proc)
+  postwin.destroy()
+  M.proc = nil
 end
 
 local function start_process()
@@ -68,10 +81,14 @@ local function start_process()
   options.verbatim = true
   options.hide = true
 
-  return uv.spawn(sclang, options, vim.schedule_wrap(M.on_exit))
+  return uv.spawn(sclang, options, vim.schedule_wrap(on_exit))
 end
 
 --- Interface
+
+function M.is_running()
+  return M.proc and M.proc:is_active()
+end
 
 function M.send(data, silent)
   silent = silent or false
@@ -83,37 +100,10 @@ function M.send(data, silent)
   end
 end
 
-function M.is_running()
-  return M.proc and M.proc:is_active()
-end
-
 function M.eval(expr, cb)
   local cmd = string.format('SCNvim.eval("%s");', expr)
   udp.push_eval_callback(cb)
   M.send(cmd, true)
-end
-
-function M.on_exit()
-  M.stdout:read_stop()
-  M.stderr:read_stop()
-  M.stdin:shutdown(function()
-    safe_close(M.stdin)
-  end)
-  safe_close(M.stdout)
-  safe_close(M.stderr)
-  safe_close(M.proc)
-  postwin.destroy()
-  M.proc = nil
-end
-
-function M.recompile()
-  if not M.is_running() then
-    vim.call('scnvim#util#err', {'sclang is already running'})
-    return
-  end
-  M.send(cmd_char.recompile, true)
-  M.send(string.format('SCNvim.port = %d', udp.port), true)
-  vim.call('scnvim#document#set_current_path')
 end
 
 function M.start()
@@ -123,11 +113,13 @@ function M.start()
   end
   postwin.create()
   M.proc = start_process()
-  assert(M.proc, 'Could not open sclang process')
+  assert(M.proc, 'Could not start sclang process')
+
   local port = udp.start_server()
   assert(port > 0, 'Could not start UDP server')
   M.send(string.format('SCNvim.port = %d', port), true)
-  vim.call('scnvim#document#set_current_path') -- TODO: should also move to lua
+  vim.call('scnvim#document#set_current_path')
+
   local onread = on_stdout()
   M.stdout:read_start(vim.schedule_wrap(onread))
   M.stderr:read_start(vim.schedule_wrap(onread))
@@ -152,6 +144,16 @@ function M.stop()
       timer:close()
     end
   end)
+end
+
+function M.recompile()
+  if not M.is_running() then
+    vim.call('scnvim#util#err', {'sclang is already running'})
+    return
+  end
+  M.send(cmd_char.recompile, true)
+  M.send(string.format('SCNvim.port = %d', udp.port), true)
+  vim.call('scnvim#document#set_current_path')
 end
 
 return M
