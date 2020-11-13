@@ -10,6 +10,7 @@ local M = {}
 
 local HOST = '127.0.0.1'
 local PORT = 0
+local eval_callbacks = {}
 
 --- UDP handlers.
 -- Run the matching function in this table for the incoming 'action' parameter.
@@ -43,9 +44,9 @@ end
 --- Receive data from sclang
 function Handlers.eval(result)
   assert(result)
-  if eval_callback then
-    eval_callback(result)
-    eval_callback = nil
+  local callback = table.remove(eval_callbacks)
+  if callback then
+    callback(result)
   end
 end
 
@@ -69,6 +70,7 @@ function M.start_server()
   handle:recv_start(vim.schedule_wrap(on_receive))
   M.port = handle:getsockname().port
   M.udp = handle
+  return M.port
 end
 
 --- Stop the UDP server.
@@ -80,6 +82,15 @@ function M.stop_server()
     end
     M.udp = nil
   end
+end
+
+--- Push a callback to be evaluated later.
+-- utility function for the scnvim.eval API.
+function M.push_eval_callback(cb)
+  vim.validate{
+    cb = {cb, 'function'}
+  }
+  table.insert(eval_callbacks, cb)
 end
 
 return M

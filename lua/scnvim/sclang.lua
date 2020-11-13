@@ -41,6 +41,12 @@ function M.send(data, silent)
   end
 end
 
+function M.eval(expr, cb)
+  local cmd = string.format('SCNvim.eval("%s");', expr)
+  udp.push_eval_callback(cb)
+  M.send(cmd, true)
+end
+
 local function safe_close(handle)
   if not handle:is_closing() then
     handle:close()
@@ -102,7 +108,9 @@ function M.start()
   postwin.create()
   M.proc = start_process()
   assert(M.proc, 'Could not open sclang process')
-  udp.start_server()
+  local port = udp.start_server()
+  assert(port > 0, 'Could not start UDP server')
+  M.send(string.format('SCNvim.port = %d', port), true)
   vim.call('scnvim#document#set_current_path') -- TODO: should also move to lua
   local onread = on_stdout()
   M.stdout:read_start(vim.schedule_wrap(onread))

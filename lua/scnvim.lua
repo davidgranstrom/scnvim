@@ -24,9 +24,7 @@ end
 -- @param expr Any valid SuperCollider expression.
 -- @param cb A callback with a result argument.
 function scnvim.eval(expr, cb)
-  local cmd = string.format('SCNvim.eval("%s");', expr)
-  eval_callback = cb
-  sclang.send(cmd, true)
+  sclang.eval(expr, cb)
 end
 
 return scnvim
