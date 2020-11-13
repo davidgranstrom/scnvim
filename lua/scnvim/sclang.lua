@@ -33,7 +33,7 @@ local on_stdout = function()
 end
 
 local function safe_close(handle)
-  if not handle:is_closing() then
+  if handle and not handle:is_closing() then
     handle:close()
   end
 end
