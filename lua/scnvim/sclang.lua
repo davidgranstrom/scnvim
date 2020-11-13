@@ -8,6 +8,8 @@ local postwin = require('scnvim/postwin')
 local udp = require('scnvim/udp')
 local M = {}
 
+--- Utilities
+
 local on_stdout = function()
   local stack = {''}
   return function(err, data)
@@ -30,9 +32,40 @@ local on_stdout = function()
   end
 end
 
-function M.is_running()
-  return M.proc and M.proc:is_active()
+local function safe_close(handle)
+  if not handle:is_closing() then
+    handle:close()
+  end
 end
+
+local function start_process()
+  M.stdin = uv.new_pipe(false)
+  M.stdout = uv.new_pipe(false)
+  M.stderr = uv.new_pipe(false)
+
+  local settings = vim.call('scnvim#util#get_user_settings')
+  local sclang = settings.paths.sclang_executable
+  local user_opts = vim.g.scnvim_sclang_options or {}
+  assert(type(user_opts) == 'table', '[scnvim] g:scnvim_sclang_options must be an array')
+
+  local options = {}
+  options.stdio = {
+    M.stdin,
+    M.stdout,
+    M.stderr,
+  }
+  options.cwd = vim.call('expand', '%:p:h')
+  options.args = {'-i', 'scnvim', '-d', options.cwd}
+  table.insert(options.args, user_opts)
+  options.args = vim.tbl_flatten(options.args)
+  -- windows specific settings
+  options.verbatim = true
+  options.hide = true
+
+  return uv.spawn(sclang, options, vim.schedule_wrap(M.on_exit))
+end
+
+--- Interface
 
 function M.send(data, silent)
   silent = silent or false
@@ -41,16 +74,14 @@ function M.send(data, silent)
   end
 end
 
+function M.is_running()
+  return M.proc and M.proc:is_active()
+end
+
 function M.eval(expr, cb)
   local cmd = string.format('SCNvim.eval("%s");', expr)
   udp.push_eval_callback(cb)
   M.send(cmd, true)
-end
-
-local function safe_close(handle)
-  if not handle:is_closing() then
-    handle:close()
-  end
 end
 
 function M.on_exit()
@@ -64,32 +95,6 @@ function M.on_exit()
   safe_close(M.proc)
   postwin.destroy()
   M.proc = nil
-end
-
-function M.options()
-  M.stdin = uv.new_pipe(false)
-  M.stdout = uv.new_pipe(false)
-  M.stderr = uv.new_pipe(false)
-  local options = {}
-  options.stdio = {
-    M.stdin,
-    M.stdout,
-    M.stderr,
-  }
-  options.cwd = vim.call('expand', '%:p:h')
-  -- TODO: get sclang user options
-  options.args = {'-i', 'scnvim', '-d', options.cwd}
-  -- windows specific settings
-  options.verbatim = true
-  options.hide = true
-  return options
-end
-
-local function start_process()
-  local settings = vim.call('scnvim#util#get_user_settings')
-  local sclang = settings.paths.sclang_executable
-  local options = M.options()
-  return uv.spawn(sclang, options, vim.schedule_wrap(M.on_exit))
 end
 
 function M.recompile()
