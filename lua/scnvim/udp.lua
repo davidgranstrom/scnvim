@@ -1,4 +1,4 @@
---- UDP server.
+--- Communication between nvim and sclang.
 -- @module scnvim/udp
 -- @author David Granström
 -- @license GPLv3

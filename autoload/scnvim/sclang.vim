@@ -13,25 +13,25 @@ autocmd scnvim VimLeavePre * call scnvim#sclang#close()
 " interface
 
 function! scnvim#sclang#open() abort
-  lua require'scnvim/sclang'.start()
+  lua require'scnvim'.start()
 endfunction
 
 function! scnvim#sclang#close() abort
-  lua require'scnvim/sclang'.stop()
+  lua require'scnvim'.stop()
 endfunction
 
 function! scnvim#sclang#recompile() abort
-  lua require'scnvim/sclang'.recompile()
+  lua require'scnvim'.recompile()
 endfunction
 
 function! scnvim#sclang#send(data) abort
-  call luaeval('require"scnvim/sclang".send(unpack(_A))', [a:data, v:false]) 
+  call luaeval('require"scnvim".send(_A[1])', [a:data])
 endfunction
 
 function! scnvim#sclang#send_silent(data) abort
-  call luaeval('require"scnvim/sclang".send(unpack(_A))', [a:data, v:true]) 
+  call luaeval('require"scnvim".send_silent(_A[1])', [a:data])
 endfunction
 
 function! scnvim#sclang#is_running() abort
-  return luaeval('require"scnvim/sclang".is_running()')
+  return luaeval('require"scnvim".is_running()')
 endfunction

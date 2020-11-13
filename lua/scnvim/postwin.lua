@@ -1,3 +1,8 @@
+--- Post window.
+-- @module scnvim/postwin
+-- @author David Granström
+-- @license GPLv3
+
 local api = vim.api
 local utils = require'scnvim/utils'
 local settings = vim.call('scnvim#util#get_user_settings')
