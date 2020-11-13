@@ -87,7 +87,7 @@ end
 --- Interface
 
 function M.is_running()
-  return M.proc and M.proc:is_active()
+  return M.proc and M.proc:is_active() or false
 end
 
 function M.send(data, silent)
