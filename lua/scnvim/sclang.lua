@@ -125,11 +125,24 @@ function M.start()
 end
 
 function M.stop()
-  if M.is_running() then
-    M.send('0.exit', true)
-  else
-    vim.call('scnvim#util#err', 'sclang is not running')
+  if not M.is_running() then
+    return
   end
+  udp.stop_server()
+  M.send('0.exit', true)
+  local timer = uv.new_timer()
+  timer:start(1000, 500, function()
+    if M.proc then
+      local ret = M.proc:kill("SIGKILL")
+      if ret == 0 then
+        timer:close()
+        M.proc = nil
+      end
+    else
+      -- process exited during timer loop
+      timer:close()
+    end
+  end)
 end
 
 return M
