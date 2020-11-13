@@ -140,9 +140,9 @@ function M.stop()
   udp.stop_server()
   M.send('0.exit', true)
   local timer = uv.new_timer()
-  timer:start(1000, 500, function()
+  timer:start(1000, 0, function()
     if M.proc then
-      local ret = M.proc:kill("SIGKILL")
+      local ret = M.proc:kill("sigkill")
       if ret == 0 then
         timer:close()
         M.proc = nil
