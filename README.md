@@ -33,7 +33,7 @@
 
 ### Requirements
 
-* [Neovim][neovim] >= 0.4.3
+* [Neovim][neovim] >= 0.4.4
 * [SuperCollider][supercollider]
 
 ### Install
