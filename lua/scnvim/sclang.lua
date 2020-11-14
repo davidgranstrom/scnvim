@@ -93,19 +93,22 @@ end
 
 --- Interface
 
---- Function to run on sclang output
-M.on_read = function(line)
-  postwin.post(line)
-end
-
 --- Function to run on sclang start
 M.on_start = function()
   postwin.create()
 end
 
 --- Function to run on sclang exit
-M.on_exit = function(code, signal)
+--@param code The exit code
+--@param signal The Signal
+M.on_exit = function(code, signal) -- luacheck: no unused args
   postwin.destroy()
+end
+
+--- Function to run on sclang output
+--@param line sclang post window output
+M.on_read = function(line)
+  postwin.post(line)
 end
 
 function M.is_running()
