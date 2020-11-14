@@ -32,7 +32,9 @@ local on_stdout = function()
         local lines = vim.gsplit(str, '[\n\r]')
         for line in lines do
           if line ~= '' then
-            postwin.post(line)
+            if M.on_read then
+              M.on_read(line)
+            end
           end
         end
         stack = {''}
@@ -47,7 +49,7 @@ local function safe_close(handle)
   end
 end
 
-local function on_exit()
+local function on_exit(code, signal)
   M.stdout:read_stop()
   M.stderr:read_stop()
   M.stdin:shutdown(function()
@@ -56,7 +58,9 @@ local function on_exit()
   safe_close(M.stdout)
   safe_close(M.stderr)
   safe_close(M.proc)
-  postwin.destroy()
+  if M.on_exit then
+    M.on_exit(code, signal)
+  end
   M.proc = nil
 end
 
@@ -89,6 +93,21 @@ end
 
 --- Interface
 
+--- Function to run on sclang output
+M.on_read = function(line)
+  postwin.post(line)
+end
+
+--- Function to run on sclang start
+M.on_start = function()
+  postwin.create()
+end
+
+--- Function to run on sclang exit
+M.on_exit = function(code, signal)
+  postwin.destroy()
+end
+
 function M.is_running()
   return M.proc and M.proc:is_active() or false
 end
@@ -114,7 +133,11 @@ function M.start()
     vimcall('scnvim#util#err', 'sclang is already running')
     return
   end
-  postwin.create()
+
+  if M.on_start then
+    M.on_start()
+  end
+
   M.proc = start_process()
   assert(M.proc, 'Could not start sclang process')
 
