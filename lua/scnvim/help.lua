@@ -4,6 +4,7 @@
 -- @license GPLv3
 
 local utils = require('scnvim/utils')
+local vimcall = utils.vimcall
 local uv = vim.loop
 local M = {}
 
@@ -31,14 +32,14 @@ end
 -- @param uri Help file URI
 -- @param (optional) move cursor to line matching regex pattern
 function M.open(uri, pattern)
-  utils.vimcall('scnvim#help#open', {uri, pattern})
+  vimcall('scnvim#help#open', {uri, pattern})
 end
 
 --- Find a method
 function M.handle_method(name, target_dir)
   -- uncomment for nvim 0.5.x
   -- local path = vim.fn.expand(target_dir)
-  local path = utils.vimcall('expand', {target_dir})
+  local path = vimcall('expand', target_dir)
   local docmap = get_docmap(path .. utils.path_sep .. 'docmap.json')
   local results = {}
   for _, value in pairs(docmap) do
@@ -55,11 +56,9 @@ function M.handle_method(name, target_dir)
     end
   end
   if utils.tbl_len(results) then
-    -- uncomment for nvim 0.5.x
-    -- vim.call('setqflist', results)
-    utils.vimcall('setqflist', {results})
-    utils.vimcmd('copen')
-    utils.vimcmd('nnoremap <silent><buffer> <Enter> :call scnvim#help#open_from_quickfix(line("."))<cr>')
+    vimcall('setqflist', {results})
+    vim.api.nvim_command('copen')
+    vim.api.nvim_command('nnoremap <silent><buffer> <Enter> :call scnvim#help#open_from_quickfix(line("."))<cr>')
   else
     print('No results for ' .. name)
   end

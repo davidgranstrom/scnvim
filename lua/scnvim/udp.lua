@@ -87,9 +87,12 @@ end
 --- Push a callback to be evaluated later.
 -- utility function for the scnvim.eval API.
 function M.push_eval_callback(cb)
-  vim.validate{
-    cb = {cb, 'function'}
-  }
+  -- need to check this for nvim versions < 0.5
+  if vim.validate then
+    vim.validate{
+      cb = {cb, 'function'}
+    }
+  end
   table.insert(eval_callbacks, cb)
 end
 

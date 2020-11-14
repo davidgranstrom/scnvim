@@ -5,29 +5,30 @@
 
 local api = vim.api
 local utils = require'scnvim/utils'
-local settings = vim.call('scnvim#util#get_user_settings')
+local vimcall = utils.vimcall
+local settings = vimcall('scnvim#util#get_user_settings')
 local toggle_on_err = settings.post_window.auto_toggle
-local max_lines = vim.g.scnvim_postwin_scrollback or 5000
+local max_lines = utils.get_var('scnvim_postwin_scrollback') or 5000
 local M = {}
 
 function M.create()
-  M.bufnr = vim.call('scnvim#postwindow#create')
+  M.bufnr = vimcall('scnvim#postwindow#create')
 end
 
 function M.open()
-  vim.call('scnvim#postwindow#open')
+  vimcall('scnvim#postwindow#open')
 end
 
 function M.close()
-  vim.call('scnvim#postwindow#close')
+  vimcall('scnvim#postwindow#close')
 end
 
 function M.destroy()
-  vim.call('scnvim#postwindow#destroy')
+  vimcall('scnvim#postwindow#destroy')
 end
 
 function M.toggle()
-  vim.call('scnvim#postwindow#toggle')
+  vimcall('scnvim#postwindow#toggle')
 end
 
 local function is_valid()
@@ -35,11 +36,11 @@ local function is_valid()
 end
 
 function M.get_winid()
-  return vim.fn.bufwinid(M.bufnr)
+  return vimcall('bufwinid', M.bufnr)
 end
 
 function M.is_open()
-  return is_valid() and vim.fn.bufwinnr(M.bufnr) > 0
+  return is_valid() and vimcall('bufwinnr', M.bufnr) > 0
 end
 
 function M.post(line)

@@ -6,6 +6,9 @@
 local uv = vim.loop
 local postwin = require('scnvim/postwin')
 local udp = require('scnvim/udp')
+local utils = require('scnvim/utils')
+local vimcall = utils.vimcall
+local endswith = vim.endswith or utils.str_endswidth
 local M = {}
 
 local cmd_char = {
@@ -24,7 +27,7 @@ local on_stdout = function()
       table.insert(stack, data)
       local str = table.concat(stack, '')
       -- TODO: not sure if \r is needed.. need to check on windows.
-      local got_line = vim.endswith(str, '\n') or vim.endswith(str, '\r')
+      local got_line = endswith(str, '\n') or endswith(str, '\r')
       if got_line then
         local lines = vim.gsplit(str, '[\n\r]')
         for line in lines do
@@ -62,9 +65,9 @@ local function start_process()
   M.stdout = uv.new_pipe(false)
   M.stderr = uv.new_pipe(false)
 
-  local settings = vim.call('scnvim#util#get_user_settings')
+  local settings = vimcall('scnvim#util#get_user_settings')
   local sclang = settings.paths.sclang_executable
-  local user_opts = vim.g.scnvim_sclang_options or {}
+  local user_opts = utils.get_var('scnvim_sclang_options') or {}
   assert(type(user_opts) == 'table', '[scnvim] g:scnvim_sclang_options must be an array')
 
   local options = {}
@@ -73,7 +76,7 @@ local function start_process()
     M.stdout,
     M.stderr,
   }
-  options.cwd = vim.call('expand', '%:p:h')
+  options.cwd = vimcall('expand', '%:p:h')
   options.args = {'-i', 'scnvim', '-d', options.cwd}
   table.insert(options.args, user_opts)
   options.args = vim.tbl_flatten(options.args)
@@ -108,7 +111,7 @@ end
 
 function M.start()
   if M.is_running() then
-    vim.call('scnvim#util#err', 'sclang is already running')
+    vimcall('scnvim#util#err', 'sclang is already running')
     return
   end
   postwin.create()
@@ -118,7 +121,7 @@ function M.start()
   local port = udp.start_server()
   assert(port > 0, 'Could not start UDP server')
   M.send(string.format('SCNvim.port = %d', port), true)
-  vim.call('scnvim#document#set_current_path')
+  vimcall('scnvim#document#set_current_path')
 
   local onread = on_stdout()
   M.stdout:read_start(vim.schedule_wrap(onread))
@@ -148,12 +151,12 @@ end
 
 function M.recompile()
   if not M.is_running() then
-    vim.call('scnvim#util#err', {'sclang is already running'})
+    vimcall('scnvim#util#err', 'sclang is already running')
     return
   end
   M.send(cmd_char.recompile, true)
   M.send(string.format('SCNvim.port = %d', udp.port), true)
-  vim.call('scnvim#document#set_current_path')
+  vimcall('scnvim#document#set_current_path')
 end
 
 return M
