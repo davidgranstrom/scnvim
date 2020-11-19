@@ -85,7 +85,6 @@ local function start_process()
   table.insert(options.args, user_opts)
   options.args = vim.tbl_flatten(options.args)
   -- windows specific settings
-  options.verbatim = true
   options.hide = true
 
   return uv.spawn(sclang, options, vim.schedule_wrap(on_exit))
