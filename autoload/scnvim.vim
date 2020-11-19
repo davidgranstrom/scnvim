@@ -46,7 +46,7 @@ function! scnvim#send_block() abort
 endfunction
 
 function! scnvim#hard_stop() abort
-  call scnvim#sclang#send_silent('thisProcess.hardStop')
+  call scnvim#sclang#send_silent('thisProcess.stop')
 endfunction
 
 " installation
