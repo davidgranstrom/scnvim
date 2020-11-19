@@ -26,10 +26,9 @@ local on_stdout = function()
     if data then
       table.insert(stack, data)
       local str = table.concat(stack, '')
-      -- TODO: not sure if \r is needed.. need to check on windows.
-      local got_line = endswith(str, '\n') or endswith(str, '\r')
+      local got_line = endswith(str, '\n')
       if got_line then
-        local lines = vim.gsplit(str, '[\n\r]')
+        local lines = vim.gsplit(str, '\n')
         for line in lines do
           if line ~= '' then
             if M.on_read then
