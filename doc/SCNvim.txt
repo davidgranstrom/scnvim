@@ -65,7 +65,9 @@ K                       Open documentation.
 
 Remapping~
 
-You can remap all of the default keybindings using the `<Plug>` mappings.
+You can remap all of the default mappings using the `<Plug>` mappings in the
+table above. Notice the usage of `nmap` rather than `nnoremap` in the following
+examples, since we actually want to map to the `<Plug>` mappings recursively.
 >
   nmap <F5> <Plug>(scnvim-send-block)
   nmap <C-s> <Plug>(scnvim-send-line)

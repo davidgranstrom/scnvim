@@ -76,8 +76,8 @@ The following sections can be accessed in `:help scnvim` as well.
 
 | Map     | Description                                                    | Name                               | Mode           |
 |:--------|:---------------------------------------------------------------|:-----------------------------------|:---------------|
-| `<C-e>` | Send current block or line (depending on context)              |`<Plug>(scnvim-send-block)`         | Insert, Normal |
-| `<C-e>` | Send current selection                                         |`<Plug>(scnvim-send-selection)`     | Visual         |
+| `<C-e>` | Send current block or line (depending on context)              | `<Plug>(scnvim-send-block)`        | Insert, Normal |
+| `<C-e>` | Send current selection                                         | `<Plug>(scnvim-send-selection)`    | Visual         |
 | `<M-e>` | Send current line                                              | `<Plug>(scnvim-send-line)`         | Insert, Normal |
 | `<F12>` | Hard stop                                                      | `<Plug>(scnvim-hard-stop)`         | Insert, Normal |
 | `<CR>`  | Toggle post window buffer                                      | `<Plug>(scnvim-postwindow-toggle)` | Insert, Normal |
@@ -85,17 +85,20 @@ The following sections can be accessed in `:help scnvim` as well.
 | `C-k`   | Show function signature for object under cursor                | `<Plug>(scnvim-show-signature)`    | Insert, Normal |
 | `K`     | Open documentation                                             | Uses vim `keywordprg`              | Normal         |
 
-To remap any of the default mappings use the `nmap` command together with the name of the mapping.
+You can remap all of the default mappings using the `<Plug>` mappings in the
+table above. Notice the usage of `nmap` rather than `nnoremap` in the following
+examples, since we actually want to map to the `<Plug>` mappings recursively.
 
 **Examples**
 
 ```vim
 nmap <F5> <Plug>(scnvim-send-block)
+imap <F5> <C-o><Plug>(scnvim-send-block)
 ```
 
 To disable a specific mapping use `<nop>`.
 ```vim
-nnoremap <nop> <Plug>(scnvim-show-signature)
+nmap <nop> <Plug>(scnvim-show-signature)
 ```
 
 To disable all default mappings use `let g:scnvim_no_mappings = 1`
