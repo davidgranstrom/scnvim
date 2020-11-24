@@ -1,4 +1,3 @@
--- require('./harness/setup')
 local TestRunner = require'./harness/runner'
 
 local test_list = {
