@@ -1,4 +1,6 @@
 local setup = require('../harness/setup')
+local scnvim = require'scnvim'
+
 require'busted.runner'(setup)
 
 describe('sclang', function()
@@ -8,6 +10,3 @@ describe('sclang', function()
     -- assert.is_true(type(stdout) == 'table')
   end)
 end)
-
--- don't forget to quit!
--- os.exit(0)

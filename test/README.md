@@ -17,3 +17,9 @@ source .deps/env/bin/activate
 luarocks install busted
 source .deps/env/bin/activate
 ```
+
+# Run
+
+```shell
+nvim --headless -u vim/init.vim -c "lua require'init'"
+```
