@@ -1,7 +1,7 @@
-local TestRunner = require'./harness/runner'
+local TestRunner = require'harness.runner'
 
 local test_list = {
-  './spec/sclang',
+  './spec/sclang_spec',
 }
 
 local function run_all()
