@@ -4,18 +4,32 @@
 -- @license GPLv3
 
 local TestRunner = {}
+TestRunner.__index = TestRunner
 
 function TestRunner:new(tbl)
-  tbl = tbl or {}
-  setmetatable(tbl, self)
-  self.__index = self
-  return tbl
+  tbl = tbl or {
+    headless = false,
+  }
+  return setmetatable(tbl, self)
+end
+
+function TestRunner:stdout_outputter(data)
+  if data then
+    print(data)
+  end
+end
+
+function TestRunner:nvim_outputter(data)
+  if data then
+    print(data)
+  end
 end
 
 function TestRunner:run_test(test, on_exit)
   local cmd = {
     'nvim',
     '--headless',
+    '-u', './vim/init.vim',
     '-c', string.format([['lua require"%s"']], test),
   }
   local stdout_data
@@ -32,6 +46,11 @@ function TestRunner:run_test(test, on_exit)
     on_exit = function(id, data, event)
       assert(data == 0, 'Error code: '..data)
       local result = stdout_data..stderr_data
+      if self.headless then
+        self:stdout_outputter(result)
+      else
+        self:nvim_outputter(result)
+      end
       on_exit(result)
     end,
   }

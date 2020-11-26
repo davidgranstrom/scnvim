@@ -1,20 +1,21 @@
 local TestRunner = require'./harness/runner'
 
 local test_list = {
-  './spec/sclang'
+  './spec/sclang',
 }
 
 local function run_all()
-  local tests = test_list
-  local count = #tests
-  local runner = TestRunner:new()
-  for _, test in ipairs(tests) do
-    local res = runner:run_test(test, function(result)
-      print(result)
+  local count = #test_list
+  local runner = TestRunner:new({ headless = true })
+  for _, test in ipairs(test_list) do
+    runner:run_test(test, function(_)
       count = count - 1
     end)
   end
-  return 0
+  vim.wait(10000, function()
+    return count == 0
+  end)
+  os.exit(count)
 end
 
 run_all()
