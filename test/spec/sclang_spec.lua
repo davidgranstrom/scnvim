@@ -1,7 +1,7 @@
 local setup = require('harness.setup')
 require'busted.runner'(setup)
 
-local sclang = require'scnvim/sclang'
+local sclang = require'scnvim.sclang'
 local stdout
 
 sclang.on_start = function()
@@ -18,13 +18,26 @@ end
 
 describe('sclang', function()
   it('should start client', function()
-    -- sclang.start()
-    -- assert.are.equal(type(stdout), 'table')
+    sclang.start()
+    local result = false
+    vim.wait(5000, function()
+      if type(stdout) == 'table' then
+        for _, line in ipairs(stdout) do
+          if line:match('^*** Welcome to SuperCollider') then
+            result = true
+            return result
+          end
+        end
+      end
+    end)
+    assert.is_true(result)
   end)
 
   -- it('should stop client', function()
-  --   -- print(vim.inspect(sclang))
   --   sclang.stop()
-  --   assert.are.is_nil(stdout)
+  -- end)
+
+  -- it('should fail', function()
+  --   -- assert.are.equal(1, 2)
   -- end)
 end)

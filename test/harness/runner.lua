@@ -30,20 +30,24 @@ function TestRunner:run_test(test, on_exit)
     'nvim',
     '--headless',
     '-u', './vim/init.vim',
-    '-c', string.format([['lua require"%s"']], test),
+    '-c', string.format("lua require'%s'", test),
   }
-  local stdout_data
-  local stderr_data
+  local stdout_data = ''
+  local stderr_data = ''
   local options = {
     stdout_buffered = true,
     stderr_buffered = true,
-    on_stdout = function(id, data, event)
+    on_stdout = function(_, data)
+      -- print(vim.inspect(data))
       stdout_data = data[1]
+      stdout_data = stdout_data:gsub('\n', ''):gsub('\r', '')
     end,
-    on_stderr = function(id, data, event)
+    on_stderr = function(_, data)
+      print(vim.inspect(data))
       stderr_data = data[1]
+      stderr_data = stderr_data:gsub('\n', ''):gsub('\r', '')
     end,
-    on_exit = function(id, data, event)
+    on_exit = vim.schedule_wrap(function(_, data)
       assert(data == 0, 'Error code: '..data)
       local result = stdout_data..stderr_data
       if self.headless then
@@ -52,7 +56,7 @@ function TestRunner:run_test(test, on_exit)
         self:nvim_outputter(result)
       end
       on_exit(result)
-    end,
+    end),
   }
   local job = vim.fn.jobstart(table.concat(cmd, ' '), options)
   if job == 0 then
