@@ -1,6 +1,3 @@
-local setup = require('harness.setup')
-require'busted.runner'(setup)
-
 local sclang = require'scnvim.sclang'
 local stdout
 
@@ -17,7 +14,7 @@ sclang.on_exit = function(code, signal)
 end
 
 describe('sclang', function()
-  it('should start client', function()
+  it('can start client', function()
     sclang.start()
     local result = false
     vim.wait(5000, function()
@@ -33,11 +30,11 @@ describe('sclang', function()
     assert.is_true(result)
   end)
 
-  -- it('should stop client', function()
-  --   sclang.stop()
-  -- end)
-
-  -- it('should fail', function()
-  --   -- assert.are.equal(1, 2)
-  -- end)
+  it('can stop client', function()
+    vim.wait(5000, function()
+      sclang.stop()
+      return stdout == nil
+    end)
+    assert.is_nil(stdout)
+  end)
 end)
