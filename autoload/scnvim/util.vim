@@ -95,12 +95,29 @@ function! scnvim#util#get_scdoc_render_args() abort
   return get(g:, 'scnvim_scdoc_render_args', '% --from html --to plain -o %')
 endfunction
 
+function! scnvim#util#get_snippet_format() abort
+    let snippet_format = get(g:, 'scnvim_snippet_format', '')
+    if !empty(snippet_format)
+        " user defined
+        if (snippet_format ==? 'ultisnips')
+            return snippet_format
+        elseif (snippet_format ==? 'snippets.nvim')
+            return snippet_format
+        else 
+            call scnvim#util#err('scnvim supports "ultisnips" and "snippets.nvim"')
+        endif
+    else
+        return 'ultisnips'
+    endif
+endfunction
+
 function! scnvim#util#generate_tags() abort
   let is_running = scnvim#sclang#is_running()
   if is_running
     let root_dir = get(g:, 'scnvim_root_dir')
     let root_dir = scnvim#util#escape_path(root_dir)
-    call scnvim#sclang#send_silent(printf('SCNvim.generateAssets("%s")', root_dir))
+    let snippet_format = scnvim#util#get_snippet_format()
+        call scnvim#sclang#send_silent(printf('SCNvim.generateAssets("%s", "%s")', root_dir, snippet_format))
   else
     call scnvim#util#err('sclang is not started')
   endif
