@@ -45,19 +45,29 @@ SCNvim {
         SkipJack(stlFunc, interval, name: "scnvim_statusline");
     }
 
-    *generateAssets {|rootDir, snippetFormat|
+    *generateAssets {|rootDir, snippetFormat = "ultisnips"|
         var tagsPath = rootDir +/+ "scnvim-data/tags";
         var syntaxPath = rootDir +/+ "syntax/classes.vim";
-        var snippetPath, snippetFileName;
-        snippetFormat = snippetFormat ? "ultisnips";
+        var snippetPath = rootDir +/+ "scnvim-data";
         case
-        {snippetFormat == "ultisnips"} {snippetFileName = "supercollider.snippets"}
-        {snippetFormat == "snippets.nvim"} {snippetFileName = "scnvim_snippets.lua"};
-        snippetPath = rootDir +/+ "scnvim-data/" +/+ snippetFileName;
+        {snippetFormat == "ultisnips"}
+        {
+            snippetPath = snippetPath +/+ "supercollider.snippets";
+        }
+        {snippetFormat == "snippets.nvim"}
+        {
+            snippetPath = snippetPath +/+ "scnvim_snippets.lua";
+        }
+        {
+            "Unrecognized snippet format: '%'".format(snippetFormat).warn;
+            snippetPath = nil;
+        };
         Routine.run {
             SCNvim.generateTags(tagsPath);
             SCNvim.generateSyntax(syntaxPath);
-            SCNvim.generateSnippets(snippetPath, snippetFormat);
+            if (snippetPath.notNil) {
+                SCNvim.generateSnippets(snippetPath, snippetFormat);
+            }
         };
     }
 
@@ -179,10 +189,10 @@ SCNvim {
         {snippetFormat == "snippets.nvim"} {
             file.write("-- SuperCollider snippets" ++ Char.nl);
             file.write("-- Snippet generator: SCNvim.sc" ++ Char.nl);
-            file.write("M = {" ++ Char.nl);
+            file.write("local snippets = {" ++ Char.nl);
             file.putAll(snippets);
             file.write("}" ++ Char.nl);
-            file.write("return M");
+            file.write("return snippets");
         };
         file.close;
         "Generated snippets file: %".format(path).postln;
