@@ -46,8 +46,7 @@ end
 -- @returns The file contents. A lua table or a string depending on `scnvim_snippet_format`.
 function M.get_snippets()
   local root_dir = M.get_var('scnvim_root_dir')
-  -- local format = M.get_var('scnvim_snippet_format') or 'snippets.nvim'
-  local format = M.get_var('scnvim_snippet_format') or 'ultisnips'
+  local format = M.get_var('scnvim_snippet_format') or 'snippets.nvim'
   local snippet_dir = root_dir .. M.path_sep .. 'scnvim-data'
   if format == 'snippets.nvim' then
     local filename = snippet_dir .. M.path_sep .. 'scnvim_snippets.lua'
