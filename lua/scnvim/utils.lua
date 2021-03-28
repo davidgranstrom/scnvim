@@ -42,6 +42,31 @@ function M.json_decode(data)
   return M.vimcall('json_decode', data)
 end
 
+--- Get the content of the generated snippets file.
+-- @returns The file contents. A lua table or a string depending on `scnvim_snippet_format`.
+function M.get_snippets()
+  local root_dir = M.get_var('scnvim_root_dir')
+  -- local format = M.get_var('scnvim_snippet_format') or 'snippets.nvim'
+  local format = M.get_var('scnvim_snippet_format') or 'ultisnips'
+  local snippet_dir = root_dir .. M.path_sep .. 'scnvim-data'
+  if format == 'snippets.nvim' then
+    local filename = snippet_dir .. M.path_sep .. 'scnvim_snippets.lua'
+    local ok, file = pcall(loadfile(filename))
+    if ok then
+      return file
+    else
+      print('File does not exist:' .. filename)
+      print('Call :SCNvimTags to generate snippets.')
+    end
+  elseif format == 'ultisnips' then
+    local filename = snippet_dir .. M.path_sep .. 'supercollider.snippets'
+    local file = assert(io.open(filename, 'rb'), 'File does not exists: ' .. filename)
+    local content = file:read('*all')
+    file:close()
+    return content
+  end
+end
+
 ------------------
 --- String
 ------------------
