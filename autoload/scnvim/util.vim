@@ -55,7 +55,7 @@ function! scnvim#util#echo_args() abort
   endif
 endfunction
 
-function! scnvim#util#args_popup() abort
+function! scnvim#util#args_popup_toggle() abort
   let l_num = line('.')
   let c_col = col('.') - 2
   let line = getline(l_num)

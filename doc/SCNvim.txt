@@ -213,7 +213,7 @@ Set this variable if you don't want the command-line "echo args" feature
 
 Create a mapping for this function if you want arguments in a floating window pop up
 >
-  {'n', ';', ':call scnvim#util#args_popup()<cr>'}
+  {'n', ';', ':call scnvim#util#args_popup_toggle()<cr>'}
 
 Set this to change the maximum float-args window width
 >
