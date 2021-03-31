@@ -199,10 +199,6 @@ Update rate for server info in status line (seconds)
 >
   let g:scnvim_statusline_interval = 1
 
-Set this variable if you don't want the "echo args" feature
->
-  let g:scnvim_echo_args = 0
-
 Set this variable if you don't want any default mappings
 >
   let g:scnvim_no_mappings = 1
@@ -210,6 +206,32 @@ Set this variable if you don't want any default mappings
 Browse SuperCollider documentation in nvim (see |scnvim-help-system| for more information)
 >
   let g:scnvim_scdoc = 1
+
+Set this variable if you don't want the command-line "echo args" feature
+>
+  let g:scnvim_echo_args = 0
+
+Create a mapping for this function if you want arguments in a floating window pop up
+>
+  {'n', ';', ':call scnvim#util#args_popup()<cr>'}
+
+Set this to change the maximum float-args window width
+>
+  vim.g.scnvim_floating_args_max_width = 60 --default=40
+
+Set this if you also need the class name and method to be shown (float-args window)
+>
+  vim.g.scnvim_floating_args_show_full --default=false
+
+Variable to disable the linebreak behavior (float-args window)
+>
+  vim.g.scnvim_floating_args_linebreak --default=true
+
+Set this and get automatic yanking of arguments to a register (a-z)
+>
+  vim.g.scnvim_floating_args_register = "s"  --default=<nil>
+  -- then after toggling (open or close) the float-args window
+  -- its content (1 line) will reside in the assigned register
 
 Sclang Options Customization ~
 

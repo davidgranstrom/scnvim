@@ -55,6 +55,36 @@ function! scnvim#util#echo_args() abort
   endif
 endfunction
 
+function! scnvim#util#args_popup() abort
+  let l_num = line('.')
+  let c_col = col('.') - 2
+  let line = getline(l_num)
+  let method = []
+  let result = ""
+  let match = synIDattr(synID(l_num, c_col, 1), 'name')
+  while match !=# 'scObject' && c_col >= 0
+    call add(method, line[c_col])
+    let c_col -= 1
+    let match = synIDattr(synID(l_num, c_col, 1), 'name')
+  endwhile
+  call add(method, line[c_col])
+  let method = join(reverse(method), '')
+  let c_col -= 1
+  if match ==# 'scObject'
+    let result = []
+    while line[c_col] !~? '\W' && c_col >= 0
+      call add(result, line[c_col])
+      let c_col -= 1
+    endwhile
+    let result = join(reverse(result), '')
+    if !empty(result)
+      let result .= method
+    endif
+  endif
+      let Floater = luaeval('require("scnvim/utils").floating_args')
+      call Floater(result)
+endfunction
+
 function! scnvim#util#find_sclang_executable() abort
   let exe = get(g:, 'scnvim_sclang_executable', '')
   if !empty(exe)
