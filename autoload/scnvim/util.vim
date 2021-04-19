@@ -100,7 +100,8 @@ function! scnvim#util#generate_tags() abort
   if is_running
     let root_dir = get(g:, 'scnvim_root_dir')
     let root_dir = scnvim#util#escape_path(root_dir)
-    call scnvim#sclang#send_silent(printf('SCNvim.generateAssets("%s")', root_dir))
+    let snippet_format = get(g:, 'scnvim_snippet_format', 'ultisnips')
+    call scnvim#sclang#send_silent(printf('SCNvim.generateAssets("%s", "%s")', root_dir, snippet_format))
   else
     call scnvim#util#err('sclang is not started')
   endif

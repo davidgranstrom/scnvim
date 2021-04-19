@@ -42,6 +42,30 @@ function M.json_decode(data)
   return M.vimcall('json_decode', data)
 end
 
+--- Get the content of the generated snippets file.
+-- @returns The file contents. A lua table or a string depending on `scnvim_snippet_format`.
+function M.get_snippets()
+  local root_dir = M.get_scnvim_root_dir()
+  local format = M.get_var('scnvim_snippet_format') or 'snippets.nvim'
+  local snippet_dir = root_dir .. M.path_sep .. 'scnvim-data'
+  if format == 'snippets.nvim' then
+    local filename = snippet_dir .. M.path_sep .. 'scnvim_snippets.lua'
+    local ok, file = pcall(loadfile(filename))
+    if ok then
+      return file
+    else
+      print('File does not exist:' .. filename)
+      print('Call :SCNvimTags to generate snippets.')
+    end
+  elseif format == 'ultisnips' then
+    local filename = snippet_dir .. M.path_sep .. 'supercollider.snippets'
+    local file = assert(io.open(filename, 'rb'), 'File does not exists: ' .. filename)
+    local content = file:read('*all')
+    file:close()
+    return content
+  end
+end
+
 ------------------
 --- String
 ------------------
@@ -58,9 +82,50 @@ function M.str_endswidth(s, suffix)
   return #suffix == 0 or s:sub(-#suffix) == suffix
 end
 
+------------------
+--- Path
+------------------
+
 --- Get the system path separator
 M.is_windows = vim.loop.os_uname().sysname:match('Windows')
 M.path_sep = M.is_windows and '\\' or '/'
+
+--- Get the root directory of the plugin.
+function M.get_scnvim_root_dir()
+  local package_path = debug.getinfo(1).source:gsub('@', '')
+  package_path = vim.split(package_path, M.path_sep, true)
+  -- find index of plugin root dir
+  local index = 1
+  for i, v in ipairs(package_path) do
+    if v == 'scnvim' then
+      index = i
+      break
+    end
+  end
+  local path_len = M.tbl_len(package_path)
+  if index == 1 or index == path_len then
+    error('[scnvim] could not find plugin root dir')
+  end
+  local path = {}
+  for i, v in ipairs(package_path) do
+    if i > index then
+      break
+    end
+    path[i] = v
+  end
+  local dir = ''
+  for _, v in ipairs(path) do
+    -- first element is empty on unix
+    if v == '' then
+      dir = M.path_sep
+    else
+      dir = dir .. v .. M.path_sep
+    end
+  end
+  assert(dir ~= '', '[scnvim] Could not get scnvim root path')
+  dir = dir:sub(1, -2) -- delete trailing slash
+  return dir
+end
 
 ------------------
 --- Table

@@ -8,44 +8,7 @@ local M = {}
 local utils = require('scnvim/utils')
 local uv = vim.loop
 
---- Get the root directory of the plugin.
-local function get_scnvim_root_dir()
-  local package_path = debug.getinfo(1).source:gsub('@', '')
-  package_path = vim.split(package_path, utils.path_sep, true)
-  -- find index of plugin root dir
-  local index = 1
-  for i, v in ipairs(package_path) do
-    if v == 'scnvim' then
-      index = i
-      break
-    end
-  end
-  local path_len = utils.tbl_len(package_path)
-  if index == 1 or index == path_len then
-    error('[scnvim] could not find plugin root dir')
-  end
-  local path = {}
-  for i, v in ipairs(package_path) do
-    if i > index then
-      break
-    end
-    path[i] = v
-  end
-  local dir = ''
-  for _, v in ipairs(path) do
-    -- first element is empty on unix
-    if v == '' then
-      dir = utils.path_sep
-    else
-      dir = dir .. v .. utils.path_sep
-    end
-  end
-  assert(dir ~= '', '[scnvim] Could not get scnvim root path')
-  dir = dir:sub(1, -2) -- delete trailing slash
-  return dir
-end
-
-local scnvim_root_dir = get_scnvim_root_dir()
+local scnvim_root_dir = utils.get_scnvim_root_dir()
 local home_dir = uv.os_homedir()
 
 -- indexed with keys returned by uname

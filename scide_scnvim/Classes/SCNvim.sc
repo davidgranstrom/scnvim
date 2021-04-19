@@ -45,14 +45,29 @@ SCNvim {
         SkipJack(stlFunc, interval, name: "scnvim_statusline");
     }
 
-    *generateAssets {|rootDir|
+    *generateAssets {|rootDir, snippetFormat = "ultisnips"|
         var tagsPath = rootDir +/+ "scnvim-data/tags";
         var syntaxPath = rootDir +/+ "syntax/classes.vim";
-        var snippetPath = rootDir +/+ "scnvim-data/supercollider.snippets";
+        var snippetPath = rootDir +/+ "scnvim-data";
+        case
+        {snippetFormat == "ultisnips"}
+        {
+            snippetPath = snippetPath +/+ "supercollider.snippets";
+        }
+        {snippetFormat == "snippets.nvim"}
+        {
+            snippetPath = snippetPath +/+ "scnvim_snippets.lua";
+        }
+        {
+            "Unrecognized snippet format: '%'".format(snippetFormat).warn;
+            snippetPath = nil;
+        };
         Routine.run {
             SCNvim.generateTags(tagsPath);
             SCNvim.generateSyntax(syntaxPath);
-            SCNvim.generateSnippets(snippetPath);
+            if (snippetPath.notNil) {
+                SCNvim.generateSnippets(snippetPath, snippetFormat);
+            }
         };
     }
 
@@ -117,13 +132,14 @@ SCNvim {
         "Generated tags file: %".format(tagPath).postln;
     }
 
-    *generateSnippets {arg outputPath;
+    *generateSnippets {arg outputPath, snippetFormat;
         var file, path;
         var snippets = [];
 
         path = outputPath ? "~/.scsnippets";
         path = path.standardizePath;
         file = File.open(path, "w");
+        snippetFormat = snippetFormat ? "ultisnips";
 
         Class.allClasses.do {arg klass;
             var className, argList, signature;
@@ -151,16 +167,33 @@ SCNvim {
                         argList = "(" ++ argList.join(", ") ++ ")";
 
                         snippet = className ++ argList;
-                        snippet = "snippet %\n%\nendsnippet\n".format(snippetName, snippet);
+                        case
+                        {snippetFormat == "ultisnips"} {
+                            snippet = "snippet %\n%\nendsnippet\n".format(snippetName, snippet);
+                        }
+                        {snippetFormat == "snippets.nvim"} {
+                            snippet = "['%'] = [[%]];\n".format(snippetName, snippet);
+                        };
                         snippets = snippets.add(snippet ++ Char.nl);
                     };
                 };
             };
         };
 
-        file.write("# SuperCollider snippets" ++ Char.nl);
-        file.write("# Snippet generator: SCNvim.sc\n" ++ Char.nl);
-        file.putAll(snippets);
+        case
+        {snippetFormat == "ultisnips"} {
+            file.write("# SuperCollider snippets" ++ Char.nl);
+            file.write("# Snippet generator: SCNvim.sc" ++ Char.nl);
+            file.putAll(snippets);
+        }
+        {snippetFormat == "snippets.nvim"} {
+            file.write("-- SuperCollider snippets" ++ Char.nl);
+            file.write("-- Snippet generator: SCNvim.sc" ++ Char.nl);
+            file.write("local snippets = {" ++ Char.nl);
+            file.putAll(snippets);
+            file.write("}" ++ Char.nl);
+            file.write("return snippets");
+        };
         file.close;
         "Generated snippets file: %".format(path).postln;
     }
