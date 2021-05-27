@@ -3,10 +3,11 @@
 -- @author David Granström
 -- @license GPLv3
 
+local postwin = require'scnvim.postwin'
+local udp = require'scnvim.udp'
+local utils = require'scnvim.utils'
+
 local uv = vim.loop
-local postwin = require('scnvim/postwin')
-local udp = require('scnvim/udp')
-local utils = require('scnvim/utils')
 local vimcall = utils.vimcall
 local endswith = vim.endswith or utils.str_endswidth
 local M = {}

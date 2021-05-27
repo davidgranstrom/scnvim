@@ -4,9 +4,10 @@
 -- @author David Granström
 -- @license GPLv3
 
-local M = {}
-local utils = require('scnvim/utils')
+local utils = require'scnvim.utils'
+
 local uv = vim.loop
+local M = {}
 
 local scnvim_root_dir = utils.get_scnvim_root_dir()
 local home_dir = uv.os_homedir()
