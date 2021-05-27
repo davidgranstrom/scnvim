@@ -3,7 +3,8 @@
 -- @author David Granström
 -- @license GPLv3
 
-local utils = require('scnvim/utils')
+local utils = require'scnvim.utils'
+
 local vimcall = utils.vimcall
 local uv = vim.loop
 local M = {}

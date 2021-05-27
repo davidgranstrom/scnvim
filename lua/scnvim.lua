@@ -3,7 +3,7 @@
 -- @author David Granström
 -- @license GPLv3
 
-local sclang = require('scnvim/sclang')
+local sclang = require('scnvim.sclang')
 local scnvim = {}
 
 --- Evalute a SuperCollider expression.

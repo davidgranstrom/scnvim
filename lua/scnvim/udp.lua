@@ -3,9 +3,10 @@
 -- @author David Granström
 -- @license GPLv3
 
+local help = require'scnvim.help'
+local utils = require'scnvim.utils'
+
 local uv = vim.loop
-local help = require('scnvim/help')
-local utils = require('scnvim/utils')
 local M = {}
 
 local HOST = '127.0.0.1'

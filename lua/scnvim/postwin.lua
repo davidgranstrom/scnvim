@@ -3,8 +3,9 @@
 -- @author David Granström
 -- @license GPLv3
 
+local utils = require'scnvim.utils'
+
 local api = vim.api
-local utils = require'scnvim/utils'
 local vimcall = utils.vimcall
 local settings = vimcall('scnvim#util#get_user_settings')
 local toggle_on_err = settings.post_window.auto_toggle
