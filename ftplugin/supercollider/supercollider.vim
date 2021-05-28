@@ -30,11 +30,16 @@ let enable_arghints = get(g:, 'scnvim_echo_args', 1)
 if enable_arghints
   augroup scnvim_echo_args
     autocmd! * <buffer>
-    autocmd InsertCharPre <buffer> call scnvim#util#echo_args_insert()
+    " autocmd InsertCharPre <buffer> call scnvim#util#echo_args_insert()
+    " autocmd InsertCharPre <buffer> call luaeval('require("scnvim").introspection.highlight_arg()')
+    " autocmd InsertCharPre <buffer> call luaeval('require"scnvim.autocompleter".echo_args()')
   augroup END
   " for argument hints
-  setlocal noshowmode
-  setlocal shortmess+=c
+  let no_float = get(g:, 'scnvim_arghints_float', 1)
+  if no_float == 0
+    setlocal noshowmode
+    setlocal shortmess+=c
+  endif
 endif
 
 function! s:apply_quickfix_conceal()

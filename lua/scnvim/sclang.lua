@@ -6,6 +6,7 @@
 local postwin = require'scnvim.postwin'
 local udp = require'scnvim.udp'
 local utils = require'scnvim.utils'
+local introspection = require'scnvim.introspection'
 
 local uv = vim.loop
 local vimcall = utils.vimcall
@@ -130,6 +131,17 @@ function M.eval(expr, cb)
   M.send(cmd, true)
 end
 
+function M.generate_introspection()
+  local cache_path = vimcall('stdpath', 'cache') .. utils.path_sep .. 'introspection.json'
+  local expr = string.format('SCNvim.createIntrospection(\\"%s\\")', cache_path)
+  M.eval(expr, function()
+    utils.readFile(cache_path, vim.schedule_wrap(function(data)
+      local json = utils.json_decode(data)
+      introspection.parse(json)
+    end))
+  end)
+end
+
 function M.start()
   if M.is_running() then
     vimcall('scnvim#util#err', 'sclang is already running')
@@ -147,6 +159,7 @@ function M.start()
   assert(port > 0, 'Could not start UDP server')
   M.send(string.format('SCNvim.port = %d', port), true)
   vimcall('scnvim#document#set_current_path')
+  M.generate_introspection()
 
   local onread = on_stdout()
   M.stdout:read_start(vim.schedule_wrap(onread))

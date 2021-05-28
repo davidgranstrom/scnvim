@@ -22,6 +22,8 @@ autocmd scnvim BufEnter,BufNewFile,BufRead *.scd,*.sc call scnvim#document#set_c
 
 " eval flash default color
 highlight default SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
+" function signature positional highlighting
+highlight SCNvimCurrentArg gui=bold cterm=bold
 
 noremap <unique><script><silent> <Plug>(scnvim-send-line) :<c-u>call scnvim#send_line(0, 0)<cr>
 noremap <unique><script><silent> <Plug>(scnvim-send-block) :<c-u>call scnvim#send_block()<cr>

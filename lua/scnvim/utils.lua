@@ -4,6 +4,7 @@
 -- @license GPLv3
 
 local M = {}
+local uv = vim.loop
 
 ------------------
 --- Compat
@@ -64,6 +65,23 @@ function M.get_snippets()
     file:close()
     return content
   end
+end
+
+--- Read a file from disk
+function M.readFile(path, callback)
+  uv.fs_open(path, "r", 438, function(err, fd)         -- luacheck: ignore
+    assert(not err, err)
+    uv.fs_fstat(fd, function(err, stat)                -- luacheck: ignore
+      assert(not err, err)
+      uv.fs_read(fd, stat.size, 0, function(err, data) -- luacheck: ignore
+        assert(not err, err)
+        uv.fs_close(fd, function(err)                  -- luacheck: ignore
+          assert(not err, err)
+          return callback(data)
+        end)
+      end)
+    end)
+  end)
 end
 
 ------------------
