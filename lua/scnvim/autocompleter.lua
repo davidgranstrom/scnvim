@@ -3,7 +3,8 @@
 -- @author David Granström
 -- @license GPLv3
 
-local introspection = require'scnvim.introspection'
+local utils = require'scnvim.utils'
+-- local introspection = require'scnvim.introspection'
 
 local M = {}
 local api = vim.api
@@ -67,7 +68,7 @@ function M.echo_args()
 
   -- TODO: remove items after inserting closing brace
   local items = vim.split(line_to_cursor, '(', true)
-  P(items)
+  print(items)
   -- utils.send_to_sc(string.format('SCNvim.methodArgs("%s")', items[#items]))
   -- print(row, col, line, line_to_cursor, prefix)
   -- print(vim.inspect())
@@ -78,7 +79,6 @@ function M.highlight_arg()
     return
   end
   local char = api.nvim_get_vvar('char')
-  -- local 
   if char == ',' then
     arg_count = arg_count + 1
   end

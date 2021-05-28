@@ -3,11 +3,7 @@
 -- @author David Granström
 -- @license GPLv3
 
-local utils = require'scnvim.utils'
-
 local M = {}
-local api = vim.api
-
 M.class_map = {}
 M.method_map = {}
 
@@ -56,22 +52,22 @@ function Method.new(tbl)
   return setmetatable(tbl or defaults, Method)
 end
 
-function Method:signature(style)
-end
+-- function Method:signature(style)
+-- end
 
-function Method:matches(to_match)
-end
+-- function Method:matches(to_match)
+-- end
 
-local function make_full_method_name(class_name, method_name)
-  local ret = class_name
-  if ret:match('^Meta_') then
-    ret = ret:sub(1, 6)
-    ret = '-*' .. ret
-  else
-    ret = '-' .. ret
-  end
-  return method_name .. ret
-end
+-- local function make_full_method_name(class_name, method_name)
+--   local ret = class_name
+--   if ret:match('^Meta_') then
+--     ret = ret:sub(1, 6)
+--     ret = '-*' .. ret
+--   else
+--     ret = '-' .. ret
+--   end
+--   return method_name .. ret
+-- end
 
 function M.parse(str)
   for _, entry in ipairs(str) do
