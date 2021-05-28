@@ -1,134 +1,131 @@
+--- SuperCollider introspection
+-- @module scnvim
+-- @author David Granström
+-- @license GPLv3
+
+local utils = require'scnvim.utils'
+
 local M = {}
-local utils = require('scnvim/utils')
 local api = vim.api
-local scnvim
 
-M.float_id = 0
-M.introspection = {}
+M.class_map = {}
+M.method_map = {}
 
-local function call(fn, args)
-  return utils.vimcall(fn, args or {})
-end
+local Class = {}
+Class.__index = Class
 
-local function create_float_options(str)
-  local is_first_line = call('line', {'.'}) == 1
-  local anchor = is_first_line and 'NW' or 'SW'
-  -- one line below cursor
-  local row = is_first_line and 1 or 0
-  return {
-    relative = 'cursor',
-    width = string.len(str),
-    height = 1,
-    col = 0,
-    row = row,
-    anchor = anchor,
-    style = 'minimal'
+function Class.new(tbl)
+  local defaults = {}
+  defaults.name = nil
+  defaults.meta_class = nil
+  defaults.super_class = nil
+  defaults.methods = {}
+  defaults.definition = {
+    path = '',
+    position = 0,
   }
+  return setmetatable(tbl or defaults, Class)
 end
 
-local function get_hl_ranges(str)
-  local ranges = {}
-  local offset = 0
-  local _, n = str:gsub(',', '')
-  local len = string.len(str)
-  n = n + 1
-  for i = 1, n do
-    local start = str:find(',', offset + 1)
-    -- last item
-    start = start or len
-    ranges[i] = {offset, start}
-    offset = start
+function Class:is_subclass_of(parent_class)
+  if self.super_class == parent_class then
+    return true
   end
-  return ranges, n
+  if not self.super_class then
+    return false
+  end
+  return self.super_class:is_subclass_of(parent_class)
 end
 
-local arg_count = 1
+local Method = {}
+Method.__index = Method
+Method.SignatureWithoutArguments = 1
+Method.SignatureWithArguments = 2
+Method.SignatureWithArgumentsAndDefaultValues = 3
 
-function M.echo_args()
-  local char = api.nvim_get_vvar('char')
-  M.highlight_arg()
-  if char ~= '(' then
-    return
-  end
-  -- local cursor = vim.api.nvim_win_get_cursor(0)
-  -- local row, col = unpack(cursor)
-  -- -- local col = cursor[2]
-  -- local curline = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1]
-  local pos = api.nvim_win_get_cursor(0)
-  local line = api.nvim_get_current_line()
-  local line_to_cursor = line:sub(1, pos[2])
-  -- Get the start position of the current keyword
-  -- local textMatch = vim.fn.match(line_to_cursor, '\\k*$')
-  -- local prefix = line_to_cursor:sub(textMatch+1)
-
-  -- TODO: remove items after inserting closing brace
-  local items = vim.split(line_to_cursor, '(', true)
-  utils.send_to_sc(string.format('SCNvim.methodArgs("%s")', items[#items]))
-  -- print(row, col, line, line_to_cursor, prefix)
-  -- print(vim.inspect())
+function Method.new(tbl)
+  local defaults = {}
+  defaults.signature_style = -1
+  defaults.owner_class = Class.new()
+  defaults.name = ''
+  defaults.arguments = {}
+  defaults.definition = {
+    path = '',
+    position = 0,
+  }
+  return setmetatable(tbl or defaults, Method)
 end
 
-function M.highlight_arg()
-  if M.float_id == 0 then
-    return
-  end
-  local char = api.nvim_get_vvar('char')
-  -- local 
-  if char == ',' then
-    arg_count = arg_count + 1
-  end
-  local start, offset = unpack(M.hl_ranges[arg_count])
-  api.nvim_buf_add_highlight(M.hl_bufnr, -1, 'SCNvimCurrentArg', 0, start, offset)
+function Method:signature(style)
 end
 
-function M.show_signature(args)
-  local result, float = pcall(api.nvim_get_var, 'scnvim_arghints_float')
-  if not result then
-    return
-  end
-  -- user opt-out
-  if float == 0 then
-    print(args)
-    return
-  end
-  -- make sure only one float is open at a time
-  M.try_close_float()
-  -- extract functions args
-  local str = args:match('%((.+)%)')
-  local bufnr = api.nvim_create_buf(false, true)
-  api.nvim_buf_set_lines(bufnr, 0, -1, true, {str})
-  local options = create_float_options(str)
-  local winnr = api.nvim_open_win(bufnr, false, options)
-  M.float_id = winnr
-  api.nvim_command([[
-    autocmd InsertLeave <buffer> ++once lua require("scnvim/introspection").try_close_float()
-  ]])
-  -- highlight
-  M.current_args = str
-  local ranges, count = get_hl_ranges(str)
-  M.hl_ranges = ranges
-  M.hl_ranges_count = count
-  M.hl_bufnr = bufnr
-  local start, offset = unpack(ranges[1])
-  api.nvim_buf_add_highlight(bufnr, -1, 'SCNvimArgActive', 0, start, offset)
+function Method:matches(to_match)
 end
 
-function M.try_close_float()
-  if M.float_id > 0 then
-    vim.api.nvim_win_close(M.float_id, true)
-    M.float_id = 0
+local function make_full_method_name(class_name, method_name)
+  local ret = class_name
+  if ret:match('^Meta_') then
+    ret = ret:sub(1, 6)
+    ret = '-*' .. ret
+  else
+    ret = '-' .. ret
   end
+  return method_name .. ret
 end
 
-function M.create()
-  local tmppath = call('tempname')
-  local expr = string.format('SCNvim.createIntrospection(\\"%s\\")', tmppath)
-  scnvim = scnvim or require 'scnvim'
-  scnvim.eval(expr, function()
-    utils.readFile(tmppath, vim.schedule_wrap(function(data)
-      M.introspection = utils.json_decode(data)
-    end))
-  end)
+function M.parse(str)
+  for _, entry in ipairs(str) do
+    assert(type(entry) == 'table')
+    local name = entry[1]
+    M.class_map[name] = Class.new{name = name, methods = {}}
+  end
+
+  for _, entry in ipairs(str) do
+    local name = entry[1]
+    local class = M.class_map[name]
+    assert(class)
+    local metaclass_name = entry[2]
+    local metaclass = M.class_map[metaclass_name]
+    class.meta_class = metaclass
+    if #entry[3] == 0 then
+      class.super_class = 0
+    else
+      local superclass_name = entry[3]
+      local superclass = M.class_map[superclass_name]
+      class.super_class = superclass
+    end
+    class.definition = {}
+    class.definition.path = entry[4]
+    class.definition.position = tonumber(entry[5])
+
+    local methods = entry[6]
+    for _, m_entry in ipairs(methods) do
+      local method = Method.new{
+        owner_class = class,
+        name = m_entry[2],
+        definition = {
+          path = m_entry[3],
+          position = tonumber(m_entry[4])
+        },
+        arguments = {},
+      }
+      local arguments = m_entry[5]
+      for _, arg_entry in ipairs(arguments) do
+        local argument = {}
+        argument.name = arg_entry[1]
+        local defaultValue = arg_entry[2]
+        if defaultValue and #defaultValue > 0 then
+          argument.defaultValue = defaultValue
+        end
+        method.arguments[#method.arguments + 1] = argument
+      end
+      class.methods[#class.methods + 1] = method
+      M.method_map[method.name] = method
+    end
+    table.sort(class.methods, function(a, b)
+      return a.name < b.name
+    end)
+  end
 end
 
 return M

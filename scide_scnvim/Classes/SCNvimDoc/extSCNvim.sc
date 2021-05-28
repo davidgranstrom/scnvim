@@ -81,7 +81,7 @@
                 class.superclass !? {class.superclass.name.asString},
                 class.filenameSymbol.asString,
                 class.charPos,
-                class.methods.collect { |m| this.serializeMethodDetailed(m) };
+                class.methods.collect { |m| SCNvim.serializeMethodDetailed(m) };
             ];
             res = res.add(classData);
         };
@@ -89,7 +89,7 @@
         file = File.open(path, "w");
         file.write("[");
         res.do {|item, i|
-            item = item.collect {|x| if (x.isNil) { "null" } { x } };
+            item = item.collect {|x| if (x.isNil) { [] } { x } };
             file.write(item.cs);
             if (i < (size - 1)) {
                 file.write(",");
@@ -104,13 +104,16 @@
         args = [];
         if (method.argNames.size > 1) {
             args = args ++ [
-                method.argNames.as(Array).asString,
+                method.argNames.as(Array).collect(_.asString),
                 method.prototypeFrame.collect { |val|
                     val !? {
                         if (val.class === Float) { val.asString } { val.cs }
                     }
                 };
             ].lace [2..];
+        };
+        args = args.collect {|a|
+            if (a.notNil) { a } { [] }
         };
         data = [
             method.ownerClass.name.asString,
