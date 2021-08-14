@@ -29,7 +29,7 @@ syn region result start=/->/ end=/\n/
 """""""""""""""""""
 " Error and warning messages
 """""""""""""""""""
-syn keyword errors ERROR
+syn keyword errors ERROR FAIL
 syn keyword warns WARNING RECEIVER ARGS PATH CALL STACK
 syn keyword info Info
 
