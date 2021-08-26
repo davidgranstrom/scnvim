@@ -4,6 +4,8 @@
 
 [![Build Status](https://travis-ci.com/davidgranstrom/scnvim.svg?branch=master)](https://travis-ci.com/davidgranstrom/scnvim) | [Documentation](https://github.com/davidgranstrom/scnvim/wiki) | [Showcase](https://github.com/davidgranstrom/scnvim/wiki/Showcase)
 
+[![Visit our IRC channel](https://kiwiirc.com/buttons/irc.libera.chat/scnvim.png)](https://kiwiirc.com/client/irc.libera.chat/?&theme=mini#scnvim)
+
 ## Features
 
 * Post window is displayed in a regular vim buffer
