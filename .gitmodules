@@ -1,0 +1,4 @@
+[submodule "lua/scnvim/lib/losc"]
+	path = lua/scnvim/lib/losc
+	url = https://github.com/davidgranstrom/losc.git
+	shallow = true
