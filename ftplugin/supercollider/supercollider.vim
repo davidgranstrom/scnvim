@@ -32,9 +32,6 @@ if enable_arghints
     autocmd! * <buffer>
     autocmd InsertCharPre <buffer> lua require'scnvim.method-signature'.ins_show()
   augroup END
-  " for argument hints
-  setlocal noshowmode
-  setlocal shortmess+=c
 endif
 
 function! s:apply_quickfix_conceal()
