@@ -1,19 +1,16 @@
 + SCNvim {
     *methodArgs {|method|
-        var args, message;
         try {
-            args = Help.methodArgs(method);
-            // TODO;
+            var args = Help.methodArgs(method);
+            // TODO
             // this is just a quick fix.
-            // how should we handle methods implemented by many classes?
+            // how should we handle polymorphic methods?
             args = args.split(Char.nl);
             if (args.size == 1) {
-                message = (action: "method_args", args: args[0]);
-                SCNvim.sendJSON(message);
+                ^args[0]
             }
-        } {
-            ^"[scnvim] Could not find args for %".format(method);
         }
+        ^"";
     }
 
     *prepareHelpFor {|text|

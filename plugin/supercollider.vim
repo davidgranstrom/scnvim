@@ -30,7 +30,7 @@ noremap <unique><script><silent> <Plug>(scnvim-recompile) :<c-u>call scnvim#scla
 noremap <unique><script><silent> <Plug>(scnvim-postwindow-toggle) :<c-u>call scnvim#postwindow#toggle()<cr>
 noremap <unique><script><silent> <Plug>(scnvim-postwindow-clear) :<c-u>call scnvim#postwindow#clear()<cr>
 noremap <unique><script><silent> <Plug>(scnvim-hard-stop) :<c-u>call scnvim#hard_stop()<cr>
-noremap <unique><script><silent> <Plug>(scnvim-show-signature) :<c-u>call scnvim#util#echo_args()<cr>
+noremap <unique><script><silent> <Plug>(scnvim-show-signature) <cmd>lua require'scnvim.method-signature'.show()<cr>
 
 " deprecated
 if exists('g:scnvim_udp_port')
