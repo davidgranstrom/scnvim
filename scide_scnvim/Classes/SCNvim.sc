@@ -54,7 +54,7 @@ SCNvim {
         {
             snippetPath = snippetPath +/+ "supercollider.snippets";
         }
-        {snippetFormat == "snippets.nvim"}
+        {snippetFormat == "snippets.nvim" or: { snippetFormat == "luasnip" }}
         {
             snippetPath = snippetPath +/+ "scnvim_snippets.lua";
         }
@@ -160,19 +160,39 @@ SCNvim {
                         className = signature[..index - 1];
                         className = className.replace("*", ".").replace(" ", "");
 
-                        argList = signature[index..];
-                        argList = argList.replace("(", "").replace(")", "");
-                        argList = argList.split($,);
-                        argList = argList.collect {|a, i| "${%:%}".format(i+1, a) };
-                        argList = "(" ++ argList.join(", ") ++ ")";
+                        if(snippetFormat == "luasnip", {
+                          // LuaSnip
+                          argList = signature[index..];
+                          argList = argList.replace("(", "").replace(")", "");
+                          argList = argList.split($,);
+                          argList = argList.collect {|a, i|
+                            "i(%, \"%\")".format(i+1, a)
+                          };
+                          argList = "t(\"(\")," ++ argList.join(", ") ++ ", t(\")\",";
+                          snippet = "t(\"%\"),".format(className) ++ argList;
 
-                        snippet = className ++ argList;
+                        }, {
+                          // UltiSnips, Snippets.nvim
+                          argList = signature[index..];
+                          argList = argList.replace("(", "").replace(")", "");
+                          argList = argList.split($,);
+                          argList = argList.collect {|a, i|
+                            "${%:%}".format(i+1, a)
+                          };
+                          argList = "(" ++ argList.join(", ") ++ ")";
+                          snippet = className ++ argList;
+
+                        });
+
                         case
                         {snippetFormat == "ultisnips"} {
                             snippet = "snippet %\n%\nendsnippet\n".format(snippetName, snippet);
                         }
                         {snippetFormat == "snippets.nvim"} {
                             snippet = "['%'] = [[%]];\n".format(snippetName, snippet);
+                        }
+                        {snippetFormat == "luasnip"} {
+                            snippet = "s(\"%\", {%}),".format(snippetName, snippet);
                         };
                         snippets = snippets.add(snippet ++ Char.nl);
                     };
@@ -186,8 +206,20 @@ SCNvim {
             file.write("# Snippet generator: SCNvim.sc" ++ Char.nl);
             file.putAll(snippets);
         }
-        {snippetFormat == "snippets.nvim"} {
-            file.write("-- SuperCollider snippets" ++ Char.nl);
+        {snippetFormat == "luasnip"} {
+            file.write("-- SuperCollider snippets for LuaSnip" ++ Char.nl);
+            file.write("-- Snippet generator: SCNvim.sc" ++ Char.nl);
+            file.write("local ls = require'luasnip'" ++ Char.nl);
+            file.write("local s = ls.snippet " ++ Char.nl);
+            file.write("local i = ls.insert_node" ++ Char.nl);
+            file.write("local t = ls.text_node" ++ Char.nl);
+            file.write("local snippets = {" ++ Char.nl);
+            file.putAll(snippets);
+            file.write("}" ++ Char.nl);
+            file.write("return snippets");
+        }
+        {snippetFormat == "snippets.nvim" } {
+            file.write("-- SuperCollider snippets for Snippets.nvim" ++ Char.nl);
             file.write("-- Snippet generator: SCNvim.sc" ++ Char.nl);
             file.write("local snippets = {" ++ Char.nl);
             file.putAll(snippets);
