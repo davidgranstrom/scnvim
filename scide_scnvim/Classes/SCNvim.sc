@@ -176,7 +176,7 @@ SCNvim {
 
                             // Only add text node with comma if not last item
                             if(i+1 != argList.size, {
-                              snipArgument = snipArgument ++ ",t(\",\")"
+                              snipArgument = snipArgument ++ ",t(\", \")"
                             });
 
                             snipArgument
