@@ -4,7 +4,19 @@
 -- @license GPLv3
 
 local sclang = require'scnvim.sclang'
+local default = require'scnvim.config'()
+local installer = require'scnvim.install'
 local scnvim = {}
+
+scnvim.config = {}
+
+function scnvim.setup(config)
+  local ok, msg = pcall(installer.link)
+  if not ok then
+    error(msg)
+  end
+  scnvim.config = vim.tbl_deep_extend('keep', {}, config, default)
+end
 
 --- Evalute a SuperCollider expression.
 -- @param expr Any valid SuperCollider expression.
