@@ -24,7 +24,8 @@ local function open_float_win(object)
     col = 0,
     row = is_first_line and 1 or 0,
     anchor = is_first_line and 'NW' or 'SW',
-    style = 'minimal'
+    style = 'minimal',
+    noautocmd = true,
   }
   local bufnr = api.nvim_create_buf(false, true)
   api.nvim_buf_set_lines(bufnr, 0, -1, true, {str})
@@ -57,16 +58,15 @@ local function extract_objects()
     ignore = ignore .. ')'
     line_to_cursor = line_to_cursor:gsub(vim.pesc(ignore), '')
   end
+  line_to_cursor = line_to_cursor:match'.*%('
   local objects = vim.split(line_to_cursor, '(', {plain = true, trimempty = true})
-  -- last object is a method call
-  if #objects > 0 then
-    local last = objects[#objects]
-    if last and last:sub(1, 1) == '.' then
-      return ''
-    end
-  end
+  -- split arguments
   objects = vim.tbl_map(function(s)
-    -- filter out strings in arguments
+    return vim.split(s, ',', {plain = true, trimempty = true})
+  end, objects)
+  objects = vim.tbl_flatten(objects)
+  objects = vim.tbl_map(function(s)
+    -- filter out strings
     s = vim.trim(s)
     if s:sub(1, 1) == '"' then
       return nil
@@ -74,6 +74,7 @@ local function extract_objects()
     local obj_start = s:find('%u')
     return obj_start and s:sub(obj_start, -1)
   end, objects)
+  objects = vim.tbl_filter(function(s) return s ~= nil end, objects)
   local len = #objects
   if len > 0 then
     return vim.trim(objects[len])
