@@ -41,16 +41,27 @@ local function extract_objects()
   local _, col = unpack(api.nvim_win_get_cursor(0))
   local line = api.nvim_get_current_line()
   local line_to_cursor = line:sub(1, col + 1)
-  local items = vim.split(line_to_cursor, '(', true)
-  items = vim.tbl_filter(function(item)
-    return item ~= ')'
-  end, items)
-  items = vim.tbl_filter(function(item)
-    return item ~= ''
-  end, items)
-  if #items >= 1 then
-    local object = items[#items]
-    return vim.trim(object)
+
+  local ignore = line_to_cursor:match'%((.*)%)'
+  if ignore then
+    ignore = ignore .. ')'
+    line_to_cursor = line_to_cursor:gsub(vim.pesc(ignore), '')
+  end
+
+  local objects = vim.split(line_to_cursor, '(', {plain = true, trimempty = true})
+
+  objects = vim.tbl_map(function(s)
+    local obj_start = s:find('%u')
+    return obj_start and s:sub(obj_start, -1)
+  end, objects)
+
+  objects = vim.tbl_filter(function(s)
+    return s:find'%.'
+  end, objects)
+
+  local len = #objects
+  if len > 0 then
+    return vim.trim(objects[len])
   end
   return ''
 end
