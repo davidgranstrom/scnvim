@@ -41,7 +41,10 @@ local function extract_objects()
   local _, col = unpack(api.nvim_win_get_cursor(0))
   local line = api.nvim_get_current_line()
   local line_to_cursor = line:sub(1, col + 1)
-
+  -- outside of any method call so just return
+  if vim.endswith(line_to_cursor, ')') then
+    return ''
+  end
   local ignore = line_to_cursor:match'%((.*)%)'
   if ignore then
     ignore = ignore .. ')'
