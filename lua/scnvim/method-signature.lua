@@ -45,23 +45,20 @@ local function extract_objects()
   if vim.endswith(line_to_cursor, ')') then
     return ''
   end
+  -- filter out closed method calls
   local ignore = line_to_cursor:match'%((.*)%)'
   if ignore then
     ignore = ignore .. ')'
     line_to_cursor = line_to_cursor:gsub(vim.pesc(ignore), '')
   end
-
   local objects = vim.split(line_to_cursor, '(', {plain = true, trimempty = true})
-
   objects = vim.tbl_map(function(s)
     local obj_start = s:find('%u')
     return obj_start and s:sub(obj_start, -1)
   end, objects)
-
   objects = vim.tbl_filter(function(s)
     return s:find'%.'
   end, objects)
-
   local len = #objects
   if len > 0 then
     return vim.trim(objects[len])
