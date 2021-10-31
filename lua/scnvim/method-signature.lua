@@ -58,6 +58,7 @@ local function extract_objects()
     line_to_cursor = line_to_cursor:gsub(vim.pesc(ignore), '')
   end
   local objects = vim.split(line_to_cursor, '(', {plain = true, trimempty = true})
+  -- last object is a method call
   if #objects > 0 then
     local last = objects[#objects]
     if last and last:sub(1, 1) == '.' then
@@ -72,9 +73,6 @@ local function extract_objects()
     end
     local obj_start = s:find('%u')
     return obj_start and s:sub(obj_start, -1)
-  end, objects)
-  objects = vim.tbl_filter(function(s)
-    return s:find'%.'
   end, objects)
   local len = #objects
   if len > 0 then
