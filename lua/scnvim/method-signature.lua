@@ -42,8 +42,9 @@ local function extract_objects()
   local line = api.nvim_get_current_line()
   local line_to_cursor = line:sub(1, col + 1)
   -- outside of any method call so just return
-  if vim.endswith(line_to_cursor, ')') then
-    return ''
+  if vim.endswith(line_to_cursor, ')')
+    or vim.endswith(line_to_cursor, ';')
+    then return ''
   end
   -- filter out closed method calls
   local ignore = line_to_cursor:match'%((.*)%)'
