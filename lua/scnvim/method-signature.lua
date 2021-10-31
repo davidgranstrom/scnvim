@@ -52,6 +52,12 @@ local function extract_objects()
     line_to_cursor = line_to_cursor:gsub(vim.pesc(ignore), '')
   end
   local objects = vim.split(line_to_cursor, '(', {plain = true, trimempty = true})
+  if #objects > 0 then
+    local last = objects[#objects]
+    if last and last:sub(1, 1) == '.' then
+      return ''
+    end
+  end
   objects = vim.tbl_map(function(s)
     local obj_start = s:find('%u')
     return obj_start and s:sub(obj_start, -1)
