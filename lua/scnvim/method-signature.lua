@@ -52,6 +52,10 @@ local function extract_objects()
   if is_outside_of_statment(line, line_to_cursor)
     then return ''
   end
+  -- TODO(david): refactor into two separate functions insert/normal
+  -- if not vim.endswith(line_to_cursor, '(') then
+  --   line_to_cursor = line_to_cursor .. '('
+  -- end
   -- filter out closed method calls
   local ignore = line_to_cursor:match'%((.*)%)'
   if ignore then
