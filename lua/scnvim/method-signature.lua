@@ -37,12 +37,18 @@ local function get_method_signature(object, cb)
   sclang.eval(cmd, cb)
 end
 
+local function is_outside_of_statment(line, line_to_cursor)
+  local line_endswith = vim.endswith(line, ')') or vim.endswith(line, ';')
+  local curs_line_endswith = vim.endswith(line_to_cursor, ')') or vim.endswith(line_to_cursor, ';')
+  return line_endswith and curs_line_endswith
+end
+
 local function extract_objects()
   local _, col = unpack(api.nvim_win_get_cursor(0))
   local line = api.nvim_get_current_line()
   local line_to_cursor = line:sub(1, col + 1)
-  -- outside of any method call so just return
-  if vim.endswith(line, ')') or vim.endswith(line, ';')
+  -- outside
+  if is_outside_of_statment(line, line_to_cursor)
     then return ''
   end
   -- filter out closed method calls
