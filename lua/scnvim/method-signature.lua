@@ -65,6 +65,11 @@ local function extract_objects()
     end
   end
   objects = vim.tbl_map(function(s)
+    -- filter out strings in arguments
+    s = vim.trim(s)
+    if s:sub(1, 1) == '"' then
+      return nil
+    end
     local obj_start = s:find('%u')
     return obj_start and s:sub(obj_start, -1)
   end, objects)
