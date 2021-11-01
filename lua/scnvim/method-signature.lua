@@ -74,31 +74,38 @@ local function ins_extract_object()
   return extract_objects_helper(line_to_cursor)
 end
 
-local function show_signature(object)
+local function show_signature(object, config)
   if object ~= '' then
+    config = config or {}
     get_method_signature(object, function(res)
       local signature = res:match('%((.+)%)')
       if signature then
-        lsp_util.open_floating_preview({signature}, "supercollider", {})
+        lsp_util.open_floating_preview({signature}, "supercollider", config)
       end
     end)
   end
 end
 
 --- Show signature from normal mode
-function M.show()
+--@param config An optional config to style the floating window
+--@note see vim.lsp.util.open_floating_preview and
+--vim.lsp.util.make_floating_popup_options for available options.
+function M.show(config)
   local ok, object = pcall(extract_object)
   if ok then
-    pcall(show_signature, object)
+    pcall(show_signature, object, config)
   end
 end
 
 --- Show signature in insert mode
-function M.ins_show()
+--@param config An optional config to style the floating window
+--@note see vim.lsp.util.open_floating_preview and
+--vim.lsp.util.make_floating_popup_options for available options.
+function M.ins_show(config)
   if vim.v.char == '(' then
     local ok, object = pcall(ins_extract_object)
     if ok then
-      pcall(show_signature, object)
+      pcall(show_signature, object, config)
     end
   end
 end
