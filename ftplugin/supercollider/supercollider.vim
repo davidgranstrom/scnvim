@@ -30,7 +30,7 @@ let enable_arghints = get(g:, 'scnvim_echo_args', 1)
 if enable_arghints
   augroup scnvim_echo_args
     autocmd! * <buffer>
-    autocmd InsertCharPre <buffer> lua require'scnvim.method-signature'.ins_show()
+    autocmd InsertCharPre <buffer> lua require'scnvim.completion.signature'.ins_show()
   augroup END
 endif
 

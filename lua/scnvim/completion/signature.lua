@@ -1,5 +1,5 @@
---- Method signature help.
--- @module scnvim.method-signature
+--- Signature help.
+-- @module scnvim.completion.signature
 -- @author David Granström
 -- @license GPLv3
 
