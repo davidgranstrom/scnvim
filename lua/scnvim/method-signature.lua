@@ -20,26 +20,8 @@ local function is_outside_of_statment(line, line_to_cursor)
   return line_endswith and curs_line_endswith
 end
 
-local function extract_objects()
-  local _, col = unpack(api.nvim_win_get_cursor(0))
-  local line = api.nvim_get_current_line()
-  local line_to_cursor = line:sub(1, col + 1)
-  -- outside
-  if is_outside_of_statment(line, line_to_cursor)
-    then return ''
-  end
-  -- TODO(david): refactor into two separate functions insert/normal
-  -- if not vim.endswith(line_to_cursor, '(') then
-  --   line_to_cursor = line_to_cursor .. '('
-  -- end
-  -- filter out closed method calls
-  local ignore = line_to_cursor:match'%((.*)%)'
-  if ignore then
-    ignore = ignore .. ')'
-    line_to_cursor = line_to_cursor:gsub(vim.pesc(ignore), '')
-  end
-  line_to_cursor = line_to_cursor:match'.*%('
-  local objects = vim.split(line_to_cursor, '(', {plain = true, trimempty = true})
+local function extract_objects_helper(str)
+  local objects = vim.split(str, '(', {plain = true, trimempty = true})
   -- split arguments
   objects = vim.tbl_map(function(s)
     return vim.split(s, ',', {plain = true, trimempty = true})
@@ -51,6 +33,8 @@ local function extract_objects()
     if s:sub(1, 1) == '"' then
       return nil
     end
+    -- filter out trailing parens (from insert mode)
+    s = s:gsub('%)', '')
     local obj_start = s:find('%u')
     return obj_start and s:sub(obj_start, -1)
   end, objects)
@@ -62,26 +46,60 @@ local function extract_objects()
   return ''
 end
 
-function M.show_fn_signature()
-  local object = extract_objects()
+local function get_line_info()
+  local _, col = unpack(api.nvim_win_get_cursor(0))
+  local line = api.nvim_get_current_line()
+  local line_to_cursor = line:sub(1, col + 1)
+  return line, line_to_cursor
+end
+
+local function extract_object()
+  local line, line_to_cursor = get_line_info()
+  -- outside of any statement
+  if is_outside_of_statment(line, line_to_cursor)
+    then return ''
+  end
+  -- ignore completed calls
+  local ignore = line_to_cursor:match'%((.*)%)'
+  if ignore then
+    ignore = ignore .. ')'
+    line_to_cursor = line_to_cursor:gsub(vim.pesc(ignore), '')
+  end
+  line_to_cursor = line_to_cursor:match'.*%('
+  return extract_objects_helper(line_to_cursor)
+end
+
+local function ins_extract_object()
+  local _, line_to_cursor = get_line_info()
+  return extract_objects_helper(line_to_cursor)
+end
+
+local function show_signature(object)
   if object ~= '' then
     get_method_signature(object, function(res)
-      object = object:match('%((.+)%)')
-      if not object then
-        return
+      local signature = res:match('%((.+)%)')
+      if signature then
+        lsp_util.open_floating_preview({signature}, "supercollider", {})
       end
-      lsp_util.open_floating_preview({object}, "supercollider", {})
     end)
   end
 end
 
+--- Show signature from normal mode
 function M.show()
-  M.show_fn_signature()
+  local ok, object = pcall(extract_object)
+  if ok then
+    pcall(show_signature, object)
+  end
 end
 
+--- Show signature in insert mode
 function M.ins_show()
   if vim.v.char == '(' then
-    M.show_fn_signature()
+    local ok, object = pcall(ins_extract_object)
+    if ok then
+      pcall(show_signature, object)
+    end
   end
 end
 
