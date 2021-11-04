@@ -64,6 +64,17 @@ local function extract_object()
   if is_outside_of_statment(line, line_to_cursor)
     then return ''
   end
+  -- inside a multiline call
+  if not line_to_cursor:find'%(' then
+    local cur_pos = api.nvim_win_get_cursor(0)
+    local lnum = vim.fn.searchpair('(', '', ')', 'bnzW')
+    if lnum > 0 then
+      local ok, res = pcall(api.nvim_buf_get_lines, 0, lnum - 1, lnum, true)
+      if ok then
+        line_to_cursor = res[1]
+      end
+    end
+  end
   -- ignore completed calls
   local ignore = line_to_cursor:match'%((.*)%)'
   if ignore then
