@@ -21,13 +21,18 @@ local function is_outside_of_statment(line, line_to_cursor)
 end
 
 local function extract_objects_helper(str)
-  local objects = vim.split(str, '(', {plain = true, trimempty = true})
+  local objects = vim.split(str, '(', true)
   -- split arguments
   objects = vim.tbl_map(function(s)
-    return vim.split(s, ',', {plain = true, trimempty = true})
+    return vim.split(s, ',', true)
   end, objects)
   objects = vim.tbl_flatten(objects)
   objects = vim.tbl_map(function(s)
+    -- filter out empty strings (nvim 0.5.1 compatability fix, use
+    -- vim.split(..., {trimempty = true}) for nvim 0.6)
+    if s == '' then
+      return nil
+    end
     -- filter out strings
     s = vim.trim(s)
     if s:sub(1, 1) == '"' then
