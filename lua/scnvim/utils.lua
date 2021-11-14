@@ -70,8 +70,19 @@ end
 --- Path
 ------------------
 
+function M.get_system()
+  local sysname = vim.loop.os_uname().sysname
+  if sysname:match('Windows') then
+    return 'windows'
+  elseif sysname:match('Darwin') then
+    return 'macos'
+  else
+    return 'linux'
+  end
+end
+
 --- Get the system path separator
-M.is_windows = vim.loop.os_uname().sysname:match('Windows')
+M.is_windows = M.get_system() == 'windows'
 M.path_sep = M.is_windows and '\\' or '/'
 
 --- Get the root directory of the plugin.
@@ -126,6 +137,31 @@ function M.tbl_len(T)
     count = count + 1
   end
   return count
+end
+
+------------------
+--- Output
+------------------
+
+local function format_message(msg, level)
+  if not level then
+    level = ']'
+  else
+    level = level .. ']'
+  end
+  return string.format('[scnvim %s %s', level, msg or '(nil)')
+end
+
+function M.print_info(msg)
+  print(format_message(msg, 'INFO'))
+end
+
+function M.print_err(msg)
+  print(format_message(msg, 'ERROR'))
+end
+
+function M.print_warn(msg)
+  print(format_message(msg, 'WARNING'))
 end
 
 return M

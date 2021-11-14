@@ -6,6 +6,7 @@
 local sclang = require'scnvim.sclang'
 local default = require'scnvim.config'()
 local installer = require'scnvim.install'
+local path = require'scnvim.path'
 local scnvim = {}
 
 scnvim.config = {}
@@ -15,7 +16,8 @@ function scnvim.setup(config)
   if not ok then
     error(msg)
   end
-  scnvim.config = vim.tbl_deep_extend('keep', {}, config, default)
+  scnvim.config = vim.tbl_deep_extend('keep', scnvim.config, config, default)
+  path.resolve_config(scnvim.config)
 end
 
 --- Evalute a SuperCollider expression.
