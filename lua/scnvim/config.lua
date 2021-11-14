@@ -6,7 +6,7 @@
 return function()
   return {
     sclang = {
-      path = nil,   -- g:scnvim_sclang_executable 
+      path = nil,   -- g:scnvim_sclang_executable
       options = {}, -- g:scnvim_sclang_options
     },
     mapping = {}, -- TODO(david)
@@ -22,9 +22,9 @@ return function()
       auto_show_errors = true, -- g:scnvim_postwin_auto_toggle
       scrollback = 5000, -- g:scnvim_postwin_scrollback
     },
-    eval = { -- set to 'false' to disable eval flash
-      duration = 100, -- g:scnvim_eval_flash_duration
-      repeats = 2,    -- g:scnvim_eval_flash_repeats
+    eval = {
+      flash_duration = 100, -- g:scnvim_eval_flash_duration
+      flash_repeats = 2,    -- g:scnvim_eval_flash_repeats
     },
     completion = {
       signature = true, -- show method signatures in a floating window
