@@ -30,11 +30,8 @@ let enable_arghints = get(g:, 'scnvim_echo_args', 1)
 if enable_arghints
   augroup scnvim_echo_args
     autocmd! * <buffer>
-    autocmd InsertCharPre <buffer> call scnvim#util#echo_args_insert()
+    autocmd InsertCharPre <buffer> lua require'scnvim.completion.signature'.ins_show()
   augroup END
-  " for argument hints
-  setlocal noshowmode
-  setlocal shortmess+=c
 endif
 
 function! s:apply_quickfix_conceal()
