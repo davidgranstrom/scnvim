@@ -7,6 +7,15 @@ local sclang = require'scnvim.sclang'
 local api = vim.api
 local lsp_util = vim.lsp.util
 
+-- Opt-out for displaying a floating window
+-- This should later be set in the (lua) config object
+local float_opt = vim.g.scnvim_echo_args_float or true
+if type(float_opt) == 'number' then
+  float_opt = float_opt == 1
+  vim.opt.showmode = false
+  vim.opt.shortmess:append('c')
+end
+
 local M = {}
 
 local function get_method_signature(object, cb)
@@ -93,10 +102,15 @@ end
 local function show_signature(object, config)
   if object ~= '' then
     config = config or {}
+    config = vim.tbl_extend('keep', {}, config, {float = float_opt})
     get_method_signature(object, function(res)
       local signature = res:match('%((.+)%)')
       if signature then
-        lsp_util.open_floating_preview({signature}, "supercollider", config)
+        if config.float then
+          lsp_util.open_floating_preview({signature}, "supercollider", config)
+        else
+          print(signature)
+        end
       end
     end)
   end

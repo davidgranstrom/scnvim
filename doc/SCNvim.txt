@@ -199,9 +199,13 @@ Update rate for server info in status line (seconds)
 >
   let g:scnvim_statusline_interval = 1
 
-Set this variable if you don't want the "echo args" feature
+Set this variable if you don't want the signature help feature
 >
   let g:scnvim_echo_args = 0
+
+Set this variable if you don't want the floating window feature
+>
+  let g:scnvim_echo_args_float = 0
 
 Set this variable if you don't want any default mappings
 >
