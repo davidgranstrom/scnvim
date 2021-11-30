@@ -20,6 +20,15 @@ assignees: ''
 <!-- Add any other context about the problem here. -->
 
 **Information**
-- `nvim --version`:
-- Operating system:
-- Running scnvim in a Terminal/GUI:
+
+- Operating system
+<!-- Your OS with version number. -->
+
+- SuperCollider version
+<!-- SuperCollider version number. -->
+
+- `nvim --version`
+<!-- Copy paste the output of the command above or type `:version` inside nvim  -->
+
+- Package manager
+<!-- vim-plug, packer.nvim or other -->
