@@ -12,8 +12,10 @@ local lsp_util = vim.lsp.util
 local float_opt = vim.g.scnvim_echo_args_float or true
 if type(float_opt) == 'number' then
   float_opt = float_opt == 1
-  vim.opt.showmode = false
-  vim.opt.shortmess:append('c')
+  if not float_opt then
+    vim.opt.showmode = false
+    vim.opt.shortmess:append('c')
+  end
 end
 
 local M = {}
