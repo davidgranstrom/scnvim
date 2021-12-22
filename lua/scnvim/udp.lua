@@ -4,7 +4,6 @@
 -- @license GPLv3
 
 local help = require'scnvim.help'
-local utils = require'scnvim.utils'
 
 local uv = vim.loop
 local M = {}
@@ -55,8 +54,10 @@ end
 local function on_receive(err, chunk)
   assert(not err, err)
   if chunk then
-    local object = utils.json_decode(chunk)
-    assert(object, '[scnvim] Could not decode json chunk')
+    local ok, object = pcall(vim.fn.json_decode, chunk)
+    if not ok then
+      error('[scnvim] Could not decode json chunk: ' .. object)
+    end
     local func = Handlers[object.action]
     assert(func, '[scnvim] Unrecognized handler')
     func(object.args)

@@ -11,8 +11,10 @@ local M = {}
 
 M.docmap = nil
 
---- Get json document of all classes
-local function get_docmap(target_dir)
+--- Get a JSON document with documentation overview
+-- @param target_dir The target help directory
+-- @return A JSON string with the document map
+function M.get_docmap(target_dir)
   if M.docmap then
     return M.docmap
   end
@@ -21,11 +23,11 @@ local function get_docmap(target_dir)
   local fd = uv.fs_open(target_dir, 'r', 0)
   local size = stat.size
   local file = uv.fs_read(fd, size, 0)
-  -- uncomment for nvim 0.5.x
-  -- local err, result = utils.json_decode(file)
-  -- assert(err, result)
-  local result = utils.json_decode(file)
+  local ok, result = pcall(vim.fn.json_decode, file)
   uv.fs_close(fd)
+  if not ok then
+    error(result)
+  end
   return result
 end
 
@@ -41,7 +43,7 @@ function M.handle_method(name, target_dir)
   -- uncomment for nvim 0.5.x
   -- local path = vim.fn.expand(target_dir)
   local path = vimcall('expand', target_dir)
-  local docmap = get_docmap(path .. utils.path_sep .. 'docmap.json')
+  local docmap = M.get_docmap(path .. utils.path_sep .. 'docmap.json')
   local results = {}
   for _, value in pairs(docmap) do
     for _, method in ipairs(value.methods) do
