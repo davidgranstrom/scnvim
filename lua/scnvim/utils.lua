@@ -26,22 +26,6 @@ function M.get_var(name)
   return nil
 end
 
-------------------
---- Various
-------------------
-
-function M.json_encode(data)
-  -- uncomment for nvim 0.5.x
-  -- return pcall(vim.fn.json_encode, data)
-  return M.vimcall('json_encode', data)
-end
-
-function M.json_decode(data)
-  -- uncomment for nvim 0.5.x
-  -- return pcall(vim.fn.json_decode, data)
-  return M.vimcall('json_decode', data)
-end
-
 --- Get the content of the generated snippets file.
 -- @returns The file contents. A lua table or a string depending on `scnvim_snippet_format`.
 function M.get_snippets()
