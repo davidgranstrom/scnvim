@@ -4,7 +4,6 @@
 -- @license GPLv3
 
 local help = require'scnvim.help'
-local utils = require'scnvim.utils'
 
 local uv = vim.loop
 local M = {}
