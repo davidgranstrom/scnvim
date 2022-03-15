@@ -77,17 +77,23 @@ M.path_sep = M.is_windows and '\\' or '/'
 --- Get the root directory of the plugin.
 function M.get_scnvim_root_dir()
   local package_path = debug.getinfo(1).source:gsub('@', '')
-  package_path = vim.split(package_path, M.path_sep, true)
+  --vim uses inconsistent path separators on Windows
+  --safer to change all to Unix style first
+  if M.is_windows then
+    package_path = package_path:gsub('@', ''):gsub("\\", "/")
+  end
+  package_path = vim.split(package_path, '/', {plain=false, trimempty=true})
   -- find index of plugin root dir
   local index = 1
+  local found = false
   for i, v in ipairs(package_path) do
     if v == 'scnvim' then
+      found = true
       index = i
       break
     end
   end
-  local path_len = M.tbl_len(package_path)
-  if index == 1 or index == path_len then
+  if not found then
     error('[scnvim] could not find plugin root dir')
   end
   local path = {}
@@ -98,15 +104,13 @@ function M.get_scnvim_root_dir()
     path[i] = v
   end
   local dir = ''
-  for _, v in ipairs(path) do
-    -- first element is empty on unix
-    if v == '' then
-      dir = M.path_sep
-    else
-      dir = dir .. v .. M.path_sep
-    end
+  if not M.is_windows then
+    dir = '/'
   end
-  assert(dir ~= '', '[scnvim] Could not get scnvim root path')
+  for _, v in ipairs(path) do
+    dir = dir .. v .. M.path_sep
+  end
+  assert(#dir > 1, '[scnvim] Could not get scnvim root path')
   dir = dir:sub(1, -2) -- delete trailing slash
   return dir
 end
