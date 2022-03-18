@@ -33,7 +33,7 @@ SCNvim {
                 numUGens = "%u".format(server.numUGens);
                 numSynths = "%s".format(server.numSynths);
 
-                serverStatus = "%\\% %\\% % %".format(
+                serverStatus = "%\\%\\% %\\%\\% % %".format(
                     peakCPU, avgCPU, numUGens, numSynths
                 );
                 levelMeter = "-inf dB";
