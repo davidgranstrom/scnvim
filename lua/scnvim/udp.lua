@@ -41,6 +41,13 @@ function Handlers.help_find_method(args)
   help.handle_method(args.method_name, args.helpTargetDir)
 end
 
+--- Evaluate a piece of lua code sent from sclang
+function Handlers.luaeval(codestring)
+  if not codestring then return end
+  local func = loadstring(codestring)
+  func()
+end
+
 --- Receive data from sclang
 function Handlers.eval(result)
   assert(result)
