@@ -45,7 +45,10 @@ end
 function Handlers.luaeval(codestring)
   if not codestring then return end
   local func = loadstring(codestring)
-  func()
+  local ok, result = pcall(func)
+  if not ok then
+    print('[scnvim] luaeval: ' .. result)
+  end
 end
 
 --- Receive data from sclang
