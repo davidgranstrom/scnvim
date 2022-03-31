@@ -5,6 +5,7 @@
 
 return function()
   return {
+    ensure_installed = true, -- if installed this can be set to false to improve startup time.
     sclang = {
       path = nil,   -- g:scnvim_sclang_executable
       options = {}, -- g:scnvim_sclang_options
