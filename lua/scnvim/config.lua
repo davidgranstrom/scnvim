@@ -13,7 +13,7 @@ return function()
     mapping = {}, -- TODO(david)
     documentation = { -- set to 'false' to use HelpBrowser
       cmd = 'pandoc', -- g:scnvim_scdoc_render_prg
-      args = '% --from html --to plain -o %' -- g:scnvim_scdoc_render_args
+      args = {'--from', 'html', '--to', 'plain'} -- g:scnvim_scdoc_render_args
     },
     postwin = {
       syntax = true,       -- g:scnvim_postwin_syntax_hl
