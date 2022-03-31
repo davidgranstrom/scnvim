@@ -7,6 +7,9 @@ local M = {}
 local utils = require'scnvim.utils'
 local is_win = utils.is_windows
 
+-- Store the cache path
+M.cache = vim.fn.stdpath('cache')
+
 local function escape(path)
   if is_win and not vim.opt.shellslash:get() then
     return vim.fn.escape(path, '\\')
@@ -42,43 +45,37 @@ local function find_sclang_executable()
   error('Could not find `sclang`. Please specify sclang.path in the setup function')
 end
 
-local function find_scdoc_render_program()
-  local path = vim.fn.exepath('pandoc') -- default render program
+local function find_scdoc_render_program(cmd)
+  local path = vim.fn.exepath(cmd) -- default render program
   if path ~= '' then
     return normalize(path)
   end
   error('Could not find documentation.cmd. Please specify documentation.cmd in the setup function')
 end
 
---- Try and resolve paths missing from the config
---@param config The configuration to resolve
-function M.resolve_config(config)
-  if config.sclang.path then
-    config.sclang.path = normalize(config.sclang.path)
+local function resolve(func, args)
+  local ok, res = pcall(func, args)
+  if ok then
+    return normalize(res)
   else
-    local ok, res = pcall(find_sclang_executable)
-    if ok then
-      config.sclang.path = normalize(res)
-    else
-      utils.print_err(res)
-    end
-  end
-
-  if config.documentation then
-    if config.documentation.cmd then
-      config.documentation.cmd = normalize(config.documentation.cmd)
-    else
-      local ok, res = pcall(find_scdoc_render_program)
-      if ok then
-        config.documentation.cmd = normalize(res)
-      else
-        utils.print_err(res)
-      end
-    end
+    utils.print_err(res)
+    return nil
   end
 end
 
--- Cache path
-M.cache = vim.fn.stdpath('cache')
+--- Try and resolve paths missing from the config
+--@param config The configuration to resolve
+function M.resolve_config(config)
+  if not config.sclang.path then
+    config.sclang.path = resolve(find_sclang_executable, nil)
+  end
+
+  if config.documentation then
+    local cmd = config.documentation.cmd
+    if cmd then
+      config.documentation.cmd = resolve(find_scdoc_render_program, cmd)
+    end
+  end
+end
 
 return M
