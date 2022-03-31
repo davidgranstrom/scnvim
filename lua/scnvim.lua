@@ -12,11 +12,14 @@ local scnvim = {}
 scnvim.config = {}
 
 function scnvim.setup(config)
-  local ok, msg = pcall(installer.link)
-  if not ok then
-    error(msg)
+  if config.ensure_installed then
+    local ok, msg = pcall(installer.link)
+    if not ok then
+      error(msg)
+    end
   end
-  scnvim.config = vim.tbl_deep_extend('keep', scnvim.config, config, default)
+  config = config or {}
+  scnvim.config = vim.tbl_deep_extend('keep', config, default)
   path.resolve_config(scnvim.config)
 end
 
