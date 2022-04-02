@@ -16,9 +16,13 @@ SCNvim {
         }
     }
 
-    *eval {|expr|
+    *luaeval{|luacode|
+        SCNvim.sendJSON((action: "luaeval", args: luacode))
+    }
+
+    *eval {|expr, callback_id|
         var result = expr.interpret;
-        result = (action: "eval", args: result);
+        result = (action: "eval", args: (result: result, id: callback_id));
         SCNvim.sendJSON(result);
     }
 

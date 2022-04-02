@@ -125,8 +125,8 @@ function M.send(data, silent)
 end
 
 function M.eval(expr, cb)
-  local cmd = string.format('SCNvim.eval("%s");', expr)
-  udp.push_eval_callback(cb)
+  local id = udp.push_eval_callback(cb)
+  local cmd = string.format('SCNvim.eval("%s", "%s");', expr, id)
   M.send(cmd, true)
 end
 

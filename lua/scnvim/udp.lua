@@ -11,6 +11,7 @@ local M = {}
 local HOST = '127.0.0.1'
 local PORT = 0
 local eval_callbacks = {}
+local callback_id = '0'
 
 --- UDP handlers.
 -- Run the matching function in this table for the incoming 'action' parameter.
@@ -41,12 +42,23 @@ function Handlers.help_find_method(args)
   help.handle_method(args.method_name, args.helpTargetDir)
 end
 
+--- Evaluate a piece of lua code sent from sclang
+function Handlers.luaeval(codestring)
+  if not codestring then return end
+  local func = loadstring(codestring)
+  local ok, result = pcall(func)
+  if not ok then
+    print('[scnvim] luaeval: ' .. result)
+  end
+end
+
 --- Receive data from sclang
-function Handlers.eval(result)
-  assert(result)
-  local callback = table.remove(eval_callbacks)
+function Handlers.eval(object)
+  assert(object)
+  local callback = eval_callbacks[object.id]
   if callback then
-    callback(result)
+    callback(object.result)
+    eval_callbacks[object.id] = nil
   end
 end
 
@@ -89,13 +101,12 @@ end
 --- Push a callback to be evaluated later.
 -- utility function for the scnvim.eval API.
 function M.push_eval_callback(cb)
-  -- need to check this for nvim versions < 0.5
-  if vim.validate then
-    vim.validate{
-      cb = {cb, 'function'}
-    }
-  end
-  table.insert(eval_callbacks, cb)
+  vim.validate{
+    cb = {cb, 'function'}
+  }
+  callback_id = tostring(tonumber(callback_id) + 1)
+  eval_callbacks[callback_id] = cb
+  return callback_id
 end
 
 return M
