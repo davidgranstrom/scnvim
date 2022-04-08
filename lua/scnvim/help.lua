@@ -4,6 +4,7 @@
 -- @license GPLv3
 
 local utils = require'scnvim.utils'
+local sclang
 
 local vimcall = utils.vimcall
 local uv = vim.loop
@@ -65,6 +66,80 @@ function M.handle_method(name, target_dir)
   else
     print('No results for ' .. name)
   end
+end
+
+function M.render_all(include_extensions, callback)
+  include_extensions = include_extensions or true
+  sclang = sclang or require'scnvim.sclang'
+  local settings = vim.fn['scnvim#util#get_user_settings']()
+  local render_args = vim.fn['scnvim#util#get_scdoc_render_args']()
+  local render_prg = settings.paths.scdoc_render_prg
+  local cmd = string.format('SCNvimDoc.renderAll(%s)', include_extensions)
+  sclang.eval(cmd, function()
+    sclang.eval('SCDoc.helpTargetDir', function(help_path)
+      local sep = utils.path_sep
+      local sc_help_dir = help_path .. sep .. 'Classes'
+
+      local threads = {}
+      local active_threads = 0
+      local concurrent_jobs = 20
+
+      local function schedule(n)
+        active_threads = n
+        for i = 1, n do
+          local thread = threads[i]
+          if not thread then
+            if callback then
+              callback()
+            end
+            print('[scnvim] Help file conversion finished.')
+            break
+          end
+          coroutine.resume(thread)
+          table.remove(threads, i)
+        end
+      end
+
+      local function on_done(exit_code, filename)
+        if exit_code ~= 0 then
+          local err = string.format('[scnvim] ERROR: Could not convert help file %s (code: %d)', filename, exit_code)
+          print(err)
+        end
+        active_threads = active_threads - 1
+        local last_run = active_threads > #threads
+        if active_threads == 0 or last_run then
+          schedule(concurrent_jobs)
+        end
+      end
+
+      local handle = assert(uv.fs_scandir(sc_help_dir), 'Could not open SuperCollider help directory.')
+      repeat
+        local filename, type = uv.fs_scandir_next(handle)
+        if type == 'file' and vim.endswith(filename, 'scnvim') then
+          local basename = filename:gsub('%.html%.scnvim', '')
+          local input_path = sc_help_dir .. sep .. filename
+          local output_path = sc_help_dir .. sep .. basename .. '.txt'
+          local options = {
+            args = {input_path, '--from', 'html', '--to', 'plain', '-o', output_path},
+            hide = true,
+          }
+          local co = coroutine.create(function()
+            uv.spawn(render_prg, options, function(code)
+              local ret = uv.fs_unlink(input_path)
+              if not ret then
+                print('[scnvim] ERROR: Could not unlink ' .. input_path)
+              end
+              on_done(code, input_path)
+            end)
+          end)
+          threads[#threads + 1] = co
+        end
+      until not filename
+
+      print('[scnvim] Converting help files (this might take a while..)')
+      schedule(concurrent_jobs)
+    end)
+  end)
 end
 
 return M
