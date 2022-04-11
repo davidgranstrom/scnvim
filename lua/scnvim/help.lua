@@ -73,7 +73,6 @@ function M.render_all(include_extensions, callback, concurrent_jobs)
   concurrent_jobs = concurrent_jobs or 8
   sclang = sclang or require'scnvim.sclang'
   local settings = vim.fn['scnvim#util#get_user_settings']()
-  local render_args = vim.fn['scnvim#util#get_scdoc_render_args']()
   local render_prg = settings.paths.scdoc_render_prg
   local cmd = string.format('SCNvimDoc.renderAll(%s)', include_extensions)
   sclang.eval(cmd, function()
