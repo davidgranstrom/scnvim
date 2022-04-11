@@ -86,16 +86,16 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
 
       local threads = {}
       local active_threads = 0
+      local is_done = false
 
       local function schedule(n)
+        if is_done then return end
         active_threads = n
         for i = 1, n do
           local thread = threads[i]
           if not thread then
-            if callback then
-              callback()
-            end
             print('[scnvim] Help file conversion finished.')
+            if callback then callback() end
             break
           end
           coroutine.resume(thread)
@@ -110,8 +110,13 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
         end
         active_threads = active_threads - 1
         local last_run = active_threads > #threads
-        if active_threads == 0 or last_run then
-          schedule(concurrent_jobs)
+        if active_threads == 0 or last_run and not is_done then
+          local num_jobs = concurrent_jobs
+          if last_run then
+            num_jobs = #threads
+            is_done = true
+          end
+          schedule(num_jobs)
         end
       end
 
