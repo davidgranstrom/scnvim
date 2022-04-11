@@ -68,7 +68,7 @@ function M.handle_method(name, target_dir)
   end
 end
 
-function M.render_all(include_extensions, callback, concurrent_jobs)
+function M.render_all(callback, include_extensions, concurrent_jobs)
   include_extensions = include_extensions or true
   concurrent_jobs = concurrent_jobs or 8
   sclang = sclang or require'scnvim.sclang'
