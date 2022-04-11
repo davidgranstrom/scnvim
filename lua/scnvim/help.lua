@@ -74,6 +74,10 @@ function M.render_all(include_extensions, callback, concurrent_jobs)
   sclang = sclang or require'scnvim.sclang'
   local settings = vim.fn['scnvim#util#get_user_settings']()
   local render_prg = settings.paths.scdoc_render_prg
+  if not render_prg:match('pandoc') then
+    print('[scnvim] ERROR: Must use pandoc render program for batch conversion')
+    return
+  end
   local cmd = string.format('SCNvimDoc.renderAll(%s)', include_extensions)
   sclang.eval(cmd, function()
     sclang.eval('SCDoc.helpTargetDir', function(help_path)
