@@ -68,8 +68,9 @@ function M.handle_method(name, target_dir)
   end
 end
 
-function M.render_all(include_extensions, callback)
+function M.render_all(include_extensions, callback, concurrent_jobs)
   include_extensions = include_extensions or true
+  concurrent_jobs = concurrent_jobs or 8
   sclang = sclang or require'scnvim.sclang'
   local settings = vim.fn['scnvim#util#get_user_settings']()
   local render_args = vim.fn['scnvim#util#get_scdoc_render_args']()
@@ -82,7 +83,6 @@ function M.render_all(include_extensions, callback)
 
       local threads = {}
       local active_threads = 0
-      local concurrent_jobs = 20
 
       local function schedule(n)
         active_threads = n
