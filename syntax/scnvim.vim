@@ -20,45 +20,32 @@ if exists('b:current_syntax')
 endif
 let b:current_syntax = 'scnvim'
 
-" syn clear
 syn case match " Not case sensitive
 
 " Result of execution
-syn region result start=/->/ end=/\n/
+syn region result start=/^->/ end=/\n/
+
+" Using Log.quark
+syn match logger /^\[\w*\]/
 
 """""""""""""""""""
 " Error and warning messages
 """""""""""""""""""
-syn keyword errors ERROR FAIL
-syn keyword warns WARNING RECEIVER ARGS PATH CALL STACK
-syn keyword info Info
+syn match errorCursor "\^\^"
+syn match errors /ERROR:.*$/
+syn match receiverError /RECEIVER:.*$/
+syn match fails /FAIL:.*$/
+syn match warns /WARNING:.*$/
+syn match exceptions /EXCEPTION:.*$/
 
-" for instance blocks in stack errors ala <Instance of Object> 
-syn region instanceError start=/</ end=/>/
+syn match errorblock /^ERROR:.*\_.*\ze\^\^/
+syn match receiverBlock /^RECEIVER:.*\_.*\^\^/
+syn match protectedcallstack /^PROTECTED CALL STACK:.*\_.*\ze\^\^/
+syn match callstack /^CALL STACK:.*\_.*\ze\^\^/
 
-" Seperator after error
-syn match separator /-----------------------------------/
-
-" Syntax error position
-syn match syntaxErrLine /line \d\+/ contained
-syn match syntaxErrChar /char \d\+:/ contained
-syn match syntaxErrCursor / ^/ contained
-syn region syntaxErrorContent start=/line \d\+ char \d\+/ end=/ ^/ contains=syntaxErrLine,syntaxErrChar
-
-"""""""""""""""""""
-" Misc
-"""""""""""""""""""
-
-" Welcome message
-" syn region welcome start=/\*\*\*/ end=/\*\*\*/
-syn match welcomeWords "Welcome to SuperCollider"
-syn region welcome start=/\*\*\*/ end=/$/ contains=welcomeWords
-
-syn region compiling start=/\ccompil/ end=/$/
-
-" Matches boot messages
-syn match serverMessage /^\w*\W*:/
-syn match ipAddr /\d\+.\d\+.\d\+.\d\+:\d\+/
+" unittests
+syn match unittestPass /^PASS:.*$/
+syn match unittestRunning /^RUNNING UNIT TEST.*$/
 
 """""""""""""""""""
 " Linking
@@ -66,21 +53,19 @@ syn match ipAddr /\d\+.\d\+.\d\+.\d\+:\d\+/
 
 " Special scnvim links
 hi def link errors ErrorMsg
-hi def link syntaxErrLine Underlined
-hi def link syntaxErrChar Underlined
-hi def link syntaxErrCursor TerminalCursor
-hi def link syntaxErrorContent WarningMsg
-hi def link instanceError WarningMsg
+hi def link errorBlock ErrorMsg
+hi def link receiverError ErrorMsg
+hi def link exceptions ErrorMsg
+hi def link errorCursor Bold
+hi def link fails ErrorMsg
+hi def link syntaxErrorContent Underlined
 hi def link warns WarningMsg
-hi def link separator scComment
 
-hi def link ipAddr Underlined
-hi def link serverMessage Title
-hi def link info Title
+hi def link receiverBlock WarningMsg
+hi def link callstack WarningMsg
+hi def link protectedcallstack WarningMsg
 
-
-hi def link welcome Title
-hi def link welcomeWords Title
-hi def link compiling Comment
+hi def link logger Bold
+hi def link unittestPass String
 
 hi def link result String
