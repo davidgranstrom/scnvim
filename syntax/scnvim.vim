@@ -38,10 +38,10 @@ syn match fails /FAIL:.*$/
 syn match warns /WARNING:.*$/
 syn match exceptions /EXCEPTION:.*$/
 
-syn match errorblock /^ERROR:.*\_.*\ze\^\^/
-syn match receiverBlock /^RECEIVER:.*\_.*\^\^/
-syn match protectedcallstack /^PROTECTED CALL STACK:.*\_.*\ze\^\^/
-syn match callstack /^CALL STACK:.*\_.*\ze\^\^/
+syn match errorblock /^ERROR:.*$/
+syn match receiverBlock /^RECEIVER:.*$/
+syn match protectedcallstack /^PROTECTED CALL STACK:.*$/
+syn match callstack /^CALL STACK:.*$/
 
 " unittests
 syn match unittestPass /^PASS:.*$/
