@@ -7,9 +7,11 @@ local sclang = require'scnvim.sclang'
 local default = require'scnvim.config'()
 local installer = require'scnvim.install'
 local path = require'scnvim.path'
+local map = require'scnvim.map'
 local scnvim = {}
 
 scnvim.config = {}
+scnvim.map = map
 
 function scnvim.setup(config)
   if config.ensure_installed then
@@ -21,6 +23,7 @@ function scnvim.setup(config)
   config = config or {}
   scnvim.config = vim.tbl_deep_extend('keep', config, default)
   path.resolve_config(scnvim.config)
+  map.setup(scnvim.config)
 end
 
 --- Evalute a SuperCollider expression.
