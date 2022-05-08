@@ -10,7 +10,7 @@ return function()
       path = nil,   -- g:scnvim_sclang_executable
       options = {}, -- g:scnvim_sclang_options
     },
-    mapping = {}, -- TODO(david)
+    mapping = {}, -- Empty by default
     documentation = { -- set to 'false' to use HelpBrowser
       cmd = 'pandoc', -- g:scnvim_scdoc_render_prg
       args = {'--from', 'html', '--to', 'plain'} -- g:scnvim_scdoc_render_args
