@@ -30,14 +30,14 @@ function M.send_line(cb)
   M.send_lines(line, cb)
 end
 
-function M.send_block()
-  local lstart, lend = get_block()
-  local lines = get_range(lstart - 1, lend)
-  local last_line = lines[#lines]
-  local block_end = string.find(last_line, ')')
-  lines[#lines] = last_line:sub(1, block_end)
-  M.send_lines(lines)
-  -- TODO: flash
-end
+-- function M.send_block()
+--   local lstart, lend = get_block()
+--   local lines = get_range(lstart - 1, lend)
+--   local last_line = lines[#lines]
+--   local block_end = string.find(last_line, ')')
+--   lines[#lines] = last_line:sub(1, block_end)
+--   M.send_lines(lines)
+--   -- TODO: flash
+-- end
 
 return M
