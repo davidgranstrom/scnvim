@@ -14,35 +14,6 @@ function! s:find_match(start, end, flags) abort
     return searchpairpos(a:start, '', a:end, a:flags, s:skip_pattern())
 endfunction
 
-function! s:flash_once(start, end, duration, mode) abort
-  let m = s:highlight_region(a:start, a:end, a:mode)
-  call timer_start(a:duration, {-> s:clear_region(m) })
-endfunction
-
-function! s:highlight_region(start, end, mode) abort
-  if a:mode ==# 'n' || a:mode ==# 'V'
-    if a:start == a:end
-      let pattern = '\%' . a:start . 'l'
-    else
-      let pattern = '\%>' . a:start . 'l'
-      let pattern .= '\%<' . a:end . 'l'
-    endif
-  else
-    let pattern = '\%' . line('.') . 'l'
-    if a:start == a:end
-      let pattern .= '\%' . a:start . 'c'
-    else
-      let pattern .= '\%>' . a:start . 'c'
-      let pattern .= '\%<' . a:end . 'c'
-    endif
-  endif
-  return matchadd('SCNvimEval', pattern)
-endfunction
-
-function! s:clear_region(match) abort
-  call matchdelete(a:match)
-endfunction
-
 function! scnvim#editor#get_block() abort
     " initialize to invalid ranges
     let start_pos = [0, 0]
@@ -71,20 +42,6 @@ function! scnvim#editor#get_block() abort
     " restore cursor
     call setpos('.', c_curpos)
     return [start_pos[0], end_pos[0]]
-endfunction
-
-function! scnvim#editor#flash(start, end, mode) abort
-  let repeats = get(g:, 'scnvim_eval_flash_repeats', 2)
-  let duration = get(g:, 'scnvim_eval_flash_duration', 100)
-  if repeats == 0 || duration == 0
-    return
-  elseif repeats == 1
-    call s:flash_once(a:start, a:end, duration, a:mode)
-  else
-    let delta = duration / 2
-    call s:flash_once(a:start, a:end, delta, a:mode)
-    call timer_start(duration, {-> s:flash_once(a:start, a:end, delta, a:mode)}, {'repeat': repeats - 1})
-  endif
 endfunction
 
 " Could be replaced with `vim.region` later

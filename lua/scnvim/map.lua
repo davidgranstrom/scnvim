@@ -2,24 +2,40 @@ local editor = require'scnvim.editor'
 local M = {}
 
 setmetatable(M, {
-  __call = function(_, modes, fn, callback)
+  __call = function(_, modes, fn, callback, flash)
     if type(modes) == 'string' then
       modes = {modes}
     end
     modes = modes or {'n'}
+    flash = flash or true
     local tmp = editor[fn]
     if not tmp then
       error('[scnvim]: Could not find function ' .. fn)
     end
-    fn = function() tmp(callback) end
+    fn = function() tmp(callback, flash) end
     return {modes = modes, fn = fn}
   end
 })
 
+      -- if type(v) == 'table' then
+      --   for k1, v1 in ipairs(v) do
+      --     print(v1)
+      --     -- vim.keymap.set(v1.modes, k1, v1.fn, {buffer = true})
+      --   end
+      -- else
+      --   vim.keymap.set(v.modes, k, v.fn, {buffer = true})
+      -- end
+
 function M.setup(config)
   local function apply_keymaps()
     for k, v in pairs(config.mapping) do
-      vim.keymap.set(v.modes, k, v.fn, {buffer = true})
+      if v[1] ~= nil then
+        for _, v1 in ipairs(v) do
+          vim.keymap.set(v1.modes, k, v1.fn, {buffer = true})
+        end
+      else
+        vim.keymap.set(v.modes, k, v.fn, {buffer = true})
+      end
     end
   end
   local id = vim.api.nvim_create_augroup('scnvim_mappings', {clear = true})
