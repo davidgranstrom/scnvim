@@ -17,15 +17,6 @@ setmetatable(M, {
   end
 })
 
-      -- if type(v) == 'table' then
-      --   for k1, v1 in ipairs(v) do
-      --     print(v1)
-      --     -- vim.keymap.set(v1.modes, k1, v1.fn, {buffer = true})
-      --   end
-      -- else
-      --   vim.keymap.set(v.modes, k, v.fn, {buffer = true})
-      -- end
-
 function M.setup(config)
   local function apply_keymaps()
     for k, v in pairs(config.mapping) do
