@@ -1,5 +1,5 @@
 local sclang = require'scnvim.sclang'
-local config = require'scnvim.config'.get()
+local user_config = require'scnvim.config'
 local api = vim.api
 local uv = vim.loop
 local M = {}
@@ -18,6 +18,7 @@ local function flash_once(start, finish, delta, options)
 end
 
 function M.flash(start, finish, options)
+  local config = user_config.get()
   local duration = config.eval.flash_duration
   local repeats = config.eval.flash_repeats
   if duration == 0 or repeats == 0 then
@@ -97,6 +98,21 @@ end
 function M.hard_stop(cb)
   if cb then cb() end
   sclang.send('thisProcess.stop', true)
+end
+
+function M.postwin_toggle(cb)
+  if cb then cb() end
+  require'scnvim.postwin'.toggle()
+end
+
+function M.postwin_clear(cb)
+  if cb then cb() end
+  require'scnvim.postwin'.clear()
+end
+
+function M.show_signature(cb)
+  if cb then cb() end
+  require'scnvim.completion.signature'.show()
 end
 
 return M

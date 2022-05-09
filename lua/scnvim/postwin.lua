@@ -32,6 +32,10 @@ function M.toggle()
   vimcall('scnvim#postwindow#toggle')
 end
 
+function M.clear()
+  vimcall('scnvim#postwindow#clear')
+end
+
 local function is_valid()
   return api.nvim_buf_is_loaded(M.bufnr)
 end
