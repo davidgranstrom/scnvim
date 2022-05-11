@@ -1,3 +1,8 @@
+if vim.g.did_ft_scnvim_commands then
+  return
+end
+vim.g.did_ft_scnvim_commands = true
+
 local scnvim = require'scnvim'
 local sclang = require'scnvim.sclang'
 

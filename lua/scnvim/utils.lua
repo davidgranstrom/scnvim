@@ -86,7 +86,11 @@ M.is_windows = M.get_system() == 'windows'
 M.path_sep = M.is_windows and '\\' or '/'
 
 --- Get the root directory of the plugin.
+---@returns The root directory of the plugin
 function M.get_scnvim_root_dir()
+  if M.plugin_root_dir then
+    return M.plugin_root_dir
+  end
   local package_path = debug.getinfo(1).source:gsub('@', '')
   --vim uses inconsistent path separators on Windows
   --safer to change all to Unix style first
@@ -123,6 +127,7 @@ function M.get_scnvim_root_dir()
   end
   assert(#dir > 1, '[scnvim] Could not get scnvim root path')
   dir = dir:sub(1, -2) -- delete trailing slash
+  M.plugin_root_dir = dir
   return dir
 end
 
