@@ -14,8 +14,10 @@ function M.new()
     },
     mapping = {}, -- Empty by default
     documentation = { -- set to 'false' to use HelpBrowser
-      cmd = 'pandoc', -- g:scnvim_scdoc_render_prg
-      args = {'--from', 'html', '--to', 'plain'} -- g:scnvim_scdoc_render_args
+      --- absolute path to the render program
+      cmd = '/opt/homebrew/bin/pandoc',
+      --- options given to the render program
+      args = {'--from', 'html', '--to', 'plain'}
     },
     postwin = {
       syntax = true,       -- g:scnvim_postwin_syntax_hl

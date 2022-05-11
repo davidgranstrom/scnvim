@@ -45,14 +45,6 @@ local function find_sclang_executable()
   error('Could not find `sclang`. Please specify sclang.path in the setup function')
 end
 
-local function find_scdoc_render_program(cmd)
-  local path = vim.fn.exepath(cmd) -- default render program
-  if path ~= '' then
-    return normalize(path)
-  end
-  error('Could not find documentation.cmd. Please specify documentation.cmd in the setup function')
-end
-
 local function resolve(func, args)
   local ok, res = pcall(func, args)
   if ok then
@@ -63,18 +55,9 @@ local function resolve(func, args)
   end
 end
 
---- Try and resolve paths missing from the config
---@param config The configuration to resolve
-function M.resolve_config(config)
+function M.setup(config)
   if not config.sclang.path then
     config.sclang.path = resolve(find_sclang_executable, nil)
-  end
-
-  if config.documentation then
-    local cmd = config.documentation.cmd
-    if cmd then
-      config.documentation.cmd = resolve(find_scdoc_render_program, cmd)
-    end
   end
 end
 

@@ -22,7 +22,7 @@ function scnvim.setup(config)
   end
   config = config or {}
   local user_config = vim.tbl_deep_extend('keep', config, default_config.new())
-  path.resolve_config(user_config)
+  path.setup(user_config)
   map.setup(user_config)
   editor.setup(user_config)
   default_config.set(user_config)
