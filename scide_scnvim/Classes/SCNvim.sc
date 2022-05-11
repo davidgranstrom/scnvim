@@ -28,7 +28,7 @@ SCNvim {
 
     *updateStatusLine {arg interval=1;
         var stlFunc = {
-            var serverStatus, levelMeter, data;
+            var serverStatus, data;
             var peakCPU, avgCPU, numUGens, numSynths;
             var server = Server.default;
             if (server.serverRunning) {
@@ -40,9 +40,8 @@ SCNvim {
                 serverStatus = "%\\% %\\% % %".format(
                     peakCPU, avgCPU, numUGens, numSynths
                 );
-                levelMeter = "-inf dB";
 
-                data = (action: "status_line", args: (server_status: serverStatus, level_meter: levelMeter));
+                data = (action: "status_line", args: (server_status: serverStatus));
                 SCNvim.sendJSON(data);
             }
         };

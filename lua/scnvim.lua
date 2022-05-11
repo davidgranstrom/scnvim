@@ -22,9 +22,18 @@ function scnvim.setup(config)
   end
   config = config or {}
   scnvim.config = vim.tbl_deep_extend('keep', config, default_config)
-  path.setup(scnvim.config)
-  map.setup(scnvim.config)
-  editor.setup(scnvim.config)
+  local modules = {
+    path,
+    map,
+    editor,
+    sclang
+  }
+  for _, module in ipairs(modules) do
+    local ok, err = pcall(module.setup, scnvim.config)
+    if not ok then
+      print(string.format('[scnvim] %s error: %s', module.name, err))
+    end
+  end
 end
 
 --- Evalute a SuperCollider expression.

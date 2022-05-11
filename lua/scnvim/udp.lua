@@ -4,6 +4,7 @@
 -- @license GPLv3
 
 local help = require'scnvim.help'
+local statusline = require'scnvim.statusline'
 
 local uv = vim.loop
 local M = {}
@@ -21,7 +22,7 @@ local Handlers = {}
 --- Update status line widgets
 function Handlers.status_line(args)
   if not args then return end
-  vim.api.nvim_set_var('scnvim_stl_widgets', args)
+  statusline.set_server_status(args.server_status)
 end
 
 --- Print function signature

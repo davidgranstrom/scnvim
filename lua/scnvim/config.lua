@@ -9,6 +9,7 @@ return function()
     sclang = {
       path = nil,   -- g:scnvim_sclang_executable
       options = {}, -- g:scnvim_sclang_options
+      server_status_interval = 1, -- g:scnvim_statusline_interval
     },
     mapping = {}, -- Empty by default
     documentation = { -- set to 'false' to use HelpBrowser

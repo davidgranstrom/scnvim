@@ -10,12 +10,6 @@ endif
 let g:scnvim_loaded = 1
 
 let g:scnvim_root_dir = expand('<sfile>:h:h')
-let g:scnvim_stl_widgets = {}
-
-" augroup to be used w/ ftplugin
-augroup scnvim
-  autocmd!
-augroup END
 
 " deprecated
 if exists('g:scnvim_udp_port')
