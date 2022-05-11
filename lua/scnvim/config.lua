@@ -3,9 +3,7 @@
 -- @author David Granström
 -- @license GPLv3
 
-local M = {}
-
-function M.new()
+return function()
   return {
     ensure_installed = true, -- if installed this can be set to false to improve startup time.
     sclang = {
@@ -56,13 +54,3 @@ function M.new()
     }
   }
 end
-
-function M.set(cfg)
-  M.config = cfg
-end
-
-function M.get()
-  return M.config or M.new()
-end
-
-return M
