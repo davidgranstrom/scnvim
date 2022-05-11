@@ -5,6 +5,7 @@
 
 local postwin = require'scnvim.postwin'
 local udp = require'scnvim.udp'
+local path = require'scnvim.path'
 local utils = require'scnvim.utils'
 
 local uv = vim.loop
@@ -92,6 +93,16 @@ end
 
 --- Interface
 
+--- Set the current document path
+function M.set_current_path()
+  if M.is_running() then
+    local curpath = vim.fn.expand('%:p')
+    curpath = path.escape(curpath)
+    curpath = string.format('SCNvim.currentPath = "%s"', curpath)
+    M.send(curpath, true)
+  end
+end
+
 --- Function to run on sclang start
 M.on_start = function()
   postwin.create()
@@ -146,7 +157,7 @@ function M.start()
   local port = udp.start_server()
   assert(port > 0, 'Could not start UDP server')
   M.send(string.format('SCNvim.port = %d', port), true)
-  vimcall('scnvim#document#set_current_path')
+  M.set_current_path()
 
   local onread = on_stdout()
   M.stdout:read_start(vim.schedule_wrap(onread))
@@ -181,7 +192,7 @@ function M.recompile()
   end
   M.send(cmd_char.recompile, true)
   M.send(string.format('SCNvim.port = %d', udp.port), true)
-  vimcall('scnvim#document#set_current_path')
+  M.set_current_path()
 end
 
 return M

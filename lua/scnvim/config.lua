@@ -25,9 +25,20 @@ function M.new()
       auto_show_errors = true, -- g:scnvim_postwin_auto_toggle
       scrollback = 5000, -- g:scnvim_postwin_scrollback
     },
-    eval = {
-      flash_duration = 100, -- g:scnvim_eval_flash_duration
-      flash_repeats = 2,    -- g:scnvim_eval_flash_repeats
+    editor = {
+      flash = { -- set to false to disable flash
+        duration = 100, -- g:scnvim_eval_flash_duration
+        repeats = 2,    -- g:scnvim_eval_flash_repeats
+        --- Flash colors
+        --- Use an existing highlight group
+        hl_group = 'TermCursor'
+        --- Or use user specified colors directly
+        --- Setting any of these will override the `hl_group` entry.
+        -- guifg = 'black',
+        -- guifg = 'white'
+        -- ctermfg = 'black',
+        -- ctermfg = 'white'
+      }
     },
     completion = {
       signature = true, -- show method signatures in a floating window

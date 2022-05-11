@@ -17,12 +17,6 @@ augroup scnvim
   autocmd!
 augroup END
 
-autocmd scnvim ColorScheme * highlight default SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
-autocmd scnvim BufEnter,BufNewFile,BufRead *.scd,*.sc call scnvim#document#set_current_path()
-
-" eval flash default color
-highlight default SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
-
 " deprecated
 if exists('g:scnvim_udp_port')
   echohl WarningMsg
