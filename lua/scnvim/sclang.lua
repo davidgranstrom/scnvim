@@ -103,6 +103,11 @@ function M.set_current_path()
   end
 end
 
+function M.poll_server_status()
+  local cmd = string.format('SCNvim.updateStatusLine(%d)', M.server_status_interval)
+  M.send(cmd, true)
+end
+
 --- Function to run on sclang start
 M.on_start = function()
   postwin.create()
@@ -193,6 +198,11 @@ function M.recompile()
   M.send(cmd_char.recompile, true)
   M.send(string.format('SCNvim.port = %d', udp.port), true)
   M.set_current_path()
+end
+
+function M.setup(config)
+  M.server_status_interval = config.sclang.server_status_interval
+  --- TODO: move sclang from path module
 end
 
 return M
