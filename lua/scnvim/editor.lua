@@ -49,6 +49,11 @@ function M.setup(config)
     pattern = '*',
     command = hl_cmd,
   })
+  api.nvim_create_autocmd('VimLeavePre', {
+    group = id,
+    pattern = '*',
+    callback = sclang.stop,
+  })
   api.nvim_create_autocmd({'BufEnter', 'BufNewFile', 'BufRead'}, {
     group = id,
     pattern = {'*.scd', '*.sc', '*.quark'},
