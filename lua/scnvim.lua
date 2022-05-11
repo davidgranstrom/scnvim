@@ -4,10 +4,11 @@
 -- @license GPLv3
 
 local sclang = require'scnvim.sclang'
-local default = require'scnvim.config'
 local installer = require'scnvim.install'
 local path = require'scnvim.path'
 local map = require'scnvim.map'
+local editor = require'scnvim.editor'
+local default_config = require'scnvim.config'
 local scnvim = {}
 
 scnvim.map = map
@@ -20,10 +21,11 @@ function scnvim.setup(config)
     end
   end
   config = config or {}
-  local user_config = vim.tbl_deep_extend('keep', config, default.new())
+  local user_config = vim.tbl_deep_extend('keep', config, default_config.new())
   path.resolve_config(user_config)
   map.setup(user_config)
-  default.set(user_config)
+  editor.setup(user_config)
+  default_config.set(user_config)
 end
 
 --- Evalute a SuperCollider expression.
@@ -69,7 +71,7 @@ end
 --- Get the user config.
 ---@return The user configuration table.
 function scnvim.get_config()
-  return default.get()
+  return default_config.get()
 end
 
 return scnvim

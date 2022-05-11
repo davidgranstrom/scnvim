@@ -10,7 +10,7 @@ local is_win = utils.is_windows
 -- Store the cache path
 M.cache = vim.fn.stdpath('cache')
 
-local function escape(path)
+function M.escape(path)
   if is_win and not vim.opt.shellslash:get() then
     return vim.fn.escape(path, '\\')
   else
@@ -19,7 +19,7 @@ local function escape(path)
 end
 
 local function normalize(path)
-  return escape(vim.fn.expand(path))
+  return M.escape(vim.fn.expand(path))
 end
 
 local function find_sclang_executable()
