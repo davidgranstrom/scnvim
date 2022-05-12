@@ -144,29 +144,4 @@ function M.tbl_len(T)
   return count
 end
 
-------------------
---- Output
-------------------
-
-local function format_message(msg, level)
-  if not level then
-    level = ']'
-  else
-    level = level .. ']'
-  end
-  return string.format('[scnvim %s %s', level, msg or '(nil)')
-end
-
-function M.print_info(msg)
-  print(format_message(msg, 'INFO'))
-end
-
-function M.print_err(msg)
-  print(format_message(msg, 'ERROR'))
-end
-
-function M.print_warn(msg)
-  print(format_message(msg, 'WARNING'))
-end
-
 return M

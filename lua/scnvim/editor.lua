@@ -21,6 +21,7 @@ end
 function M.setup(config)
   M.flash_duration = config.editor.flash.duration
   M.flash_repeats = config.editor.flash.repeats
+  M.snippet_format = config.snippet.engine.name
 
   local hl_group = config.editor.flash.hl_group
   local guifg = config.editor.flash.guifg
@@ -147,24 +148,28 @@ function M.send_selection(cb, flash)
 end
 
 --- Send a "hard stop" to the interpreter.
-function M.hard_stop(cb)
-  if cb then cb() end
+function M.hard_stop()
   sclang.send('thisProcess.stop', true)
 end
 
-function M.postwin_toggle(cb)
-  if cb then cb() end
+function M.postwin_toggle()
   require'scnvim.postwin'.toggle()
 end
 
-function M.postwin_clear(cb)
-  if cb then cb() end
+function M.postwin_clear()
   require'scnvim.postwin'.clear()
 end
 
-function M.show_signature(cb)
-  if cb then cb() end
+function M.show_signature()
   require'scnvim.completion.signature'.show()
+end
+
+--- Generate assets. tags syntax etc.
+---@param on_done Optional callback that runs when all assets have been created.
+function M.generate_assets(on_done)
+  assert(sclang.is_running(), '[scnvim] sclang not running')
+  local expr = string.format([[SCNvim.generateAssets(\"%s\", \"%s\")]], path.get_cache_dir(), M.snippet_format)
+  sclang.eval(expr, on_done)
 end
 
 return M

@@ -6,9 +6,18 @@
 local M = {}
 local utils = require'scnvim.utils'
 local is_win = utils.is_windows
+local uv = vim.loop
 
--- Store the cache path
-M.cache = vim.fn.stdpath('cache')
+--- Get the scnvim cache directory.
+---@return An absolute path to the cache directory
+function M.get_cache_dir()
+  local cache_path = vim.fn.stdpath('cache')
+  cache_path = cache_path .. utils.path_sep .. 'scnvim'
+  if not uv.fs_stat(cache_path) then
+    uv.fs_mkdir(cache_path, tonumber('777', 8))
+  end
+  return cache_path
+end
 
 function M.escape(path)
   if is_win and not vim.opt.shellslash:get() then

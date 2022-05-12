@@ -5,6 +5,8 @@ vim.g.did_ft_scnvim_commands = true
 
 local scnvim = require'scnvim'
 local sclang = require'scnvim.sclang'
+local editor = require'scnvim.editor'
+local path = require'scnvim.path'
 
 function add_command(name, fn, desc)
   vim.api.nvim_buf_create_user_command(0, name, fn, {desc = desc})
@@ -14,7 +16,13 @@ add_command('SCNvimStart', scnvim.start, 'Start the sclang interpreter')
 add_command('SCNvimStop', scnvim.stop, 'Stop the sclang interpreter')
 add_command('SCNvimRecompile', scnvim.recompile, 'Recompile the sclang interpreter')
 add_command('SCNvimStatusLine', sclang.poll_server_status, 'Display the server status')
-add_command('SCNvimTags', 'call scnvim#util#generate_tags()', 'Generate syntax highlightning and snippets')
+-- add_command('SCNvimTags', 'call scnvim#util#generate_tags()', 'Generate syntax highlightning and snippets')
+add_command('SCNvimGenerateAssets', function()
+  local on_done = function()
+    print('[scnvim] assets were written to ' .. path.get_cache_dir())
+  end
+  editor.generate_assets(on_done)
+end, 'Generate syntax highlightning and snippets')
 
 local options = {nargs = 1, desc = 'Open help for subject'}
 local open_help = function(tbl)
