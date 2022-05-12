@@ -34,7 +34,8 @@ let b:current_syntax = 'supercollider'
 syn clear
 
 " source generated syntax file
-runtime! syntax/classes.vim
+let generated_classes = luaeval('require"scnvim.path".get_cache_dir()') . '/classes.vim'
+execute "source " . generated_classes
 
 syn match	scAoperator	"{"
 syn match	scAoperator	"}"

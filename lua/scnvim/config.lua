@@ -45,10 +45,13 @@ return function()
       signature = true, -- show method signatures in a floating window
     },
     snippet = {
-      engine = { -- table or string
+      engine = {
+        --- name of the snippet engine
         name = 'luasnip',
         -- engine specific options
-        descriptions = true, -- luasnip descriptions
+        options = {
+          descriptions = true, -- luasnip descriptions
+        },
       },
       mul_add = false, -- includes mul/add arguments for UGens
       style = 'default', -- 'compact' = do not put spaces between args, etc.

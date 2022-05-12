@@ -48,10 +48,10 @@ SCNvim {
         SkipJack(stlFunc, interval, name: "scnvim_statusline");
     }
 
-    *generateAssets {|rootDir, snippetFormat = "ultisnips"|
-        var tagsPath = rootDir +/+ "scnvim-data/tags";
-        var syntaxPath = rootDir +/+ "syntax/classes.vim";
-        var snippetPath = rootDir +/+ "scnvim-data";
+    *generateAssets {|cacheDir, snippetFormat = "ultisnips"|
+        var tagsPath = cacheDir +/+ "tags";
+        var syntaxPath = cacheDir +/+ "classes.vim";
+        var snippetPath = cacheDir;
         case
         {snippetFormat == "ultisnips"}
         {
