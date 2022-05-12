@@ -261,6 +261,18 @@ function M.setup(config)
     M.render_args = config.documentation.args
     M.selector = config.documentation.selector
     M.internal = true
+    if not M.selector then
+      local id = api.nvim_create_augroup('scnvim_qf_conceal', {clear = true})
+      api.nvim_create_autocmd('BufWinEnter', {
+        pattern = 'quickfix',
+        desc = 'Apply quickfix conceal',
+        callback = function()
+          vim.cmd [[syntax match SCNvimConcealResults /^.*Help\/\|.txt\||.*|\|/ conceal]]
+          vim.opt_local.conceallevel = 2
+          vim.opt_local.concealcursor = 'nvic'
+        end,
+      })
+    end
   else
     M.internal = false
   end
