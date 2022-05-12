@@ -31,21 +31,30 @@ local function open_help_file(uri, pattern)
   end
 end
 
+--- Get the render arguments with correct input and output file paths.
+---@param input_path The input path to use.
+---@param output_path The output path to use.
+---@return A table with '$1' and '$2' replaced by @p input_path and @p output_path
+local function get_render_args(input_path, output_path)
+  local args = vim.deepcopy(M.render_args)
+  for index, str in ipairs(args) do
+    if str == '$1' then
+      args[index] = str:gsub('$1', input_path)
+    end
+    if str == '$2' then
+      args[index] = str:gsub('$2', output_path)
+    end
+  end
+  return args
+end
+
 --- TODO: cache. compare timestamp of help source with rendered .txt
 local function render_help_file(subject, on_done)
   local cmd = string.format([[SCNvim.getHelpUri(\"%s\")]], subject)
   sclang.eval(cmd, function(input_path)
     local basename = input_path:gsub('%.html%.scnvim', '')
     local output_path = basename .. '.txt'
-    local args = vim.deepcopy(M.render_args)
-    for index, str in ipairs(args) do
-      if str == '$1' then
-        args[index] = str:gsub('$1', input_path)
-      end
-      if str == '$2' then
-        args[index] = str:gsub('$2', output_path)
-      end
-    end
+    local args = get_render_args(input_path, output_path)
     local options = {
       args = args,
       hide = true,
@@ -176,13 +185,6 @@ end
 function M.render_all(callback, include_extensions, concurrent_jobs)
   include_extensions = include_extensions or true
   concurrent_jobs = concurrent_jobs or 8
-  sclang = sclang or require'scnvim.sclang'
-  local settings = vim.fn['scnvim#util#get_user_settings']()
-  local render_prg = settings.paths.scdoc_render_prg
-  if not render_prg:match('pandoc') then
-    print('[scnvim] ERROR: Must use pandoc render program for batch conversion')
-    return
-  end
   local cmd = string.format('SCNvimDoc.renderAll(%s)', include_extensions)
   sclang.eval(cmd, function()
     sclang.eval('SCDoc.helpTargetDir', function(help_path)
@@ -233,11 +235,11 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
           local input_path = sc_help_dir .. sep .. filename
           local output_path = sc_help_dir .. sep .. basename .. '.txt'
           local options = {
-            args = {input_path, '--from', 'html', '--to', 'plain', '-o', output_path},
+            args = get_render_args(input_path, output_path),
             hide = true,
           }
           local co = coroutine.create(function()
-            uv.spawn(render_prg, options, function(code)
+            uv.spawn(M.render_cmd, options, function(code)
               local ret = uv.fs_unlink(input_path)
               if not ret then
                 print('[scnvim] ERROR: Could not unlink ' .. input_path)
