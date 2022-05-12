@@ -17,6 +17,10 @@ return function()
       cmd = '/opt/homebrew/bin/pandoc',
       --- options given to the render program
       args = {'$1', '--from', 'html', '--to', 'plain', '-o', '$2'},
+      --- Custom selector function used for browsing methods.
+      --- The function will receive two arguments: err, results.
+      --- Use nil for the default implementation (quickfix window)
+      selector = nil,
     },
     postwin = {
       syntax = true,       -- g:scnvim_postwin_syntax_hl
