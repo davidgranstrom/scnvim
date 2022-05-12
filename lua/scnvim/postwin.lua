@@ -7,8 +7,7 @@ local utils = require'scnvim.utils'
 
 local api = vim.api
 local vimcall = utils.vimcall
-local settings = vimcall('scnvim#util#get_user_settings')
-local toggle_on_err = settings.post_window.auto_toggle
+local toggle_on_err = true
 local max_lines = utils.get_var('scnvim_postwin_scrollback') or 5000
 local M = {}
 

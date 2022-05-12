@@ -9,7 +9,7 @@ local M = {}
 --- Compat
 ------------------
 
---- vim.call is not present in nvim 0.4.4 or earlier
+---- vim.call is not present in nvim 0.4.4 or earlier
 function M.vimcall(fn, args)
   if args and type(args) ~= 'table' then
     args = {args}
@@ -60,16 +60,19 @@ function M.str_match_exact(input, word)
   return string.find(input, "%f[%a]" .. word .. "%f[%A]") ~= nil
 end
 
--- modified version of vim.endswith (runtime/lua/vim/shared.lua)
--- needed for nvim versions < 0.5
-function M.str_endswidth(s, suffix)
-  return #suffix == 0 or s:sub(-#suffix) == suffix
+--- Print a highlighted message to the command line.
+---@param message The message to print.
+---@param hlgroup The highlight group to use. Default = ErrorMsg
+function M.print(message, hlgroup)
+  local expr = string.format([[echohl %s | echom '[scnvim] ' . %s | echohl None]], hlgroup or "ErrorMsg", message)
+  vim.cmd(expr)
 end
 
 ------------------
 --- Path
 ------------------
 
+--- TODO: Move to path module
 function M.get_system()
   local sysname = vim.loop.os_uname().sysname
   if sysname:match('Windows') then

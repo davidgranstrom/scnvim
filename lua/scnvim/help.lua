@@ -6,7 +6,6 @@
 local utils = require'scnvim.utils'
 local sclang = require'scnvim.sclang'
 
-local vimcall = utils.vimcall
 local uv = vim.loop
 local api = vim.api
 local win_id = 0
