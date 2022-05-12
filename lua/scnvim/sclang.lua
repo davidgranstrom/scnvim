@@ -9,8 +9,6 @@ local path = require'scnvim.path'
 local utils = require'scnvim.utils'
 
 local uv = vim.loop
-local vimcall = utils.vimcall
-local endswith = vim.endswith or utils.str_endswidth
 local M = {}
 
 local cmd_char = {
@@ -28,7 +26,7 @@ local on_stdout = function()
     if data then
       table.insert(stack, data)
       local str = table.concat(stack, '')
-      local got_line = endswith(str, '\n')
+      local got_line = vim.endswith(str, '\n')
       if got_line then
         local lines = vim.gsplit(str, '\n')
         for line in lines do
@@ -70,7 +68,6 @@ local function start_process()
   M.stdout = uv.new_pipe(false)
   M.stderr = uv.new_pipe(false)
 
-  -- local settings = vimcall('scnvim#util#get_user_settings')
   local sclang = M.sclang_exe
   local user_opts = utils.get_var('scnvim_sclang_options') or {}
   assert(type(user_opts) == 'table', '[scnvim] g:scnvim_sclang_options must be an array')
@@ -81,7 +78,7 @@ local function start_process()
     M.stdout,
     M.stderr,
   }
-  options.cwd = vimcall('expand', '%:p:h')
+  options.cwd = vim.fn.expand('%:p:h')
   options.args = {'-i', 'scnvim', '-d', options.cwd}
   table.insert(options.args, user_opts)
   options.args = vim.tbl_flatten(options.args)
@@ -148,7 +145,7 @@ end
 
 function M.start()
   if M.is_running() then
-    vimcall('scnvim#util#err', 'sclang is already running')
+    utils.print('sclang is already running')
     return
   end
 
@@ -192,7 +189,7 @@ end
 
 function M.recompile()
   if not M.is_running() then
-    vimcall('scnvim#util#err', 'sclang is already running')
+    utils.print('sclang is already running')
     return
   end
   M.send(cmd_char.recompile, true)
