@@ -14,6 +14,75 @@ local M = {}
 
 M.docmap = nil
 
+--- Open a vim buffer for uri with an optional pattern.
+---@param uri Help file URI
+---@param (optional) move cursor to line matching regex pattern
+local function open_help_file(uri, pattern)
+  local is_open = vim.fn.win_gotoid(win_id) == 1
+  local expr = string.format('edit %s', uri)
+  if pattern then
+    expr = string.format('edit +/%s %s', pattern, uri)
+  end
+  if is_open then
+    vim.cmd(expr)
+  else
+    vim.cmd('topleft split | ' .. expr)
+    win_id = vim.fn.win_getid()
+  end
+end
+
+--- TODO: cache. compare timestamp of help source with rendered .txt
+local function render_help_file(subject, on_done)
+  local cmd = string.format([[SCNvim.getHelpUri(\"%s\")]], subject)
+  sclang.eval(cmd, function(input_path)
+    local basename = input_path:gsub('%.html%.scnvim', '')
+    local output_path = basename .. '.txt'
+    local args = vim.deepcopy(M.render_args)
+    for index, str in ipairs(args) do
+      if str == '$1' then
+        args[index] = str:gsub('$1', input_path)
+      end
+      if str == '$2' then
+        args[index] = str:gsub('$2', output_path)
+      end
+    end
+    local options = {
+      args = args,
+      hide = true,
+    }
+    uv.spawn(M.render_cmd, options, vim.schedule_wrap(function(code)
+      if code ~= 0 then
+        error(string.format('%s error: %d', M.render_cmd, code))
+      end
+      local ret = uv.fs_unlink(input_path)
+      if not ret then
+        print('[scnvim] Could not unlink ' .. input_path)
+      end
+      on_done(output_path)
+    end))
+  end)
+end
+
+--- Helper function for the default browser implementation
+---@param index The item to get from the quickfix list
+local function open_from_quickfix(index)
+  local list = vim.fn.getqflist()
+  local item = list[index]
+  if item then
+    local uri = vim.fn.bufname(item.bufnr)
+    if uv.fs_stat(uri) then
+      open_help_file(uri, item.pattern)
+    else
+      local cmd = string.format([[SCNvim.getFileNameFromUri(\"%s\")]], uri)
+      sclang.eval(cmd, function(subject)
+        render_help_file(subject, function(result)
+          open_help_file(result, item.pattern)
+        end)
+      end)
+    end
+  end
+end
+
 --- Get a JSON document with documentation overview
 -- @param target_dir The target help directory
 -- @return A JSON string with the document map
@@ -34,25 +103,11 @@ function M.get_docmap(target_dir)
   return result
 end
 
---- Open a vim buffer for uri with an optional pattern.
--- @param uri Help file URI
--- @param (optional) move cursor to line matching regex pattern
-function M.open(uri, pattern)
-  local is_open = vim.fn.win_gotoid(win_id) == 1
-  local expr = string.format('edit %s', uri)
-  if pattern then
-    expr = string.format('edit +/%s %s', pattern, uri)
-  end
-  if is_open then
-    vim.cmd(expr)
-  else
-    vim.cmd('topleft split | ' .. expr)
-    win_id = vim.fn.win_getid()
-  end
-end
-
---- Find a method
-function M.handle_method(name, target_dir)
+--- Find help files for a method
+---@param name Method name to find.
+---@param target_dir The help target dir (SCDoc.helpTargetDir)
+---@return A table with method entries that is suitable for the quickfix list.
+function M.find_methods(name, target_dir)
   local path = vim.fn.expand(target_dir)
   local docmap = M.get_docmap(path .. utils.path_sep .. 'docmap.json')
   local results = {}
@@ -64,20 +119,60 @@ function M.handle_method(name, target_dir)
         table.insert(results, {
             filename = destpath,
             text = string.format('.%s', name),
-            pattern = string.format('^.%s', name),
+            pattern = string.format('^\\.%s', name),
           })
       end
     end
   end
-  if utils.tbl_len(results) then
-    vimcall('setqflist', {results})
-    vim.api.nvim_command('copen')
-    vim.api.nvim_command('nnoremap <silent><buffer> <Enter> :call scnvim#help#open_from_quickfix(line("."))<cr>')
+  return results
+end
+
+--- Prepare a help file.
+---@param subject The help subject (SinOsc, tanh, etc.)
+---@note sclang must be running.
+function M.prepare_help_for(subject)
+  if not sclang.is_running() then
+    print('[scnvim] sclang not running')
+    return
+  end
+
+  if not M.internal then
+    local cmd = string.format([[HelpBrowser.openHelpFor(\"%s\")]], subject)
+    sclang.send(cmd, true)
+    return
+  end
+
+  local is_class = subject:sub(1, 1):match('%u')
+  if is_class then
+    render_help_file(subject, function(result)
+      open_help_file(result)
+    end)
   else
-    print('No results for ' .. name)
+    sclang.eval('SCDoc.helpTargetDir', function(dir)
+      local results = M.find_methods(subject, dir)
+      local err = nil
+      if #results == 0 then
+        err = 'No results for ' .. tostring(subject)
+      end
+      if M.selector then
+        M.selector(err, results)
+      else
+        -- Default implementation
+        vim.fn.setqflist(results)
+        vim.cmd [[ copen ]]
+        vim.keymap.set('n', '<Enter>', function()
+          local linenr = api.nvim_win_get_cursor(0)[1]
+          open_from_quickfix(linenr)
+        end, {buffer = true})
+      end
+    end)
   end
 end
 
+--- Render all help files.
+---@param callback Run this callback on completion.
+---@param include_extensions Include SCClassLibrary extensions.
+---@param concurrent_jobs Number of parallel jobs (default: 8)
 function M.render_all(callback, include_extensions, concurrent_jobs)
   include_extensions = include_extensions or true
   concurrent_jobs = concurrent_jobs or 8
@@ -160,54 +255,11 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
   end)
 end
 
-function M.prepare_help_for(subject)
-  if not sclang.is_running() then
-    print('[scnvim] sclang not running')
-    return
-  end
-  if not M.internal then
-    local cmd = string.format([[HelpBrowser.openHelpFor(\"%s\")]], subject)
-    sclang.send(cmd, true)
-    return
-  end
-  local cmd = string.format([[SCNvim.getHelpUri(\"%s\")]], subject)
-  sclang.eval(cmd, function(input_path)
-    if not input_path then
-      print('[scnvim] could not find help file for ' .. tostring(subject))
-    end
-    local basename = input_path:gsub('%.html%.scnvim', '')
-    local output_path = basename .. '.txt'
-    local subject = basename:gsub('.*/', '')
-    local args = vim.deepcopy(M.render_args)
-    for index, str in ipairs(args) do
-      if str == '$1' then
-        args[index] = str:gsub('$1', input_path)
-      end
-      if str == '$2' then
-        args[index] = str:gsub('$2', output_path)
-      end
-    end
-    local options = {
-      args = args,
-      hide = true,
-    }
-    uv.spawn(M.render_cmd, options, vim.schedule_wrap(function(code)
-      if code ~= 0 then
-        error(string.format('%s error: %d', M.render_cmd, code))
-      end
-      local ret = uv.fs_unlink(input_path)
-      if not ret then
-        print('[scnvim] Could not unlink ' .. input_path)
-      end
-      M.open(output_path)
-    end))
-  end)
-end
-
 function M.setup(config)
   if config.documentation then
     M.render_cmd = config.documentation.cmd
     M.render_args = config.documentation.args
+    M.selector = config.documentation.selector
     M.internal = true
   else
     M.internal = false
