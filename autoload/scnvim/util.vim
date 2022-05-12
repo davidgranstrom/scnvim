@@ -6,62 +6,6 @@ function! scnvim#util#err(msg) abort
   echohl ErrorMsg | echom '[scnvim] ' . a:msg | echohl None
 endfunction
 
-function! scnvim#util#escape_path(path) abort
-  return (s:is_win && !&shellslash) ? escape(a:path, '\') : a:path
-endfunction
-
-function! scnvim#util#find_sclang_executable() abort
-  let exe = get(g:, 'scnvim_sclang_executable', '')
-  if !empty(exe)
-    " user defined
-    return expand(exe)
-  elseif !empty(exepath('sclang'))
-    " in $PATH
-    return exepath('sclang')
-  else
-    " try some known locations
-    let loc = '/Applications/SuperCollider.app/Contents/MacOS/sclang'
-    if executable(loc)
-      return loc
-    endif
-    let loc = '/Applications/SuperCollider/SuperCollider.app/Contents/MacOS/sclang'
-    if executable(loc)
-      return loc
-    endif
-  endif
-  throw 'could not find sclang exeutable'
-endfunction
-
-function! scnvim#util#find_scdoc_render_prg() abort
-  let exe = get(g:, 'scnvim_scdoc_render_prg', '')
-  if !empty(exe)
-    " user defined
-    return scnvim#util#escape_path(expand(exe))
-  elseif !empty(exepath('pandoc'))
-    " default
-    return scnvim#util#escape_path(exepath('pandoc'))
-  else
-    return ''
-  endif
-endfunction
-
-function! scnvim#util#get_scdoc_render_args() abort
-  " default render args
-  return get(g:, 'scnvim_scdoc_render_args', '% --from html --to plain -o %')
-endfunction
-
-function! scnvim#util#generate_tags() abort
-  let is_running = scnvim#sclang#is_running()
-  if is_running
-    let root_dir = get(g:, 'scnvim_root_dir')
-    let root_dir = scnvim#util#escape_path(root_dir)
-    let snippet_format = get(g:, 'scnvim_snippet_format', 'ultisnips')
-    call scnvim#sclang#send_silent(printf('SCNvim.generateAssets("%s", "%s")', root_dir, snippet_format))
-  else
-    call scnvim#util#err('sclang is not started')
-  endif
-endfunction
-
 function! scnvim#util#calc_postwindow_size() abort
   let user_defined = get(g:, 'scnvim_postwin_size')
   if user_defined
@@ -117,15 +61,7 @@ function! scnvim#util#get_user_settings() abort
         \ 'id': 0,
         \ }
 
-  let sclang_executable = scnvim#util#find_sclang_executable()
-  let scdoc_render_prg = scnvim#util#find_scdoc_render_prg()
-  let paths = {
-        \ 'sclang_executable': sclang_executable,
-        \ 'scdoc_render_prg': scdoc_render_prg,
-        \ }
-
   let settings = {
-        \ 'paths': paths,
         \ 'post_window': postwin,
         \ 'help_window': helpwin,
         \ }

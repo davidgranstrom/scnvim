@@ -8,6 +8,7 @@ local installer = require'scnvim.install'
 local path = require'scnvim.path'
 local map = require'scnvim.map'
 local editor = require'scnvim.editor'
+local help = require'scnvim.help'
 local default_config = require'scnvim.config'()
 local scnvim = {}
 
@@ -26,7 +27,8 @@ function scnvim.setup(config)
     path,
     map,
     editor,
-    sclang
+    sclang,
+    help,
   }
   for _, module in ipairs(modules) do
     local ok, err = pcall(module.setup, scnvim.config)

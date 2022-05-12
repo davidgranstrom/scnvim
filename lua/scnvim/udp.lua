@@ -3,7 +3,7 @@
 -- @author David Granström
 -- @license GPLv3
 
-local help = require'scnvim.help'
+-- local help = require'scnvim.help'
 local statusline = require'scnvim.statusline'
 
 local uv = vim.loop
@@ -31,17 +31,17 @@ function Handlers.method_args(args)
   print(args)
 end
 
---- Open a help file
-function Handlers.help_open_file(args)
-  if not args then return end
-  help.open(args.uri, args.pattern)
-end
+-- --- Open a help file
+-- function Handlers.help_open_file(args)
+--   if not args then return end
+--   help.open(args.uri, args.pattern)
+-- end
 
---- Search for a method name
-function Handlers.help_find_method(args)
-  if not args then return end
-  help.handle_method(args.method_name, args.helpTargetDir)
-end
+-- --- Search for a method name
+-- function Handlers.help_find_method(args)
+--   if not args then return end
+--   help.handle_method(args.method_name, args.helpTargetDir)
+-- end
 
 --- Evaluate a piece of lua code sent from sclang
 function Handlers.luaeval(codestring)

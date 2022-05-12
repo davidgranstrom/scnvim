@@ -4,10 +4,12 @@
 -- @license GPLv3
 
 local utils = require'scnvim.utils'
-local sclang
+local sclang = require'scnvim.sclang'
 
 local vimcall = utils.vimcall
 local uv = vim.loop
+local api = vim.api
+local win_id = 0
 local M = {}
 
 M.docmap = nil
@@ -36,14 +38,22 @@ end
 -- @param uri Help file URI
 -- @param (optional) move cursor to line matching regex pattern
 function M.open(uri, pattern)
-  vimcall('scnvim#help#open', {uri, pattern})
+  local is_open = vim.fn.win_gotoid(win_id) == 1
+  local expr = string.format('edit %s', uri)
+  if pattern then
+    expr = string.format('edit +/%s %s', pattern, uri)
+  end
+  if is_open then
+    vim.cmd(expr)
+  else
+    vim.cmd('topleft split | ' .. expr)
+    win_id = vim.fn.win_getid()
+  end
 end
 
 --- Find a method
 function M.handle_method(name, target_dir)
-  -- uncomment for nvim 0.5.x
-  -- local path = vim.fn.expand(target_dir)
-  local path = vimcall('expand', target_dir)
+  local path = vim.fn.expand(target_dir)
   local docmap = M.get_docmap(path .. utils.path_sep .. 'docmap.json')
   local results = {}
   for _, value in pairs(docmap) do
@@ -148,6 +158,60 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
       schedule(concurrent_jobs)
     end)
   end)
+end
+
+function M.prepare_help_for(subject)
+  if not sclang.is_running() then
+    print('[scnvim] sclang not running')
+    return
+  end
+  if not M.internal then
+    local cmd = string.format([[HelpBrowser.openHelpFor(\"%s\")]], subject)
+    sclang.send(cmd, true)
+    return
+  end
+  local cmd = string.format([[SCNvim.getHelpUri(\"%s\")]], subject)
+  sclang.eval(cmd, function(input_path)
+    if not input_path then
+      print('[scnvim] could not find help file for ' .. tostring(subject))
+    end
+    local basename = input_path:gsub('%.html%.scnvim', '')
+    local output_path = basename .. '.txt'
+    local subject = basename:gsub('.*/', '')
+    local args = vim.deepcopy(M.render_args)
+    for index, str in ipairs(args) do
+      if str == '$1' then
+        args[index] = str:gsub('$1', input_path)
+      end
+      if str == '$2' then
+        args[index] = str:gsub('$2', output_path)
+      end
+    end
+    local options = {
+      args = args,
+      hide = true,
+    }
+    uv.spawn(M.render_cmd, options, vim.schedule_wrap(function(code)
+      if code ~= 0 then
+        error(string.format('%s error: %d', M.render_cmd, code))
+      end
+      local ret = uv.fs_unlink(input_path)
+      if not ret then
+        print('[scnvim] Could not unlink ' .. input_path)
+      end
+      M.open(output_path)
+    end))
+  end)
+end
+
+function M.setup(config)
+  if config.documentation then
+    M.render_cmd = config.documentation.cmd
+    M.render_args = config.documentation.args
+    M.internal = true
+  else
+    M.internal = false
+  end
 end
 
 return M

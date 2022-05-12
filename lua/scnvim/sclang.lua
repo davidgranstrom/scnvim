@@ -70,8 +70,8 @@ local function start_process()
   M.stdout = uv.new_pipe(false)
   M.stderr = uv.new_pipe(false)
 
-  local settings = vimcall('scnvim#util#get_user_settings')
-  local sclang = settings.paths.sclang_executable
+  -- local settings = vimcall('scnvim#util#get_user_settings')
+  local sclang = M.sclang_exe
   local user_opts = utils.get_var('scnvim_sclang_options') or {}
   assert(type(user_opts) == 'table', '[scnvim] g:scnvim_sclang_options must be an array')
 
@@ -202,6 +202,7 @@ end
 
 function M.setup(config)
   M.server_status_interval = config.sclang.server_status_interval
+  M.sclang_exe = config.sclang.path
   --- TODO: move sclang from path module
 end
 
