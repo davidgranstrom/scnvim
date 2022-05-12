@@ -32,6 +32,18 @@
         ^result;
     }
 
+    *getHelpUri {arg subject;
+        var uri = SCNvim.prepareHelpFor(subject);
+        if (uri.notNil) {
+            ^uri.asLocalPath;
+        };
+        ^nil;
+    }
+
+    *getFileNameFromUri {arg uri;
+        ^PathName(uri).fileNameWithoutExtension;
+    }
+
     *openHelpFor {|text, pattern, renderPrg, renderArgs|
         var msg, uri, path;
         var outputPath;
