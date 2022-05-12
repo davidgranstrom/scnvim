@@ -47,19 +47,31 @@ function M.setup(config)
   local id = api.nvim_create_augroup('scnvim_editor', {clear = true})
   api.nvim_create_autocmd('ColorScheme', {
     group = id,
+    desc = 'Reapply custom highlight group',
     pattern = '*',
     command = hl_cmd,
   })
   api.nvim_create_autocmd('VimLeavePre', {
     group = id,
+    desc = 'Stop sclang on Nvim exit',
     pattern = '*',
     callback = sclang.stop,
   })
   api.nvim_create_autocmd({'BufEnter', 'BufNewFile', 'BufRead'}, {
     group = id,
+    desc = 'Set the document path in sclang',
     pattern = {'*.scd', '*.sc', '*.quark'},
     callback = sclang.set_current_path,
   })
+  if config.completion and config.completion.signature then
+    local signature = require'scnvim.completion.signature'
+    api.nvim_create_autocmd('InsertCharPre', {
+      group = id,
+      desc = 'Insert mode function signature',
+      pattern = {'*.scd', '*.sc', '*.quark'},
+      callback = signature.ins_show,
+    })
+  end
 end
 
 --- Flash a text region.
