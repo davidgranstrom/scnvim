@@ -1,7 +1,7 @@
 --- Spawn a sclang process.
--- @module scnvim/sclang
--- @author David Granström
--- @license GPLv3
+---@module scnvim/sclang
+---@author David Granström
+---@license GPLv3
 
 local postwin = require'scnvim.postwin'
 local udp = require'scnvim.udp'
@@ -88,23 +88,6 @@ local function start_process()
   return uv.spawn(sclang, options, vim.schedule_wrap(on_exit))
 end
 
---- Interface
-
---- Set the current document path
-function M.set_current_path()
-  if M.is_running() then
-    local curpath = vim.fn.expand('%:p')
-    curpath = path.escape(curpath)
-    curpath = string.format('SCNvim.currentPath = "%s"', curpath)
-    M.send(curpath, true)
-  end
-end
-
-function M.poll_server_status()
-  local cmd = string.format('SCNvim.updateStatusLine(%d)', M.server_status_interval)
-  M.send(cmd, true)
-end
-
 --- Function to run on sclang start
 M.on_start = function()
   postwin.create()
@@ -123,10 +106,31 @@ M.on_read = function(line)
   postwin.post(line)
 end
 
+--- Set the current document path
+function M.set_current_path()
+  if M.is_running() then
+    local curpath = vim.fn.expand('%:p')
+    curpath = path.escape(curpath)
+    curpath = string.format('SCNvim.currentPath = "%s"', curpath)
+    M.send(curpath, true)
+  end
+end
+
+--- Start polling the server status
+function M.poll_server_status()
+  local cmd = string.format('SCNvim.updateStatusLine(%d)', M.server_status_interval)
+  M.send(cmd, true)
+end
+
+--- Check if the process is running.
+---@return True if running otherwise false.
 function M.is_running()
   return M.proc and M.proc:is_active() or false
 end
 
+--- Send code to the interpreter.
+---@param data The code to send.
+---@param silent If true will not echo output to the post window.
 function M.send(data, silent)
   silent = silent or false
   if M.is_running() then
@@ -137,12 +141,16 @@ function M.send(data, silent)
   end
 end
 
+--- Evaluate a SuperCollider expression and return the result to lua.
+---@param expr The expression to evaluate.
+---@param cb The callback with a single argument that contains the result.
 function M.eval(expr, cb)
   local id = udp.push_eval_callback(cb)
   local cmd = string.format('SCNvim.eval("%s", "%s");', expr, id)
   M.send(cmd, true)
 end
 
+--- Start the sclang process.
 function M.start()
   if M.is_running() then
     utils.print('sclang is already running')
@@ -166,6 +174,7 @@ function M.start()
   M.stderr:read_start(vim.schedule_wrap(onread))
 end
 
+--- Stop the sclang process.
 function M.stop()
   if not M.is_running() then
     return
@@ -187,6 +196,7 @@ function M.stop()
   end)
 end
 
+--- Recompile the class library.
 function M.recompile()
   if not M.is_running() then
     utils.print('sclang is already running')
@@ -197,6 +207,8 @@ function M.recompile()
   M.set_current_path()
 end
 
+--- Private
+---@param config The user config.
 function M.setup(config)
   M.server_status_interval = config.sclang.server_status_interval
   M.sclang_exe = config.sclang.path
