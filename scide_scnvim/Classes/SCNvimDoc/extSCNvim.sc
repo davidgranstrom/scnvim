@@ -43,39 +43,4 @@
     *getFileNameFromUri {arg uri;
         ^PathName(uri).fileNameWithoutExtension;
     }
-
-    *openHelpFor {|text, pattern, renderPrg, renderArgs|
-        var msg, uri, path;
-        var outputPath;
-
-        uri = SCNvim.prepareHelpFor(text);
-        if (uri.isNil) {
-            ^nil;
-        };
-
-        path = uri.asLocalPath;
-        // optional regex for placing cursor on a method name
-        pattern ?? {
-            pattern = "";
-        };
-
-        if (path.notNil) {
-            // help file
-            // removes .html.scnvim
-            outputPath = path.drop(-12) ++ ".txt";
-            // convert to plain text
-            (renderPrg ++ " " ++ renderArgs).format(path.escapeChar($ ), outputPath.escapeChar($ )).unixCmdGetStdOut;
-            msg = (action: "help_open_file", args: (uri: outputPath, pattern: pattern));
-        } {
-            // search for method
-            msg = (action: "help_find_method", args: (method_name: uri.asString, helpTargetDir: SCDoc.helpTargetDir));
-        };
-
-        SCNvim.sendJSON(msg);
-    }
-
-    *renderMethod {|uri, pattern, renderPrg, renderArgs|
-        var name = PathName(uri).fileNameWithoutExtension;
-        SCNvim.openHelpFor(name, pattern, renderPrg, renderArgs);
-    }
 }
