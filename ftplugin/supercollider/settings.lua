@@ -1,7 +1,7 @@
-if vim.g.did_ft_scnvim_settings then
+if vim.b.did_ft_scnvim_settings then
   return
 end
-vim.g.did_ft_scnvim_settings = true
+vim.b.did_ft_scnvim_settings = true
 
 local path = require'scnvim.path'
 local api = vim.api
