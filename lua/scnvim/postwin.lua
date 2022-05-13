@@ -75,7 +75,8 @@ end
 --- Calling this function closes the post window and deletes the buffer.
 function M.destroy()
   if M.is_open() then
-    api.nvim_win_close(M.win, true)
+    -- This call can fail if its the last window
+    pcall(api.nvim_win_close, M.win, true)
     M.win = nil
     if buf_is_valid() then
       api.nvim_buf_delete(M.buf, true)
