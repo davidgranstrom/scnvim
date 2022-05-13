@@ -151,7 +151,7 @@ end
 ---@param cb An optional callback function.
 function M.send_selection(cb, flash)
   local ret = vim.fn['scnvim#editor#get_visual_selection']()
-  M.send_lines(ret.lines)
+  M.send_lines(ret.lines, cb)
   if flash then
     local start = {ret.line_start - 1, ret.col_start - 1}
     local finish = {ret.line_end - 1, ret.col_end - 1}
