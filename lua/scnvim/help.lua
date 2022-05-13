@@ -3,8 +3,8 @@
 -- @author David Granström
 -- @license GPLv3
 
-local utils = require'scnvim.utils'
-local sclang = require'scnvim.sclang'
+local utils = require 'scnvim.utils'
+local sclang = require 'scnvim.sclang'
 
 local uv = vim.loop
 local api = vim.api
@@ -58,16 +58,20 @@ local function render_help_file(subject, on_done)
       args = args,
       hide = true,
     }
-    uv.spawn(M.render_cmd, options, vim.schedule_wrap(function(code)
-      if code ~= 0 then
-        error(string.format('%s error: %d', M.render_cmd, code))
-      end
-      local ret = uv.fs_unlink(input_path)
-      if not ret then
-        print('[scnvim] Could not unlink ' .. input_path)
-      end
-      on_done(output_path)
-    end))
+    uv.spawn(
+      M.render_cmd,
+      options,
+      vim.schedule_wrap(function(code)
+        if code ~= 0 then
+          error(string.format('%s error: %d', M.render_cmd, code))
+        end
+        local ret = uv.fs_unlink(input_path)
+        if not ret then
+          print('[scnvim] Could not unlink ' .. input_path)
+        end
+        on_done(output_path)
+      end)
+    )
   end)
 end
 
@@ -125,10 +129,10 @@ function M.find_methods(name, target_dir)
       if match then
         local destpath = path .. utils.path_sep .. value.path .. '.txt'
         table.insert(results, {
-            filename = destpath,
-            text = string.format('.%s', name),
-            pattern = string.format('^\\.%s', name),
-          })
+          filename = destpath,
+          text = string.format('.%s', name),
+          pattern = string.format('^\\.%s', name),
+        })
       end
     end
   end
@@ -140,7 +144,7 @@ end
 ---@note sclang must be running.
 function M.prepare_help_for(subject)
   if not sclang.is_running() then
-    print('[scnvim] sclang not running')
+    print '[scnvim] sclang not running'
     return
   end
 
@@ -150,7 +154,7 @@ function M.prepare_help_for(subject)
     return
   end
 
-  local is_class = subject:sub(1, 1):match('%u')
+  local is_class = subject:sub(1, 1):match '%u'
   if is_class then
     render_help_file(subject, function(result)
       open_help_file(result)
@@ -171,7 +175,7 @@ function M.prepare_help_for(subject)
         vim.keymap.set('n', '<Enter>', function()
           local linenr = api.nvim_win_get_cursor(0)[1]
           open_from_quickfix(linenr)
-        end, {buffer = true})
+        end, { buffer = true })
       end
     end)
   end
@@ -195,13 +199,17 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
       local is_done = false
 
       local function schedule(n)
-        if is_done then return end
+        if is_done then
+          return
+        end
         active_threads = n
         for i = 1, n do
           local thread = threads[i]
           if not thread then
-            print('[scnvim] Help file conversion finished.')
-            if callback then callback() end
+            print '[scnvim] Help file conversion finished.'
+            if callback then
+              callback()
+            end
             break
           end
           coroutine.resume(thread)
@@ -250,7 +258,7 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
         end
       until not filename
 
-      print('[scnvim] Converting help files (this might take a while..)')
+      print '[scnvim] Converting help files (this might take a while..)'
       schedule(concurrent_jobs)
     end)
   end)
@@ -263,7 +271,7 @@ function M.setup(config)
     M.selector = config.documentation.selector
     M.internal = true
     if not M.selector then
-      local id = api.nvim_create_augroup('scnvim_qf_conceal', {clear = true})
+      local id = api.nvim_create_augroup('scnvim_qf_conceal', { clear = true })
       api.nvim_create_autocmd('BufWinEnter', {
         group = id,
         desc = 'Apply quickfix conceal',

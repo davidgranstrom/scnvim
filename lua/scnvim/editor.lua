@@ -1,17 +1,17 @@
-local sclang = require'scnvim.sclang'
-local path = require'scnvim.path'
+local sclang = require 'scnvim.sclang'
+local path = require 'scnvim.path'
 local api = vim.api
 local uv = vim.loop
 local M = {}
 
-local flash_ns = api.nvim_create_namespace('scnvim_flash')
+local flash_ns = api.nvim_create_namespace 'scnvim_flash'
 
 local function get_range(lstart, lend)
   return api.nvim_buf_get_lines(0, lstart - 1, lend, false)
 end
 
 local function flash_once(start, finish, delay, options)
-  options = vim.tbl_extend('keep', {inclusive = true}, options)
+  options = vim.tbl_extend('keep', { inclusive = true }, options)
   vim.highlight.range(0, flash_ns, 'SCNvimEval', start, finish, options)
   vim.defer_fn(function()
     api.nvim_buf_clear_namespace(0, flash_ns, 0, -1)
@@ -44,7 +44,7 @@ function M.setup(config)
   -- Create the highlight group
   vim.cmd(hl_cmd)
 
-  local id = api.nvim_create_augroup('scnvim_editor', {clear = true})
+  local id = api.nvim_create_augroup('scnvim_editor', { clear = true })
   api.nvim_create_autocmd('ColorScheme', {
     group = id,
     desc = 'Reapply custom highlight group',
@@ -57,18 +57,18 @@ function M.setup(config)
     pattern = '*',
     callback = sclang.stop,
   })
-  api.nvim_create_autocmd({'BufEnter', 'BufNewFile', 'BufRead'}, {
+  api.nvim_create_autocmd({ 'BufEnter', 'BufNewFile', 'BufRead' }, {
     group = id,
     desc = 'Set the document path in sclang',
-    pattern = {'*.scd', '*.sc', '*.quark'},
+    pattern = { '*.scd', '*.sc', '*.quark' },
     callback = sclang.set_current_path,
   })
   if config.completion and config.completion.signature then
-    local signature = require'scnvim.completion.signature'
+    local signature = require 'scnvim.completion.signature'
     api.nvim_create_autocmd('InsertCharPre', {
       group = id,
       desc = 'Insert mode function signature',
-      pattern = {'*.scd', '*.sc', '*.quark'},
+      pattern = { '*.scd', '*.sc', '*.quark' },
       callback = signature.ins_show,
     })
   end
@@ -92,13 +92,17 @@ function M.flash(start, finish, options)
   if repeats > 1 then
     local count = 0
     local timer = uv.new_timer()
-    timer:start(duration, duration, vim.schedule_wrap(function()
-      flash_once(start, finish, delta, options)
-      count = count + 1
-      if count == repeats - 1 then
-        timer:stop()
-      end
-    end))
+    timer:start(
+      duration,
+      duration,
+      vim.schedule_wrap(function()
+        flash_once(start, finish, delta, options)
+        count = count + 1
+        if count == repeats - 1 then
+          timer:stop()
+        end
+      end)
+    )
   end
 end
 
@@ -121,8 +125,8 @@ function M.send_line(cb, flash)
   local line = get_range(linenr, linenr)
   M.send_lines(line, cb)
   if flash then
-    local start = {linenr - 1, 0}
-    local finish = {linenr - 1, #line[1]}
+    local start = { linenr - 1, 0 }
+    local finish = { linenr - 1, #line[1] }
     M.flash(start, finish)
   end
 end
@@ -141,8 +145,8 @@ function M.send_block(cb, flash)
   lines[#lines] = last_line:sub(1, block_end)
   M.send_lines(lines, cb)
   if flash then
-    local start = {lstart - 1, 0}
-    local finish = {lend - 1, 0}
+    local start = { lstart - 1, 0 }
+    local finish = { lend - 1, 0 }
     M.flash(start, finish)
   end
 end
@@ -153,8 +157,8 @@ function M.send_selection(cb, flash)
   local ret = vim.fn['scnvim#editor#get_visual_selection']()
   M.send_lines(ret.lines, cb)
   if flash then
-    local start = {ret.line_start - 1, ret.col_start - 1}
-    local finish = {ret.line_end - 1, ret.col_end - 1}
+    local start = { ret.line_start - 1, ret.col_start - 1 }
+    local finish = { ret.line_end - 1, ret.col_end - 1 }
     M.flash(start, finish)
   end
 end
@@ -165,15 +169,15 @@ function M.hard_stop()
 end
 
 function M.postwin_toggle()
-  require'scnvim.postwin'.toggle()
+  require('scnvim.postwin').toggle()
 end
 
 function M.postwin_clear()
-  require'scnvim.postwin'.clear()
+  require('scnvim.postwin').clear()
 end
 
 function M.show_signature()
-  require'scnvim.completion.signature'.show()
+  require('scnvim.completion.signature').show()
 end
 
 --- Generate assets. tags syntax etc.

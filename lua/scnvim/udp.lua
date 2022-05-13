@@ -3,7 +3,7 @@
 -- @author David Granström
 -- @license GPLv3
 
-local statusline = require'scnvim.statusline'
+local statusline = require 'scnvim.statusline'
 
 local uv = vim.loop
 local M = {}
@@ -21,13 +21,17 @@ local Handlers = {}
 --- Update status line widgets
 --- TODO: can be set directly with luaeval
 function Handlers.status_line(args)
-  if not args then return end
+  if not args then
+    return
+  end
   statusline.set_server_status(args.server_status)
 end
 
 --- Evaluate a piece of lua code sent from sclang
 function Handlers.luaeval(codestring)
-  if not codestring then return end
+  if not codestring then
+    return
+  end
   local func = loadstring(codestring)
   local ok, result = pcall(func)
   if not ok then
@@ -61,9 +65,9 @@ end
 
 --- Start the UDP server.
 function M.start_server()
-  local handle = uv.new_udp('inet')
+  local handle = uv.new_udp 'inet'
   assert(handle, 'Could not create UDP handle')
-  handle:bind(HOST, PORT, {reuseaddr=true})
+  handle:bind(HOST, PORT, { reuseaddr = true })
   handle:recv_start(vim.schedule_wrap(on_receive))
   M.port = handle:getsockname().port
   M.udp = handle
@@ -84,8 +88,8 @@ end
 --- Push a callback to be evaluated later.
 -- utility function for the scnvim.eval API.
 function M.push_eval_callback(cb)
-  vim.validate{
-    cb = {cb, 'function'}
+  vim.validate {
+    cb = { cb, 'function' },
   }
   callback_id = tostring(tonumber(callback_id) + 1)
   eval_callbacks[callback_id] = cb

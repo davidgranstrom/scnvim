@@ -3,10 +3,10 @@
 ---@author David Granström
 ---@license GPLv3
 
-local postwin = require'scnvim.postwin'
-local udp = require'scnvim.udp'
-local path = require'scnvim.path'
-local utils = require'scnvim.utils'
+local postwin = require 'scnvim.postwin'
+local udp = require 'scnvim.udp'
+local path = require 'scnvim.path'
+local utils = require 'scnvim.utils'
 
 local uv = vim.loop
 local M = {}
@@ -20,7 +20,7 @@ local cmd_char = {
 --- Utilities
 
 local on_stdout = function()
-  local stack = {''}
+  local stack = { '' }
   return function(err, data)
     assert(not err, err)
     if data then
@@ -36,7 +36,7 @@ local on_stdout = function()
             end
           end
         end
-        stack = {''}
+        stack = { '' }
       end
     end
   end
@@ -69,7 +69,7 @@ local function start_process()
   M.stderr = uv.new_pipe(false)
 
   local sclang = M.sclang_exe
-  local user_opts = utils.get_var('scnvim_sclang_options') or {}
+  local user_opts = utils.get_var 'scnvim_sclang_options' or {}
   assert(type(user_opts) == 'table', '[scnvim] g:scnvim_sclang_options must be an array')
 
   local options = {}
@@ -78,8 +78,8 @@ local function start_process()
     M.stdout,
     M.stderr,
   }
-  options.cwd = vim.fn.expand('%:p:h')
-  options.args = {'-i', 'scnvim', '-d', options.cwd}
+  options.cwd = vim.fn.expand '%:p:h'
+  options.args = { '-i', 'scnvim', '-d', options.cwd }
   table.insert(options.args, user_opts)
   options.args = vim.tbl_flatten(options.args)
   -- windows specific settings
@@ -109,7 +109,7 @@ end
 --- Set the current document path
 function M.set_current_path()
   if M.is_running() then
-    local curpath = vim.fn.expand('%:p')
+    local curpath = vim.fn.expand '%:p'
     curpath = path.escape(curpath)
     curpath = string.format('SCNvim.currentPath = "%s"', curpath)
     M.send(curpath, true)
@@ -134,10 +134,10 @@ end
 function M.send(data, silent)
   silent = silent or false
   if M.is_running() then
-    M.stdin:write({
+    M.stdin:write {
       data,
-      not silent and cmd_char.interpret_print or cmd_char.interpret
-    })
+      not silent and cmd_char.interpret_print or cmd_char.interpret,
+    }
   end
 end
 
@@ -153,7 +153,7 @@ end
 --- Start the sclang process.
 function M.start()
   if M.is_running() then
-    utils.print('sclang is already running')
+    utils.print 'sclang is already running'
     return
   end
 
@@ -184,7 +184,7 @@ function M.stop()
   local timer = uv.new_timer()
   timer:start(1000, 0, function()
     if M.proc then
-      local ret = M.proc:kill("sigkill")
+      local ret = M.proc:kill 'sigkill'
       if ret == 0 then
         timer:close()
         M.proc = nil
@@ -199,7 +199,7 @@ end
 --- Recompile the class library.
 function M.recompile()
   if not M.is_running() then
-    utils.print('sclang is already running')
+    utils.print 'sclang is already running'
     return
   end
   M.send(cmd_char.recompile, true)
