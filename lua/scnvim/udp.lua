@@ -1,9 +1,7 @@
 --- Communication between nvim and sclang.
--- @module scnvim/udp
--- @author David Granström
--- @license GPLv3
-
-local statusline = require 'scnvim.statusline'
+---@module scnvim/udp
+---@author David Granström
+---@license GPLv3
 
 local uv = vim.loop
 local M = {}
@@ -17,15 +15,6 @@ local callback_id = '0'
 -- Run the matching function in this table for the incoming 'action' parameter.
 -- @see on_receive
 local Handlers = {}
-
---- Update status line widgets
---- TODO: can be set directly with luaeval
-function Handlers.status_line(args)
-  if not args then
-    return
-  end
-  statusline.set_server_status(args.server_status)
-end
 
 --- Evaluate a piece of lua code sent from sclang
 function Handlers.luaeval(codestring)

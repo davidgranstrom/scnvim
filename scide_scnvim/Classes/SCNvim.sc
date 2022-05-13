@@ -31,18 +31,17 @@ SCNvim {
             var serverStatus, data;
             var peakCPU, avgCPU, numUGens, numSynths;
             var server = Server.default;
+            var cmd;
             if (server.serverRunning) {
                 peakCPU = server.peakCPU.trunc(0.01);
                 avgCPU = server.avgCPU.trunc(0.01);
                 numUGens = "%u".format(server.numUGens);
                 numSynths = "%s".format(server.numSynths);
-
                 serverStatus = "%\\% %\\% % %".format(
                     peakCPU, avgCPU, numUGens, numSynths
                 );
-
-                data = (action: "status_line", args: (server_status: serverStatus));
-                SCNvim.sendJSON(data);
+                cmd = "require'scnvim.statusline'.set_server_status('%')".format(serverStatus);
+                SCNvim.luaeval(cmd);
             }
         };
         SkipJack(stlFunc, interval, name: "scnvim_statusline");
