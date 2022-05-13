@@ -32,7 +32,6 @@ end
 ---@return A window handle.
 function M.open()
   if M.is_open() then
-    P('win', M.win)
     return M.win
   end
   if not buf_is_valid() then
