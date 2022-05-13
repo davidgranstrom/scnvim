@@ -24,11 +24,18 @@ return function()
     },
     postwin = {
       syntax = true,       -- g:scnvim_postwin_syntax_hl
-      orientation = 'v',   -- g:scnvim_postwin_orientation
       direction = 'right', -- g:scnvim_postwin_direction
-      fixed_size = 25,     -- g:scnvim_postwin_size
-      auto_show_errors = true, -- g:scnvim_postwin_auto_toggle
+      auto_toggle_error = true, -- g:scnvim_postwin_auto_toggle
       scrollback = 5000, -- g:scnvim_postwin_scrollback
+      -- fixed_size = 25,     -- g:scnvim_postwin_size
+      -- horizontal = true, -- use a horizontal split instead of vertical
+      --- Use a floating window
+      -- float = {
+      --   width = 40,
+      --   height = 30,
+      --   x = '90%',
+      --   y = '10%'
+      -- },
     },
     editor = {
       flash = { -- set to false to disable flash
