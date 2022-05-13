@@ -1,16 +1,12 @@
 + SCNvim {
-    *methodArgs {|method|
-        try {
-            var args = Help.methodArgs(method);
-            // TODO
-            // this is just a quick fix.
-            // how should we handle polymorphic methods?
-            args = args.split(Char.nl);
-            if (args.size == 1) {
-                ^args[0]
-            }
-        }
-        ^"";
+	// This function will be replaced by LSP in the future
+	*methodArgs {|method|
+		var args = Help.methodArgs(method);
+		args = args.split(Char.nl);
+		if (args.size == 1) {
+			^args[0]
+		}
+		^"";
     }
 
     *prepareHelpFor {|text|
