@@ -1,14 +1,10 @@
 --- Post window.
--- @module scnvim/postwin
--- @author David Granström
--- @license GPLv3
+---@module scnvim/postwin
+---@author David Granström
+---@license GPLv3
 
 local utils = require'scnvim.utils'
-
 local api = vim.api
-local vimcall = utils.vimcall
-local toggle_on_err = true
-local max_lines = utils.get_var('scnvim_postwin_scrollback') or 5000
 local M = {}
 
 --- Test that the post window buffer is valid.
@@ -121,9 +117,10 @@ function M.post(line)
   vim.api.nvim_buf_set_lines(M.buf, -1, -1, true, {line})
 
   local num_lines = vim.api.nvim_buf_line_count(M.buf)
-  if max_lines > 0 then
-    if num_lines > max_lines then
-      vim.api.nvim_buf_set_lines(M.buf, 0, max_lines, true, {})
+  if M.config.scrollback > 0 then
+    if num_lines > M.config.scrollback then
+      local num = math.floor(M.config.scrollback - vim.o.lines)
+      vim.api.nvim_buf_set_lines(M.buf, 0, num, true, {})
       num_lines = vim.api.nvim_buf_line_count(M.buf)
     end
   end

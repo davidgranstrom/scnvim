@@ -9,15 +9,6 @@ local M = {}
 --- Compat
 ------------------
 
----- vim.call is not present in nvim 0.4.4 or earlier
-function M.vimcall(fn, args)
-  if args and type(args) ~= 'table' then
-    args = {args}
-  end
-  args = args or {}
-  return vim.api.nvim_call_function(fn, args)
-end
-
 function M.get_var(name)
   local result, value = pcall(vim.api.nvim_get_var, name)
   if result then
