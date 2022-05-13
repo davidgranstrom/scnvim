@@ -9,6 +9,7 @@ local path = require'scnvim.path'
 local map = require'scnvim.map'
 local editor = require'scnvim.editor'
 local help = require'scnvim.help'
+local postwin = require'scnvim.postwin'
 local default_config = require'scnvim.config'()
 local scnvim = {}
 
@@ -24,11 +25,12 @@ function scnvim.setup(config)
   config = config or {}
   scnvim.config = vim.tbl_deep_extend('keep', config, default_config)
   local modules = {
-    path,
-    map,
     editor,
-    sclang,
     help,
+    map,
+    path,
+    postwin,
+    sclang,
   }
   for _, module in ipairs(modules) do
     local ok, err = pcall(module.setup, scnvim.config)

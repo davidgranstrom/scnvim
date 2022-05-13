@@ -90,7 +90,7 @@ end
 
 --- Function to run on sclang start
 M.on_start = function()
-  postwin.create()
+  postwin.open()
 end
 
 --- Function to run on sclang exit
