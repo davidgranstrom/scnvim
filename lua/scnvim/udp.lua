@@ -19,15 +19,10 @@ local callback_id = '0'
 local Handlers = {}
 
 --- Update status line widgets
+--- TODO: can be set directly with luaeval
 function Handlers.status_line(args)
   if not args then return end
   statusline.set_server_status(args.server_status)
-end
-
---- Print function signature
-function Handlers.method_args(args)
-  if not args then return end
-  print(args)
 end
 
 --- Evaluate a piece of lua code sent from sclang
