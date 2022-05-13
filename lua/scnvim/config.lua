@@ -1,51 +1,76 @@
 --- scnvim default configuration.
--- @module scnvim.config
--- @author David Granström
--- @license GPLv3
+---@module scnvim.config
 
 return function()
   return {
-    ensure_installed = true, -- if installed this can be set to false to improve startup time.
+    --- If installed once, this can be set to false to improve startup time.
+    ensure_installed = true,
     sclang = {
-      path = nil, -- g:scnvim_sclang_executable
-      options = {}, -- g:scnvim_sclang_options
-      server_status_interval = 1, -- g:scnvim_statusline_interval
+      --- Path to the sclang executable. Not needed if `sclang` is already in your $PATH.
+      path = nil,
+      --- Command line options passed to the `sclang` executable.
+      options = {},
+      --- The interval of updating the server status line
+      server_status_interval = 1,
     },
-    mapping = {}, -- Empty by default
-    documentation = { -- set to 'false' to use HelpBrowser
-      --- absolute path to the render program
-      cmd = '/opt/homebrew/bin/pandoc',
-      --- options given to the render program
+    --- Mappings, empty by default.
+    mapping = {},
+    --- Set to `false` in order to use the HelpBrowser
+    documentation = {
+      --- Absolute path to the render program (e.g. /opt/homebrew/bin/pandoc)
+      cmd = nil,
+      --- Options given to the render program. The default options are for
+      --- `pandoc`. Any program that can convert html into plain text should work.
+      ---
+      --- The string $1 will be replaced with the input file path and $2 will be
+      --- replaced with the output file path.
       args = { '$1', '--from', 'html', '--to', 'plain', '-o', '$2' },
       --- Custom selector function used for browsing methods.
-      --- The function will receive two arguments: err, results.
+      --- The function will receive two arguments: err (nil or message), results (table).
       --- Use nil for the default implementation (quickfix window)
       selector = nil,
     },
     postwin = {
-      syntax = true, -- g:scnvim_postwin_syntax_hl
-      direction = 'right', -- g:scnvim_postwin_direction
-      auto_toggle_error = true, -- g:scnvim_postwin_auto_toggle
-      scrollback = 5000, -- g:scnvim_postwin_scrollback
-      -- fixed_size = 25,     -- g:scnvim_postwin_size
-      -- horizontal = true, -- use a horizontal split instead of vertical
-      --- Use a floating window
+      --- Use syntax colored post window output.
+      syntax = true,
+      --- Auto-toggle post window on errors.
+      auto_toggle_error = true,
+      --- The number of lines to save in the post window history.
+      scrollback = 5000,
+      --- The direction of the post window, 'left' or 'right'.
+      --- If 'horizontal' is true, then use 'top' or 'bottom'.
+      direction = 'right',
+      --- Use a fixed size for the post window.
+      -- fixed_size = 25,
+      --- Use a horizontal split instead of vertical
+      -- horizontal = true,
+      --- Use a floating post window.
       -- float = {
+      --   --- Where to position the float. Possible values: 'top', 'mid', 'bot'
+      --   position = 'top',
+      --   --- The width of the window
       --   width = 40,
+      --   --- The height of the window
       --   height = 30,
-      --   x = '90%',
-      --   y = '10%'
+      --   --- Horizontal offset. Increasing this value will "push" the window to the left of the editor.
+      --   offset_x = 2,
+      --   --- Vertical offset. Increasing this value will "push" the window to the bottom of the editor.
+      --   offset_y = 2,
+      --   --- See :h nvim_open_win for possible values
+      --   border = 'single',
       -- },
     },
     editor = {
-      flash = { -- set to false to disable flash
-        duration = 100, -- g:scnvim_eval_flash_duration
-        repeats = 2, -- g:scnvim_eval_flash_repeats
-        --- Flash colors
-        --- Use an existing highlight group
+      --- Set to `false` to disable flash
+      flash = {
+        --- The duration of the flash in ms.
+        duration = 100,
+        --- The number of repeats.
+        repeats = 2,
+        --- Use an existing highlight group for the flash color.
         hl_group = 'TermCursor',
-        --- Or use user specified colors directly
-        --- Setting any of these will override the `hl_group` entry.
+        --- Or use specified colors directly
+        --- Setting any of these will override the `hl_group` entry above.
         -- guifg = 'black',
         -- guifg = 'white'
         -- ctermfg = 'black',
@@ -53,7 +78,12 @@ return function()
       },
     },
     completion = {
-      signature = true, -- show method signatures in a floating window
+      signature = {
+        --- Show function signatures in a floating window
+        float = true,
+        --- Show function signatures while typing in insert mode
+        auto = true,
+      },
     },
     snippet = {
       engine = {
@@ -64,7 +94,9 @@ return function()
           descriptions = true, -- luasnip descriptions
         },
       },
-      mul_add = false, -- includes mul/add arguments for UGens
+      --- Include mul/add arguments for UGens
+      mul_add = false,
+      --- Snippet style
       style = 'default', -- 'compact' = do not put spaces between args, etc.
     },
   }
