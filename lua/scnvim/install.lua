@@ -4,7 +4,7 @@
 -- @author David Granström
 -- @license GPLv3
 
-local utils = require'scnvim.utils'
+local utils = require 'scnvim.utils'
 
 local uv = vim.loop
 local M = {}
@@ -13,7 +13,7 @@ local scnvim_root_dir = utils.get_scnvim_root_dir()
 local home_dir = uv.os_homedir()
 local extension_dirs
 
-local xdg_data_home = uv.os_getenv('XDG_DATA_HOME')
+local xdg_data_home = uv.os_getenv 'XDG_DATA_HOME'
 if xdg_data_home then
   local extensions = xdg_data_home .. '/SuperCollider/Extensions'
   -- indexed with keys returned by uname
@@ -43,7 +43,7 @@ end
 local function get_ext_dir()
   local sysname = uv.os_uname().sysname
   -- Windows is Windows_NT or WindowsNT
-  sysname = sysname:gsub('_NT',''):gsub('NT','')
+  sysname = sysname:gsub('_NT', ''):gsub('NT', '')
   local dir = extension_dirs[sysname]
   if not dir then
     return nil, 'Could not get SuperCollider Extensions dir'
@@ -64,7 +64,7 @@ function M.link()
   local target_exists = uv.fs_stat(link_target)
   if not target_exists then
     local source = scnvim_root_dir .. utils.path_sep .. 'scide_scnvim'
-    assert(uv.fs_symlink(source, link_target, {dir = true, junction = true}))
+    assert(uv.fs_symlink(source, link_target, { dir = true, junction = true }))
   end
 end
 

@@ -4,14 +4,14 @@
 -- @license GPLv3
 
 local M = {}
-local utils = require'scnvim.utils'
+local utils = require 'scnvim.utils'
 local is_win = utils.is_windows
 local uv = vim.loop
 
 --- Get the scnvim cache directory.
 ---@return An absolute path to the cache directory
 function M.get_cache_dir()
-  local cache_path = vim.fn.stdpath('cache')
+  local cache_path = vim.fn.stdpath 'cache'
   cache_path = cache_path .. utils.path_sep .. 'scnvim'
   if not uv.fs_stat(cache_path) then
     uv.fs_mkdir(cache_path, tonumber('777', 8))
@@ -32,14 +32,14 @@ local function normalize(path)
 end
 
 local function find_sclang_executable()
-  local path = vim.fn.exepath('sclang')
+  local path = vim.fn.exepath 'sclang'
   if path ~= '' then
     return path
   end
   local system = utils.get_system()
   if system == 'macos' then
     local app = 'SuperCollider.app/Contents/MacOS/sclang'
-    local locations = {'/Applications', '/Applications/SuperCollider'}
+    local locations = { '/Applications', '/Applications/SuperCollider' }
     for _, loc in ipairs(locations) do
       path = string.format('%s/%s', loc, app)
       if vim.fn.executable(path) then
@@ -51,7 +51,7 @@ local function find_sclang_executable()
   elseif system == 'linux' then -- luacheck: ignore
     -- TODO: a default path for Windows
   end
-  error('Could not find `sclang`. Please specify sclang.path in the setup function')
+  error 'Could not find `sclang`. Please specify sclang.path in the setup function'
 end
 
 local function resolve(func, args)

@@ -3,7 +3,7 @@
 ---@author David Granström
 ---@license GPLv3
 
-local utils = require'scnvim.utils'
+local utils = require 'scnvim.utils'
 local api = vim.api
 local M = {}
 
@@ -103,7 +103,7 @@ function M.post(line)
     return
   end
 
-  local found_error = line:match('^ERROR')
+  local found_error = line:match '^ERROR'
   if found_error and M.config.auto_toggle_error then
     if not M.is_open() then
       M.open()
@@ -113,7 +113,7 @@ function M.post(line)
   if utils.is_windows then
     line = line:gsub('\r', '')
   end
-  vim.api.nvim_buf_set_lines(M.buf, -1, -1, true, {line})
+  vim.api.nvim_buf_set_lines(M.buf, -1, -1, true, { line })
 
   local num_lines = vim.api.nvim_buf_line_count(M.buf)
   if M.config.scrollback > 0 then
@@ -125,7 +125,7 @@ function M.post(line)
   end
 
   if M.is_open() then
-    vim.api.nvim_win_set_cursor(M.win, {num_lines, 0})
+    vim.api.nvim_win_set_cursor(M.win, { num_lines, 0 })
   end
 end
 

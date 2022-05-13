@@ -3,14 +3,14 @@
 -- @author David Granström
 -- @license GPLv3
 
-local sclang = require'scnvim.sclang'
-local installer = require'scnvim.install'
-local path = require'scnvim.path'
-local map = require'scnvim.map'
-local editor = require'scnvim.editor'
-local help = require'scnvim.help'
-local postwin = require'scnvim.postwin'
-local default_config = require'scnvim.config'()
+local sclang = require 'scnvim.sclang'
+local installer = require 'scnvim.install'
+local path = require 'scnvim.path'
+local map = require 'scnvim.map'
+local editor = require 'scnvim.editor'
+local help = require 'scnvim.help'
+local postwin = require 'scnvim.postwin'
+local default_config = require 'scnvim.config'()
 local scnvim = {}
 
 scnvim.map = map

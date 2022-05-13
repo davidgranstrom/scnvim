@@ -1,7 +1,7 @@
 local M = {}
 
 local widgets = {
-  statusline = ''
+  statusline = '',
 }
 
 --- Set the server status

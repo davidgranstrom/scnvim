@@ -21,7 +21,7 @@ end
 -- @returns The file contents. A lua table or a string depending on `scnvim_snippet_format`.
 function M.get_snippets()
   local root_dir = M.get_scnvim_root_dir()
-  local format = M.get_var('scnvim_snippet_format') or 'snippets.nvim'
+  local format = M.get_var 'scnvim_snippet_format' or 'snippets.nvim'
   local snippet_dir = root_dir .. M.path_sep .. 'scnvim-data'
   if format == 'snippets.nvim' or format == 'luasnip' then
     local filename = snippet_dir .. M.path_sep .. 'scnvim_snippets.lua'
@@ -30,12 +30,12 @@ function M.get_snippets()
       return file
     else
       print('File does not exist:' .. filename)
-      print('Call :SCNvimTags to generate snippets.')
+      print 'Call :SCNvimTags to generate snippets.'
     end
   elseif format == 'ultisnips' then
     local filename = snippet_dir .. M.path_sep .. 'supercollider.snippets'
     local file = assert(io.open(filename, 'rb'), 'File does not exists: ' .. filename)
-    local content = file:read('*all')
+    local content = file:read '*all'
     file:close()
     return content
   end
@@ -48,14 +48,14 @@ end
 --- Match an exact occurence of word
 -- (replacement for \b word boundary)
 function M.str_match_exact(input, word)
-  return string.find(input, "%f[%a]" .. word .. "%f[%A]") ~= nil
+  return string.find(input, '%f[%a]' .. word .. '%f[%A]') ~= nil
 end
 
 --- Print a highlighted message to the command line.
 ---@param message The message to print.
 ---@param hlgroup The highlight group to use. Default = ErrorMsg
 function M.print(message, hlgroup)
-  local expr = string.format([[echohl %s | echom '[scnvim] ' . %s | echohl None]], hlgroup or "ErrorMsg", message)
+  local expr = string.format([[echohl %s | echom '[scnvim] ' . %s | echohl None]], hlgroup or 'ErrorMsg', message)
   vim.cmd(expr)
 end
 
@@ -66,9 +66,9 @@ end
 --- TODO: Move to path module
 function M.get_system()
   local sysname = vim.loop.os_uname().sysname
-  if sysname:match('Windows') then
+  if sysname:match 'Windows' then
     return 'windows'
-  elseif sysname:match('Darwin') then
+  elseif sysname:match 'Darwin' then
     return 'macos'
   else
     return 'linux'
@@ -89,9 +89,9 @@ function M.get_scnvim_root_dir()
   --vim uses inconsistent path separators on Windows
   --safer to change all to Unix style first
   if M.is_windows then
-    package_path = package_path:gsub('@', ''):gsub("\\", "/")
+    package_path = package_path:gsub('@', ''):gsub('\\', '/')
   end
-  package_path = vim.split(package_path, '/', {plain=false, trimempty=true})
+  package_path = vim.split(package_path, '/', { plain = false, trimempty = true })
   -- find index of plugin root dir
   local index = 1
   local found = false
@@ -103,7 +103,7 @@ function M.get_scnvim_root_dir()
     end
   end
   if not found then
-    error('[scnvim] could not find plugin root dir')
+    error '[scnvim] could not find plugin root dir'
   end
   local path = {}
   for i, v in ipairs(package_path) do
