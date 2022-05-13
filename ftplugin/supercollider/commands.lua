@@ -1,7 +1,7 @@
-if vim.g.did_ft_scnvim_commands then
+if vim.b.did_ft_scnvim_commands then
   return
 end
-vim.g.did_ft_scnvim_commands = true
+vim.b.did_ft_scnvim_commands = true
 
 local sclang = require'scnvim.sclang'
 local editor = require'scnvim.editor'
