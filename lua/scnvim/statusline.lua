@@ -1,3 +1,5 @@
+--- Status line
+---@module scnvim.statusline
 local M = {}
 
 local widgets = {

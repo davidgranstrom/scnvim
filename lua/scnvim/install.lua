@@ -1,8 +1,6 @@
---- scnvim installation module.
--- Cross platform installation of SCNvim SuperCollider classes.
--- @module scnvim/install
--- @author David Granström
--- @license GPLv3
+--- Installation
+--- Cross platform installation of SCNvim SuperCollider classes.
+---@module scnvim.install
 
 local utils = require 'scnvim.utils'
 

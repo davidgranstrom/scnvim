@@ -1,7 +1,6 @@
+--- UDP
 --- Communication between nvim and sclang.
----@module scnvim/udp
----@author David Granström
----@license GPLv3
+---@module scnvim.udp
 
 local uv = vim.loop
 local M = {}

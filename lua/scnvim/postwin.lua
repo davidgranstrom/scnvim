@@ -1,14 +1,13 @@
---- Post window.
----@module scnvim/postwin
----@author David Granström
----@license GPLv3
+--- Post window
+--- The interpreter's post window.
+---@module scnvim.postwin
 
 local utils = require 'scnvim.utils'
 local config = require 'scnvim.config'
 local api = vim.api
 local M = {}
 
---- Values to be cached
+-- Values to be cached
 local scrollback
 local auto_toggle_error
 local direction

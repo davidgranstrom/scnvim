@@ -1,7 +1,7 @@
 --- scnvim public interface.
--- @module scnvim
--- @author David Granström
--- @license GPLv3
+---@module scnvim
+---@author David Granström
+---@license GPLv3
 
 local sclang = require 'scnvim.sclang'
 local installer = require 'scnvim.install'
@@ -72,15 +72,9 @@ function scnvim.recompile()
 end
 
 --- Determine if a sclang process is active.
---- @returns True if sclang is running otherwise false.
+---@return True if sclang is running otherwise false.
 function scnvim.is_running()
   return sclang.is_running()
 end
-
---- Get the user config.
----@return The user configuration table.
--- function scnvim.get_config()
---   return scnvim.config or {}
--- end
 
 return scnvim

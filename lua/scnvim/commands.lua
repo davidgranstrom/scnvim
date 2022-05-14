@@ -1,3 +1,8 @@
+--- Commands
+---
+--- Returns a single function that creates user commands.
+---@module scnvim.commands
+
 local sclang = require 'scnvim.sclang'
 local help = require 'scnvim.help'
 local get_cache_dir = require('scnvim.path').get_cache_dir
@@ -24,7 +29,7 @@ return function()
   end
   vim.api.nvim_buf_create_user_command(0, 'SCNvimHelp', open_help, options)
 
-  --- Deprecated
+  -- deprecated
   add_command('SCNvimTags', function()
     print '[scnvim] SCNvimTags is deprecated. Please use SCNvimGenerateAssets.'
   end)

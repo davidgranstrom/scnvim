@@ -1,0 +1,5 @@
+project = 'scnvim'
+title = 'scnvim reference'
+file = 'lua'
+dir = 'docs'
+format = 'markdown'

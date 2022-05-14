@@ -1,5 +1,6 @@
 --- Signature help.
---- @module scnvim.completion.signature
+---@module scnvim.completion.signature
+
 --- TODO: refactor to use vim.diagnostic?
 
 local sclang = require 'scnvim.sclang'

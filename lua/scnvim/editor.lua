@@ -1,3 +1,7 @@
+--- Editor
+--- Defines functions available for key mappings (scnvim.map.<func_name>).
+--- It is also responsible for extracting the text from the buffer that is sent to sclang.
+---@module scnvim.editor
 local sclang = require 'scnvim.sclang'
 local config = require 'scnvim.config'
 local postwin = require 'scnvim.postwin'
