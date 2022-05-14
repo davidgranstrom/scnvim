@@ -5,35 +5,32 @@
 
 local sclang = require 'scnvim.sclang'
 local installer = require 'scnvim.install'
-local path = require 'scnvim.path'
 local map = require 'scnvim.map'
 local editor = require 'scnvim.editor'
 local help = require 'scnvim.help'
 local postwin = require 'scnvim.postwin'
-local default_config = require 'scnvim.config'()
+local config = require 'scnvim.config'
 local scnvim = {}
 
 scnvim.map = map
 
-function scnvim.setup(config)
+function scnvim.setup(user_config)
   if config.ensure_installed then
     local ok, msg = pcall(installer.link)
     if not ok then
       error(msg)
     end
   end
-  config = config or {}
-  scnvim.config = vim.tbl_deep_extend('keep', config, default_config)
+  user_config = user_config or {}
+  config.resolve(user_config)
   local modules = {
     editor,
     help,
     map,
-    path,
     postwin,
-    sclang,
   }
   for _, module in ipairs(modules) do
-    local ok, err = pcall(module.setup, scnvim.config)
+    local ok, err = pcall(module.setup, config)
     if not ok then
       print(string.format('[scnvim] %s error: %s', module.name, err))
     end
@@ -82,8 +79,8 @@ end
 
 --- Get the user config.
 ---@return The user configuration table.
-function scnvim.get_config()
-  return scnvim.config or {}
-end
+-- function scnvim.get_config()
+--   return scnvim.config or {}
+-- end
 
 return scnvim

@@ -7,6 +7,7 @@ local postwin = require 'scnvim.postwin'
 local udp = require 'scnvim.udp'
 local path = require 'scnvim.path'
 local utils = require 'scnvim.utils'
+local config = require 'scnvim.config'
 
 local uv = vim.loop
 local M = {}
@@ -48,6 +49,32 @@ local function safe_close(handle)
   end
 end
 
+local function find_sclang_executable()
+  if config.sclang.path then
+    return config.sclang.path
+  end
+  local path = vim.fn.exepath 'sclang'
+  if path ~= '' then
+    return path
+  end
+  local system = utils.get_system()
+  if system == 'macos' then
+    local app = 'SuperCollider.app/Contents/MacOS/sclang'
+    local locations = { '/Applications', '/Applications/SuperCollider' }
+    for _, loc in ipairs(locations) do
+      path = string.format('%s/%s', loc, app)
+      if vim.fn.executable(path) then
+        return path
+      end
+    end
+  elseif system == 'windows' then -- luacheck: ignore
+    -- TODO: a default path for Windows
+  elseif system == 'linux' then -- luacheck: ignore
+    -- TODO: a default path for Windows
+  end
+  error 'Could not find `sclang`. Add `sclang.path` to your configuration.'
+end
+
 local function on_exit(code, signal)
   M.stdout:read_stop()
   M.stderr:read_stop()
@@ -68,7 +95,7 @@ local function start_process()
   M.stdout = uv.new_pipe(false)
   M.stderr = uv.new_pipe(false)
 
-  local sclang = M.sclang_exe
+  local sclang = find_sclang_executable()
   local user_opts = utils.get_var 'scnvim_sclang_options' or {}
   assert(type(user_opts) == 'table', '[scnvim] g:scnvim_sclang_options must be an array')
 
@@ -110,7 +137,7 @@ end
 function M.set_current_path()
   if M.is_running() then
     local curpath = vim.fn.expand '%:p'
-    curpath = path.escape(curpath)
+    curpath = path.normalize(curpath)
     curpath = string.format('SCNvim.currentPath = "%s"', curpath)
     M.send(curpath, true)
   end
@@ -118,7 +145,7 @@ end
 
 --- Start polling the server status
 function M.poll_server_status()
-  local cmd = string.format('SCNvim.updateStatusLine(%d)', M.server_status_interval)
+  local cmd = string.format('SCNvim.updateStatusLine(%d)', config.sclang.server_status_interval)
   M.send(cmd, true)
 end
 
@@ -205,14 +232,6 @@ function M.recompile()
   M.send(cmd_char.recompile, true)
   M.send(string.format('SCNvim.port = %d', udp.port), true)
   M.set_current_path()
-end
-
---- Private
----@param config The user config.
-function M.setup(config)
-  M.server_status_interval = config.sclang.server_status_interval
-  M.sclang_exe = config.sclang.path
-  --- TODO: move sclang from path module
 end
 
 return M

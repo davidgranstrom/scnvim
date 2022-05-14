@@ -4,8 +4,16 @@
 ---@license GPLv3
 
 local utils = require 'scnvim.utils'
+local config = require 'scnvim.config'
 local api = vim.api
 local M = {}
+
+--- Values to be cached
+local scrollback
+local auto_toggle_error
+local direction
+local orientation
+local fixed_size
 
 --- Test that the post window buffer is valid.
 ---@return True if the buffer is valid otherwise false.
@@ -37,13 +45,13 @@ function M.open()
   if not buf_is_valid() then
     create()
   end
-  vim.cmd(string.format('%s %s new', M.orientation, M.direction))
+  vim.cmd(string.format('%s %s new', orientation, direction))
   local id = api.nvim_get_current_win()
-  if M.orientation == 'vertical' then
-    local width = M.config.fixed_size or math.floor(vim.o.columns / 2)
+  if orientation == 'vertical' then
+    local width = fixed_size or math.floor(vim.o.columns / 2)
     api.nvim_win_set_width(id, width)
   else
-    local height = M.config.fixed_size or math.floor(vim.o.lines / 3)
+    local height = fixed_size or math.floor(vim.o.lines / 3)
     api.nvim_win_set_height(id, height)
   end
   api.nvim_win_set_buf(id, M.buf)
@@ -104,7 +112,7 @@ function M.post(line)
   end
 
   local found_error = line:match '^ERROR'
-  if found_error and M.config.auto_toggle_error then
+  if found_error and auto_toggle_error then
     if not M.is_open() then
       M.open()
     end
@@ -116,9 +124,9 @@ function M.post(line)
   vim.api.nvim_buf_set_lines(M.buf, -1, -1, true, { line })
 
   local num_lines = vim.api.nvim_buf_line_count(M.buf)
-  if M.config.scrollback > 0 then
-    if num_lines > M.config.scrollback then
-      local num = math.floor(M.config.scrollback - vim.o.lines)
+  if scrollback > 0 then
+    if num_lines > scrollback then
+      local num = math.floor(scrollback - vim.o.lines)
       vim.api.nvim_buf_set_lines(M.buf, 0, num, true, {})
       num_lines = vim.api.nvim_buf_line_count(M.buf)
     end
@@ -129,17 +137,22 @@ function M.post(line)
   end
 end
 
-function M.setup(config)
-  M.config = config.postwin
-  if M.config.direction == 'right' then
-    M.direction = 'botright'
-  elseif M.config.direction == 'left' then
-    M.direction = 'topleft'
+--- Setup function.
+--- Cache some values.
+---@private
+function M.setup()
+  if config.postwin.direction == 'right' then
+    direction = 'botright'
+  elseif config.direction == 'left' then
+    direction = 'topleft'
   end
-  M.orientation = 'vertical'
-  if M.config.horizontal then
-    M.orientation = ''
+  orientation = 'vertical'
+  if config.postwin.horizontal then
+    orientation = ''
   end
+  auto_toggle_error = config.postwin.auto_toggle_error
+  scrollback = config.postwin.scrollback
+  fixed_size = config.postwin.fixed_size
 end
 
 return M
