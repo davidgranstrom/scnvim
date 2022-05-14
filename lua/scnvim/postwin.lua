@@ -14,6 +14,7 @@ local auto_toggle_error
 local direction
 local orientation
 local fixed_size
+local float_options
 
 --- Test that the post window buffer is valid.
 ---@return True if the buffer is valid otherwise false.
@@ -36,6 +37,37 @@ local function create()
   return buf
 end
 
+--- Open a floating post window
+---@private
+local function open_float()
+  local height = vim.o.lines
+  local width = vim.o.columns
+  local options = {
+    relative = 'editor',
+    anchor = 'NE',
+    width = 52,
+    height = 12,
+    border = 'single',
+    style = 'minimal',
+  }
+  local offset_x = 0
+  local offset_y = 0
+  local win_options = function(id)
+    api.nvim_win_set_option(id, 'winblend', 10)
+  end
+  if type(float_options) == 'table' then
+    options = vim.tbl_deep_extend('keep', float_options.config, options)
+    offset_x = float_options.offset_x or 0
+    offset_y = float_options.offset_y or 0
+    win_options = float_options.win_options or win_options
+  end
+  options.col = vim.o.columns - offset_x
+  options.row = offset_y
+  local id = api.nvim_open_win(M.buf, false, options)
+  win_options(id)
+  return id
+end
+
 --- Open the post window.
 ---@return A window handle.
 function M.open()
@@ -44,6 +76,10 @@ function M.open()
   end
   if not buf_is_valid() then
     create()
+  end
+  if float_options then
+    M.win = open_float()
+    return M.win
   end
   vim.cmd(string.format('%s %s new', orientation, direction))
   local id = api.nvim_get_current_win()
@@ -181,6 +217,7 @@ function M.setup()
   auto_toggle_error = config.postwin.auto_toggle_error
   scrollback = config.postwin.scrollback
   fixed_size = config.postwin.fixed_size
+  float_options = config.postwin.float
 end
 
 return M
