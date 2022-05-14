@@ -66,7 +66,7 @@ function M.setup()
     pattern = { '*.scd', '*.sc', '*.quark' },
     callback = sclang.set_current_path,
   })
-  if config.completion.signature then
+  if config.completion.signature.auto then
     api.nvim_create_autocmd('InsertCharPre', {
       group = id,
       desc = 'Insert mode function signature',

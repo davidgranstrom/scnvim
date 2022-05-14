@@ -80,6 +80,8 @@ local default = {
     signature = {
       --- Show function signatures in a floating window
       float = true,
+      --- Float configuration (see if we can use vim.diagnostic instead..)
+      config = {},
       --- Show function signatures while typing in insert mode
       auto = true,
     },
