@@ -57,13 +57,13 @@ local function render_help_file(subject, on_done)
       args = args,
       hide = true,
     }
-    local cmd = config.documentation.cmd
+    local prg = config.documentation.cmd
     uv.spawn(
-      cmd,
+      prg,
       options,
       vim.schedule_wrap(function(code)
         if code ~= 0 then
-          error(string.format('%s error: %d', cmd, code))
+          error(string.format('%s error: %d', prg, code))
         end
         local ret = uv.fs_unlink(input_path)
         if not ret then
