@@ -40,8 +40,6 @@ end
 --- Open a floating post window
 ---@private
 local function open_float()
-  local height = vim.o.lines
-  local width = vim.o.columns
   local options = {
     relative = 'editor',
     anchor = 'NE',
