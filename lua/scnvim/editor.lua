@@ -1,6 +1,8 @@
 local sclang = require 'scnvim.sclang'
-local path = require 'scnvim.path'
 local config = require 'scnvim.config'
+local postwin = require 'scnvim.postwin'
+local signature = require 'scnvim.completion.signature'
+local get_cache_dir = require('scnvim.path').get_cache_dir
 local api = vim.api
 local uv = vim.loop
 local M = {}
@@ -64,8 +66,7 @@ function M.setup()
     pattern = { '*.scd', '*.sc', '*.quark' },
     callback = sclang.set_current_path,
   })
-  if config.completion and config.completion.signature then
-    local signature = require 'scnvim.completion.signature'
+  if config.completion.signature then
     api.nvim_create_autocmd('InsertCharPre', {
       group = id,
       desc = 'Insert mode function signature',
@@ -170,22 +171,22 @@ function M.hard_stop()
 end
 
 function M.postwin_toggle()
-  require('scnvim.postwin').toggle()
+  postwin.toggle()
 end
 
 function M.postwin_clear()
-  require('scnvim.postwin').clear()
+  postwin.clear()
 end
 
 function M.show_signature()
-  require('scnvim.completion.signature').show()
+  signature.show()
 end
 
 --- Generate assets. tags syntax etc.
 ---@param on_done Optional callback that runs when all assets have been created.
 function M.generate_assets(on_done)
   assert(sclang.is_running(), '[scnvim] sclang not running')
-  local expr = string.format([[SCNvim.generateAssets(\"%s\", \"%s\")]], path.get_cache_dir(), M.snippet_format)
+  local expr = string.format([[SCNvim.generateAssets(\"%s\", \"%s\")]], get_cache_dir(), M.snippet_format)
   sclang.eval(expr, on_done)
 end
 
