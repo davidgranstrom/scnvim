@@ -149,6 +149,15 @@ function M.poll_server_status()
   M.send(cmd, true)
 end
 
+--- Generate assets. tags syntax etc.
+---@param on_done Optional callback that runs when all assets have been created.
+function M.generate_assets(on_done)
+  assert(M.is_running(), '[scnvim] sclang not running')
+  local format = config.snippet.engine.name
+  local expr = string.format([[SCNvim.generateAssets(\"%s\", \"%s\")]], path.get_cache_dir(), format)
+  M.eval(expr, on_done)
+end
+
 --- Check if the process is running.
 ---@return True if running otherwise false.
 function M.is_running()

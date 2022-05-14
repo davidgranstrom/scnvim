@@ -1,8 +1,9 @@
 local sclang = require 'scnvim.sclang'
 local config = require 'scnvim.config'
 local postwin = require 'scnvim.postwin'
+local commands = require 'scnvim.commands'
+local settings = require 'scnvim.settings'
 local signature = require 'scnvim.completion.signature'
-local get_cache_dir = require('scnvim.path').get_cache_dir
 local api = vim.api
 local uv = vim.loop
 local M = {}
@@ -33,6 +34,18 @@ function M.setup()
     desc = 'Set the document path in sclang',
     pattern = { '*.scd', '*.sc', '*.quark' },
     callback = sclang.set_current_path,
+  })
+  api.nvim_create_autocmd('FileType', {
+    group = id,
+    desc = 'Apply commands',
+    pattern = 'supercollider',
+    callback = commands,
+  })
+  api.nvim_create_autocmd('FileType', {
+    group = id,
+    desc = 'Apply settings',
+    pattern = 'supercollider',
+    callback = settings,
   })
   if config.completion.signature.auto then
     api.nvim_create_autocmd('InsertCharPre', {
@@ -184,15 +197,6 @@ end
 
 function M.show_signature()
   signature.show()
-end
-
---- Generate assets. tags syntax etc.
----@param on_done Optional callback that runs when all assets have been created.
-function M.generate_assets(on_done)
-  assert(sclang.is_running(), '[scnvim] sclang not running')
-  local format = config.snippet.engine.name
-  local expr = string.format([[SCNvim.generateAssets(\"%s\", \"%s\")]], get_cache_dir(), format)
-  sclang.eval(expr, on_done)
 end
 
 return M
