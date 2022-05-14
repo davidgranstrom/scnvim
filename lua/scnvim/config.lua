@@ -47,18 +47,17 @@ local default = {
     horizontal = false,
     -- Use a floating post window.
     -- float = {
-    --   -- Where to position the float. Possible values: 'top', 'mid', 'bot'
-    --   position = 'top',
-    --   -- The width of the window
-    --   width = 40,
-    --   -- The height of the window
-    --   height = 30,
     --   -- Horizontal offset. Increasing this value will "push" the window to the left of the editor.
-    --   offset_x = 2,
+    --   offset_x = 0,
     --   -- Vertical offset. Increasing this value will "push" the window to the bottom of the editor.
-    --   offset_y = 2,
+    --   offset_y = 0,
+    --   -- Set window local options for the post window
+    --   win_options = function(id)
+    --   end
     --   -- See :h nvim_open_win for possible values
-    --   border = 'single',
+    --   config = {
+    --     border = 'single',
+    --   }
     -- },
   },
   editor = {
