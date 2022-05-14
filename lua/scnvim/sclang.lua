@@ -61,9 +61,9 @@ local function find_sclang_executable()
     local app = 'SuperCollider.app/Contents/MacOS/sclang'
     local locations = { '/Applications', '/Applications/SuperCollider' }
     for _, loc in ipairs(locations) do
-      path = string.format('%s/%s', loc, app)
-      if vim.fn.executable(path) then
-        return path
+      local app_path = string.format('%s/%s', loc, app)
+      if vim.fn.executable(app_path) then
+        return app_path
       end
     end
   elseif system == 'windows' then -- luacheck: ignore
