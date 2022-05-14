@@ -14,7 +14,7 @@ jobs:
           sudo apt-get install -y luarocks
           sudo luarocks install luacheck
       - name: Lint
-        run: luacheck lua
+        run: luacheck lua ftplugin ftdetect
   stylua:
     name: stylua
     runs-on: ubuntu-20.04
@@ -23,4 +23,4 @@ jobs:
       - uses: JohnnyMorganz/stylua-action@1.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          args: --color always --check lua/
+          args: --color always --check lua ftplugin ftdetect
