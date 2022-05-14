@@ -13,18 +13,42 @@ local function get_range(lstart, lend)
   return api.nvim_buf_get_lines(0, lstart - 1, lend, false)
 end
 
-local function flash_once(start, finish, delay, options)
-  options = vim.tbl_extend('keep', { inclusive = true }, options)
-  vim.highlight.range(0, flash_ns, 'SCNvimEval', start, finish, options)
+local function flash_once(start, finish, delay)
+  vim.highlight.range(0, flash_ns, 'SCNvimEval', start, finish, { inclusive = true })
   vim.defer_fn(function()
     api.nvim_buf_clear_namespace(0, flash_ns, 0, -1)
   end, delay)
 end
 
 function M.setup()
+  local id = api.nvim_create_augroup('scnvim_editor', { clear = true })
+  api.nvim_create_autocmd('VimLeavePre', {
+    group = id,
+    desc = 'Stop sclang on Nvim exit',
+    pattern = '*',
+    callback = sclang.stop,
+  })
+  api.nvim_create_autocmd({ 'BufEnter', 'BufNewFile', 'BufRead' }, {
+    group = id,
+    desc = 'Set the document path in sclang',
+    pattern = { '*.scd', '*.sc', '*.quark' },
+    callback = sclang.set_current_path,
+  })
+  if config.completion.signature.auto then
+    api.nvim_create_autocmd('InsertCharPre', {
+      group = id,
+      desc = 'Insert mode function signature',
+      pattern = { '*.scd', '*.sc', '*.quark' },
+      callback = signature.ins_show,
+    })
+  end
+
+  if not config.editor.flash then
+    return
+  end
+
   M.flash_duration = config.editor.flash.duration
   M.flash_repeats = config.editor.flash.repeats
-  M.snippet_format = config.snippet.engine.name
 
   local hl_group = config.editor.flash.hl_group
   local guifg = config.editor.flash.guifg
@@ -46,51 +70,28 @@ function M.setup()
 
   -- Create the highlight group
   vim.cmd(hl_cmd)
-
-  local id = api.nvim_create_augroup('scnvim_editor', { clear = true })
   api.nvim_create_autocmd('ColorScheme', {
     group = id,
     desc = 'Reapply custom highlight group',
     pattern = '*',
     command = hl_cmd,
   })
-  api.nvim_create_autocmd('VimLeavePre', {
-    group = id,
-    desc = 'Stop sclang on Nvim exit',
-    pattern = '*',
-    callback = sclang.stop,
-  })
-  api.nvim_create_autocmd({ 'BufEnter', 'BufNewFile', 'BufRead' }, {
-    group = id,
-    desc = 'Set the document path in sclang',
-    pattern = { '*.scd', '*.sc', '*.quark' },
-    callback = sclang.set_current_path,
-  })
-  if config.completion.signature.auto then
-    api.nvim_create_autocmd('InsertCharPre', {
-      group = id,
-      desc = 'Insert mode function signature',
-      pattern = { '*.scd', '*.sc', '*.quark' },
-      callback = signature.ins_show,
-    })
-  end
 end
 
 --- Flash a text region.
 ---@param start starting position (tuple {line,col} zero indexed)
 ---@param finish finish position (tuple {line,col} zero indexed)
----@param options optional parameters:
---- * duration set the flash duration in ms
---- * repeats set the number of repeats
-function M.flash(start, finish, options)
-  options = options or {}
-  local duration = options.duration or M.flash_duration
-  local repeats = options.repeats or M.flash_repeats
+function M.flash(start, finish)
+  if not config.editor.flash then
+    return
+  end
+  local duration = M.flash_duration
+  local repeats = M.flash_repeats
   if duration == 0 or repeats == 0 then
     return
   end
   local delta = duration / repeats
-  flash_once(start, finish, delta, options)
+  flash_once(start, finish, delta)
   if repeats > 1 then
     local count = 0
     local timer = uv.new_timer()
@@ -98,7 +99,7 @@ function M.flash(start, finish, options)
       duration,
       duration,
       vim.schedule_wrap(function()
-        flash_once(start, finish, delta, options)
+        flash_once(start, finish, delta)
         count = count + 1
         if count == repeats - 1 then
           timer:stop()
@@ -122,6 +123,7 @@ end
 
 --- Get the current line and send it to sclang.
 ---@param cb An optional callback function.
+---@param flash Highlight the selected text
 function M.send_line(cb, flash)
   local linenr = api.nvim_win_get_cursor(0)[1]
   local line = get_range(linenr, linenr)
@@ -135,6 +137,7 @@ end
 
 --- Get the current block of code and send it to sclang.
 ---@param cb An optional callback function.
+---@param flash Highlight the selected text
 function M.send_block(cb, flash)
   local lstart, lend = unpack(vim.fn['scnvim#editor#get_block']())
   if lstart == 0 or lend == 0 then
@@ -155,6 +158,7 @@ end
 
 --- Send a visual selection.
 ---@param cb An optional callback function.
+---@param flash Highlight the selected text
 function M.send_selection(cb, flash)
   local ret = vim.fn['scnvim#editor#get_visual_selection']()
   M.send_lines(ret.lines, cb)
@@ -186,7 +190,8 @@ end
 ---@param on_done Optional callback that runs when all assets have been created.
 function M.generate_assets(on_done)
   assert(sclang.is_running(), '[scnvim] sclang not running')
-  local expr = string.format([[SCNvim.generateAssets(\"%s\", \"%s\")]], get_cache_dir(), M.snippet_format)
+  local format = config.snippet.engine.name
+  local expr = string.format([[SCNvim.generateAssets(\"%s\", \"%s\")]], get_cache_dir(), format)
   sclang.eval(expr, on_done)
 end
 
