@@ -3,20 +3,19 @@ local config = require 'scnvim.config'
 local M = {}
 
 setmetatable(M, {
-  __call = function(_, modes, fn, callback, flash)
-    if type(modes) == 'string' then
-      modes = { modes }
+  __index = function(_, key)
+    local fn = editor[key]
+    if not fn then
+      error('[scnvim]: No such function ' .. key)
     end
-    modes = modes or { 'n' }
-    flash = flash or true
-    local tmp = editor[fn]
-    if not tmp then
-      error('[scnvim]: Could not find function ' .. fn)
+    return function(modes, flash, callback)
+      modes = type(modes) == 'string' and { modes } or modes
+      flash = flash or true
+      local wrapper = function()
+        fn(callback, flash)
+      end
+      return { modes = modes, fn = wrapper }
     end
-    fn = function()
-      tmp(callback, flash)
-    end
-    return { modes = modes, fn = fn }
   end,
 })
 
@@ -24,13 +23,14 @@ setmetatable(M, {
 ---@private
 function M.setup()
   local function apply_keymaps()
-    for k, v in pairs(config.mapping) do
-      if v[1] ~= nil then
-        for _, v1 in ipairs(v) do
-          vim.keymap.set(v1.modes, k, v1.fn, { buffer = true })
+    for key, value in pairs(config.mapping) do
+      --- handle list of mappings to same key
+      if value[1] ~= nil then
+        for _, v in ipairs(value) do
+          vim.keymap.set(v.modes, key, v.fn, { buffer = true })
         end
       else
-        vim.keymap.set(v.modes, k, v.fn, { buffer = true })
+        vim.keymap.set(value.modes, key, value.fn, { buffer = true })
       end
     end
   end
