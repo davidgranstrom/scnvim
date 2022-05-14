@@ -53,9 +53,9 @@ local function find_sclang_executable()
   if config.sclang.path then
     return config.sclang.path
   end
-  local path = vim.fn.exepath 'sclang'
-  if path ~= '' then
-    return path
+  local exe_path = vim.fn.exepath 'sclang'
+  if exe_path ~= '' then
+    return exe_path
   end
   local system = utils.get_system()
   if system == 'macos' then
