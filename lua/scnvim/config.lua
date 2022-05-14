@@ -109,7 +109,7 @@ setmetatable(M, {
       return config[key]
     end
     return default[key]
-  end
+  end,
 })
 
 function M.resolve(config)

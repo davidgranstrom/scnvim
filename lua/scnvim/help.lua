@@ -4,7 +4,7 @@
 -- @license GPLv3
 
 local sclang = require 'scnvim.sclang'
-local config = require'scnvim.config'
+local config = require 'scnvim.config'
 local utils = require 'scnvim.utils'
 
 local uv = vim.loop
@@ -190,7 +190,7 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
   include_extensions = include_extensions or true
   concurrent_jobs = concurrent_jobs or 8
   if not config.documentation.cmd then
-    error('[scnvim] `config.documentation.cmd` must be defined')
+    error '[scnvim] `config.documentation.cmd` must be defined'
   end
   local cmd = string.format('SCNvimDoc.renderAll(%s)', include_extensions)
   sclang.eval(cmd, function()
