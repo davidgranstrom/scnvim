@@ -36,6 +36,18 @@ local function create()
   return buf
 end
 
+--- Save the last size of the post window.
+--@private
+local function save_last_size()
+  if not float_options then
+    if orientation == 'vertical' then
+      M.last_size = api.nvim_win_get_width(M.win)
+    else
+      M.last_size = api.nvim_win_get_height(M.win)
+    end
+  end
+end
+
 --- Open a floating post window
 ---@private
 local function open_float()
@@ -81,10 +93,10 @@ function M.open()
   vim.cmd(string.format('%s %s new', orientation, direction))
   local id = api.nvim_get_current_win()
   if orientation == 'vertical' then
-    local width = fixed_size or math.floor(vim.o.columns / 2)
+    local width = fixed_size or M.last_size or math.floor(vim.o.columns / 2)
     api.nvim_win_set_width(id, width)
   else
-    local height = fixed_size or math.floor(vim.o.lines / 3)
+    local height = fixed_size or M.last_size or math.floor(vim.o.lines / 3)
     api.nvim_win_set_height(id, height)
   end
   api.nvim_win_set_buf(id, M.buf)
@@ -106,6 +118,7 @@ end
 --- Close the post window.
 function M.close()
   if M.is_open() then
+    save_last_size()
     api.nvim_win_close(M.win, false)
     M.win = nil
   end
