@@ -47,6 +47,12 @@ function M.setup()
     pattern = 'supercollider',
     callback = settings,
   })
+  api.nvim_create_autocmd('FileType', {
+    group = id,
+    desc = 'Apply post window settings',
+    pattern = 'scnvim',
+    callback = postwin.settings,
+  })
   if config.completion.signature.auto then
     api.nvim_create_autocmd('InsertCharPre', {
       group = id,

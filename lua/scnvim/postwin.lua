@@ -55,6 +55,10 @@ function M.open()
     api.nvim_win_set_height(id, height)
   end
   api.nvim_win_set_buf(id, M.buf)
+  api.nvim_exec_autocmds('FileType', {
+    buffer = M.buf,
+    modeline = false,
+  })
   vim.cmd [[ wincmd p ]]
   M.win = id
   return id
@@ -135,6 +139,30 @@ function M.post(line)
   if M.is_open() then
     vim.api.nvim_win_set_cursor(M.win, { num_lines, 0 })
   end
+end
+
+--- Apply default post window settings
+function M.settings()
+  vim.opt_local.buftype = 'nofile'
+  vim.opt_local.bufhidden = 'hide'
+  vim.opt_local.swapfile = false
+  local decorations = {
+    'number',
+    'relativenumber',
+    'modeline',
+    'wrap',
+    'cursorline',
+    'cursorcolumn',
+    'foldenable',
+    'list',
+  }
+  for _, s in ipairs(decorations) do
+    vim.opt_local[s] = false
+  end
+  vim.opt_local.colorcolumn = ''
+  vim.opt_local.foldcolumn = '0'
+  vim.opt_local.winfixwidth = true
+  vim.opt_local.tabstop = 4
 end
 
 --- Setup function.
