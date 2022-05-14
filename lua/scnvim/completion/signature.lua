@@ -1,22 +1,11 @@
 --- Signature help.
--- @module scnvim.completion.signature
--- @author David Granström
--- @license GPLv3
+--- @module scnvim.completion.signature
+--- TODO: refactor to use vim.diagnostic?
 
 local sclang = require 'scnvim.sclang'
+local config = require 'scnvim.config'
 local api = vim.api
 local lsp_util = vim.lsp.util
-
--- Opt-out for displaying a floating window
--- This should later be set in the (lua) config object
-local float_opt = vim.g.scnvim_echo_args_float or true
-if type(float_opt) == 'number' then
-  float_opt = float_opt == 1
-  if not float_opt then
-    vim.opt.showmode = false
-    vim.opt.shortmess:append 'c'
-  end
-end
 
 local M = {}
 
@@ -102,15 +91,15 @@ local function ins_extract_object()
   return extract_objects_helper(line_to_cursor)
 end
 
-local function show_signature(object, config)
+local function show_signature(object)
   if object ~= '' then
-    config = config or {}
-    config = vim.tbl_extend('keep', {}, config, { float = float_opt })
+    local float = config.completion.signature.float
+    local float_conf = config.completion.signature.config
     get_method_signature(object, function(res)
       local signature = res:match '%((.+)%)'
       if signature then
-        if config.float then
-          lsp_util.open_floating_preview({ signature }, 'supercollider', config)
+        if float then
+          lsp_util.open_floating_preview({ signature }, 'supercollider', float_conf)
         else
           print(signature)
         end
@@ -120,25 +109,19 @@ local function show_signature(object, config)
 end
 
 --- Show signature from normal mode
---@param config An optional config to style the floating window
---@note see vim.lsp.util.open_floating_preview and
---vim.lsp.util.make_floating_popup_options for available options.
-function M.show(config)
+function M.show()
   local ok, object = pcall(extract_object)
   if ok then
-    pcall(show_signature, object, config)
+    pcall(show_signature, object)
   end
 end
 
---- Show signature in insert mode
---@param config An optional config to style the floating window
---@note see vim.lsp.util.open_floating_preview and
---vim.lsp.util.make_floating_popup_options for available options.
-function M.ins_show(config)
+--- Show signature from insert mode
+function M.ins_show()
   if vim.v.char == '(' then
     local ok, object = pcall(ins_extract_object)
     if ok then
-      pcall(show_signature, object, config)
+      pcall(show_signature, object)
     end
   end
 end
