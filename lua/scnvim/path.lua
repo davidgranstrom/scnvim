@@ -14,7 +14,7 @@ local function escape(path)
 end
 
 --- TODO: remove this from utils and refactor
-M.sep = is_win and '\\' or '/' 
+M.sep = is_win and '\\' or '/'
 
 --- Get the scnvim cache directory.
 ---@return An absolute path to the cache directory

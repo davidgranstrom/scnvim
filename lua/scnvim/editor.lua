@@ -1,6 +1,6 @@
 local sclang = require 'scnvim.sclang'
 local path = require 'scnvim.path'
-local config = require'scnvim.config'
+local config = require 'scnvim.config'
 local api = vim.api
 local uv = vim.loop
 local M = {}
