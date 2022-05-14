@@ -1,3 +1,7 @@
+--- Map
+--- Helper class to define mappings
+---@module scnvim.map
+
 local editor = require 'scnvim.editor'
 local config = require 'scnvim.config'
 local M = {}
@@ -24,7 +28,7 @@ setmetatable(M, {
 function M.setup()
   local function apply_keymaps()
     for key, value in pairs(config.mapping) do
-      --- handle list of mappings to same key
+      -- handle list of mappings to same key
       if value[1] ~= nil then
         for _, v in ipairs(value) do
           vim.keymap.set(v.modes, key, v.fn, { buffer = true })

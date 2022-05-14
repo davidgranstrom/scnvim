@@ -1,3 +1,6 @@
+--- Health
+--- Performs health checks.
+---@module scnvim.health
 local health = require 'health'
 local install = require 'scnvim.install'
 local M = {}

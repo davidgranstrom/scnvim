@@ -1,5 +1,6 @@
---- Paths used by scnvim
----@module scnvim.paths
+--- Path
+--- Path related functions
+---@module scnvim.path
 
 local M = {}
 local is_win = require('scnvim.utils').is_windows

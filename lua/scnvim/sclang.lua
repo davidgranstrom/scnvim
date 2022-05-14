@@ -1,7 +1,6 @@
+--- sclang
 --- Spawn a sclang process.
----@module scnvim/sclang
----@author David Granström
----@license GPLv3
+---@module scnvim.sclang
 
 local postwin = require 'scnvim.postwin'
 local udp = require 'scnvim.udp'

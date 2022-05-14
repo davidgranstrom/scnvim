@@ -1,13 +1,7 @@
---- Utility functions.
--- @module scnvim/utils
--- @author David Granström
--- @license GPLv3
+--- Utility functions
+---@module scnvim.utils
 
 local M = {}
-
-------------------
---- Compat
-------------------
 
 function M.get_var(name)
   local result, value = pcall(vim.api.nvim_get_var, name)
@@ -18,7 +12,7 @@ function M.get_var(name)
 end
 
 --- Get the content of the generated snippets file.
--- @returns The file contents. A lua table or a string depending on `scnvim_snippet_format`.
+---@return The file contents. A lua table or a string depending on `scnvim_snippet_format`.
 function M.get_snippets()
   local root_dir = M.get_scnvim_root_dir()
   local format = M.get_var 'scnvim_snippet_format' or 'snippets.nvim'
@@ -41,10 +35,6 @@ function M.get_snippets()
   end
 end
 
-------------------
---- String
-------------------
-
 --- Match an exact occurence of word
 -- (replacement for \b word boundary)
 function M.str_match_exact(input, word)
@@ -58,10 +48,6 @@ function M.print(message, hlgroup)
   local expr = string.format([[echohl %s | echom '[scnvim] ' . %s | echohl None]], hlgroup or 'ErrorMsg', message)
   vim.cmd(expr)
 end
-
-------------------
---- Path
-------------------
 
 --- TODO: Move to path module
 function M.get_system()
@@ -80,7 +66,7 @@ M.is_windows = M.get_system() == 'windows'
 M.path_sep = M.is_windows and '\\' or '/'
 
 --- Get the root directory of the plugin.
----@returns The root directory of the plugin
+---@return The root directory of the plugin
 function M.get_scnvim_root_dir()
   if M.plugin_root_dir then
     return M.plugin_root_dir
@@ -124,10 +110,6 @@ function M.get_scnvim_root_dir()
   M.plugin_root_dir = dir
   return dir
 end
-
-------------------
---- Table
-------------------
 
 --- Get table length
 function M.tbl_len(T)

@@ -1,7 +1,6 @@
---- scnvim help system.
--- @module scnvim/help
--- @author David Granström
--- @license GPLv3
+--- Help system
+--- Convert schelp files into plain text and display them in nvim.
+---@module scnvim.help
 
 local sclang = require 'scnvim.sclang'
 local config = require 'scnvim.config'
@@ -14,7 +13,7 @@ local M = {}
 
 --- Open a vim buffer for uri with an optional pattern.
 ---@param uri Help file URI
----@param (optional) move cursor to line matching regex pattern
+---@param pattern (optional) move cursor to line matching regex pattern
 local function open_help_file(uri, pattern)
   local is_open = vim.fn.win_gotoid(win_id) == 1
   local expr = string.format('edit %s', uri)
@@ -141,7 +140,6 @@ end
 
 --- Prepare a help file.
 ---@param subject The help subject (SinOsc, tanh, etc.)
----@note sclang must be running.
 function M.prepare_help_for(subject)
   if not sclang.is_running() then
     print '[scnvim] sclang not running'

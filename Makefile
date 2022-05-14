@@ -11,4 +11,7 @@ luacheck:
 stylua:
 	stylua --color always --check $(source)
 
-.PHONY: luacheck stylua
+doc:
+	ldoc lua -c .ldoc .
+
+.PHONY: luacheck stylua doc
