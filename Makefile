@@ -1,12 +1,14 @@
+source = lua ftdetect
+
 all: stylua luacheck
 
 format:
-	stylua --verify lua ftplugin ftdetect
+	stylua --verify $(source)
 
 luacheck:
-	luacheck lua ftplugin ftdetect
+	luacheck $(source)
 
 stylua:
-	stylua --check lua ftplugin ftdetect
+	stylua --color always --check $(source)
 
 .PHONY: luacheck stylua
