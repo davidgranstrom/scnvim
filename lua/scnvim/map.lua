@@ -1,4 +1,5 @@
 local editor = require 'scnvim.editor'
+local config = require 'scnvim.config'
 local M = {}
 
 setmetatable(M, {
@@ -19,7 +20,9 @@ setmetatable(M, {
   end,
 })
 
-function M.setup(config)
+--- Setup function
+---@private
+function M.setup()
   local function apply_keymaps()
     for k, v in pairs(config.mapping) do
       if v[1] ~= nil then

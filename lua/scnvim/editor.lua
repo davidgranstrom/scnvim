@@ -1,5 +1,6 @@
 local sclang = require 'scnvim.sclang'
 local path = require 'scnvim.path'
+local config = require'scnvim.config'
 local api = vim.api
 local uv = vim.loop
 local M = {}
@@ -18,7 +19,7 @@ local function flash_once(start, finish, delay, options)
   end, delay)
 end
 
-function M.setup(config)
+function M.setup()
   M.flash_duration = config.editor.flash.duration
   M.flash_repeats = config.editor.flash.repeats
   M.snippet_format = config.snippet.engine.name

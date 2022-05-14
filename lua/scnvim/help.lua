@@ -3,15 +3,14 @@
 -- @author David Granström
 -- @license GPLv3
 
-local utils = require 'scnvim.utils'
 local sclang = require 'scnvim.sclang'
+local config = require'scnvim.config'
+local utils = require 'scnvim.utils'
 
 local uv = vim.loop
 local api = vim.api
 local win_id = 0
 local M = {}
-
-M.docmap = nil
 
 --- Open a vim buffer for uri with an optional pattern.
 ---@param uri Help file URI
@@ -35,7 +34,7 @@ end
 ---@param output_path The output path to use.
 ---@return A table with '$1' and '$2' replaced by @p input_path and @p output_path
 local function get_render_args(input_path, output_path)
-  local args = vim.deepcopy(M.render_args)
+  local args = vim.deepcopy(config.documentation.args)
   for index, str in ipairs(args) do
     if str == '$1' then
       args[index] = str:gsub('$1', input_path)
@@ -58,12 +57,13 @@ local function render_help_file(subject, on_done)
       args = args,
       hide = true,
     }
+    local cmd = config.documentation.cmd
     uv.spawn(
-      M.render_cmd,
+      cmd,
       options,
       vim.schedule_wrap(function(code)
         if code ~= 0 then
-          error(string.format('%s error: %d', M.render_cmd, code))
+          error(string.format('%s error: %d', cmd, code))
         end
         local ret = uv.fs_unlink(input_path)
         if not ret then
@@ -148,7 +148,7 @@ function M.prepare_help_for(subject)
     return
   end
 
-  if not M.internal then
+  if not config.documentation then
     local cmd = string.format([[HelpBrowser.openHelpFor(\"%s\")]], subject)
     sclang.send(cmd, true)
     return
@@ -166,8 +166,9 @@ function M.prepare_help_for(subject)
       if #results == 0 then
         err = 'No results for ' .. tostring(subject)
       end
-      if M.selector then
-        M.selector(err, results)
+      local selector = config.documentation.selector
+      if selector then
+        selector(err, results)
       else
         -- Default implementation
         vim.fn.setqflist(results)
@@ -188,6 +189,9 @@ end
 function M.render_all(callback, include_extensions, concurrent_jobs)
   include_extensions = include_extensions or true
   concurrent_jobs = concurrent_jobs or 8
+  if not config.documentation.cmd then
+    error('[scnvim] `config.documentation.cmd` must be defined')
+  end
   local cmd = string.format('SCNvimDoc.renderAll(%s)', include_extensions)
   sclang.eval(cmd, function()
     sclang.eval('SCDoc.helpTargetDir', function(help_path)
@@ -246,7 +250,7 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
             hide = true,
           }
           local co = coroutine.create(function()
-            uv.spawn(M.render_cmd, options, function(code)
+            uv.spawn(config.documentation.cmd, options, function(code)
               local ret = uv.fs_unlink(input_path)
               if not ret then
                 print('[scnvim] ERROR: Could not unlink ' .. input_path)
@@ -264,13 +268,12 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
   end)
 end
 
-function M.setup(config)
+--- Setup function
+---@private
+function M.setup()
   if config.documentation then
-    M.render_cmd = config.documentation.cmd
-    M.render_args = config.documentation.args
-    M.selector = config.documentation.selector
-    M.internal = true
-    if not M.selector then
+    local selector = config.documentation.selector
+    if not selector then
       local id = api.nvim_create_augroup('scnvim_qf_conceal', { clear = true })
       api.nvim_create_autocmd('BufWinEnter', {
         group = id,
@@ -283,8 +286,6 @@ function M.setup(config)
         end,
       })
     end
-  else
-    M.internal = false
   end
 end
 
