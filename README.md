@@ -2,9 +2,13 @@
 
 [Neovim][neovim] frontend for [SuperCollider][supercollider].
 
-[![Build Status](https://travis-ci.com/davidgranstrom/scnvim.svg?branch=master)](https://travis-ci.com/davidgranstrom/scnvim) | [Documentation](https://github.com/davidgranstrom/scnvim/wiki) | [Showcase](https://github.com/davidgranstrom/scnvim/wiki/Showcase)
+[![lint and style check](https://github.com/davidgranstrom/scnvim/actions/workflows/lint.yml/badge.svg)](https://github.com/davidgranstrom/scnvim/actions/workflows/lint.yml) | [Documentation](https://github.com/davidgranstrom/scnvim/wiki) | [Showcase](https://github.com/davidgranstrom/scnvim/wiki/Showcase)
 
 ---
+
+## News
+
+This plugin has recently undergone a big rewrite, take a look at the [installation](#installation) and [usage](#usage) and update your config.
 
 Have questions? Start a [discussion](https://github.com/davidgranstrom/scnvim/discussions) or join the [IRC channel](https://kiwiirc.com/client/irc.libera.chat/?&theme=mini#scnvim).
 
@@ -26,110 +30,101 @@ Have questions? Start a [discussion](https://github.com/davidgranstrom/scnvim/di
 * Display SuperCollider documentation inside nvim
   - Be able to evaluate examples
 
-## Supported platforms
-
-* Linux
-* macOS
-* Windows (tested with `nvim-qt`)
-  - Also see this [important note](#note-to-windows-users).
-
 ## Installation
 
 ### Requirements
 
-* [Neovim][neovim] >= 0.4.4
+* [Neovim][neovim] >= 0.7
 * [SuperCollider][supercollider]
 
 ### Install
 
 1. [Install SuperCollider](https://supercollider.github.io/download).
-2. Add this line to your `init.vim` if you are using [vim-plug](https://github.com/junegunn/vim-plug).
+2. Use your favourite package manager to install the plugin
 
-```vim
-Plug 'davidgranstrom/scnvim', { 'do': {-> scnvim#install() } }
+* Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
+
+```lua
+use {
+  'davidgranstrom/scnvim',
+  config = function()
+    require'scnvim'.setup{}
+  end
+}
 ```
 
-Source `init.vim` (or restart `nvim`) and then run `:PlugInstall`.
+* Using [vim-plug](https://github.com/junegunn/vim-plug)
 
-Modify the above to match your package manager of choice, or do a manual install using [vim packages](https://github.com/davidgranstrom/scnvim/wiki/Manual-installation).
+```vim
+Plug 'davidgranstrom/scnvim'
 
-### Uninstall
+" Add this your init.vim
 
-1. Run `:call scnvim#uninstall()`
-    - You could always delete the symbolic link (`scide_scnvim`) from your `Extensions` directory manually if you forget this step.
+lua << EOF
+require'scnvim.setup{}
+EOF
+```
 
-2. Remove the plugin according to how you've installed it (see `Install` above.)
+### Verify
 
-### Troubleshooting
+Run `:checkhealth scnvim` to verify that the installation was successful.
 
-If something doesn't work with the installation method above, the first thing
-to try is `:checkhealth scnvim`. This will give you an indication on what's not
-working, and information on how to resolve the issue.
+## Usage
 
-If you want to do complete a manual installation look [here](https://github.com/davidgranstrom/scnvim/wiki/Manual-installation) and [here](https://github.com/davidgranstrom/scnvim/wiki/Manual-installation-of-SuperCollider-classes).
+### Configuration
 
-## Starting SCNvim
+The only configuration needed to start using scnvim is for the mappings.
+
+Here are the suggested defaults:
+
+```lua
+require('scnvim').setup {
+  mapping = {
+    ['<M-e>'] = scnvim.map.send_line({'i', 'n'}),
+    ['<C-e>'] = {
+      scnvim.map.send_block({'i', 'n'}),
+      scnvim.map.send_selection('x'),
+    },
+    ['<F12>'] = scnvim.map.hard_stop({'n', 'x', 'i'}),
+    ['<CR>'] = scnvim.map.postwin_toggle('n'),
+    ['<M-CR>'] = scnvim.map.postwin_toggle('i'),
+    ['<M-L>'] = scnvim.map.postwin_clear({'n', 'i'}),
+    ['<C-k>'] = scnvim.map.show_signature({'n', 'i'}),
+  },
+}
+```
+
+Read about more advanced configuration [here](). (TODO)
+
+### Start
 
 Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStart` to start SuperCollider.
 
-## Configuration
-
-The following sections can be accessed in `:help scnvim` as well.
-
-### Mappings
-
-| Map     | Description                                                    | Name                               | Mode           |
-|:--------|:---------------------------------------------------------------|:-----------------------------------|:---------------|
-| `<C-e>` | Send current block or line (depending on context)              | `<Plug>(scnvim-send-block)`        | Insert, Normal |
-| `<C-e>` | Send current selection                                         | `<Plug>(scnvim-send-selection)`    | Visual         |
-| `<M-e>` | Send current line                                              | `<Plug>(scnvim-send-line)`         | Insert, Normal |
-| `<F12>` | Hard stop                                                      | `<Plug>(scnvim-hard-stop)`         | Insert, Normal |
-| `<CR>`  | Toggle post window buffer                                      | `<Plug>(scnvim-postwindow-toggle)` | Insert, Normal |
-| `<M-L>` | Clear post window buffer                                       | `<Plug>(scnvim-postwindow-clear)`  | Insert, Normal |
-| `C-k`   | Show function signature for object under cursor                | `<Plug>(scnvim-show-signature)`    | Insert, Normal |
-| `K`     | Open documentation                                             | Uses vim `keywordprg`              | Normal         |
-
-You can remap all of the default mappings using the `<Plug>` mappings in the
-table above. Notice the usage of `nmap` rather than `nnoremap` in the following
-examples, since we actually want to map to the `<Plug>` mappings recursively.
-
-**Examples**
-
-```vim
-nmap <F5> <Plug>(scnvim-send-block)
-imap <F5> <C-o><Plug>(scnvim-send-block)
-```
-
-To disable a specific mapping use `<nop>`.
-```vim
-nmap <nop> <Plug>(scnvim-show-signature)
-```
-
-To disable all default mappings use `let g:scnvim_no_mappings = 1`
-
 ### Commands
 
-| Command                | Description                          | 
-|:-----------------------|:-------------------------------------|
-| `SCNvimStart`          | Start SuperCollider                  |
-| `SCNvimStop`           | Stop SuperCollider                   |
-| `SCNvimRecompile`      | Recompile SCClassLibrary             |
-| `SCNvimTags`           | Create auto-generated utility files  |
-| `SCNvimHelp <subject>` | Open HelpBrowser for \<subject\>     |
-| `SCNvimStatusLine`     | Display server status in status line |
+| Command                | Description                                                    |
+|:-----------------------|:---------------------------------------------------------------|
+| `SCNvimStart`          | Start SuperCollider                                            |
+| `SCNvimStop`           | Stop SuperCollider                                             |
+| `SCNvimRecompile`      | Recompile SCClassLibrary                                       |
+| `SCNvimGenerateAssets` | Generate tags, syntax, snippets etc.                           |
+| `SCNvimHelp <subject>` | Open HelpBrowser for \<subject\>                               |
+| `SCNvimStatusLine`     | Start to poll server status to be displayed in the status line |
 
 ### Additional setup
 
-Run `:SCNvimTags` after starting SuperCollider to enable syntax highlighting
-(note that the current buffer must be reloaded for this to take effect).
-
-**Note** There is a known bug where `sclang` will crash immediately after running
-`:SCNvimTags`. This will hopefully be resolved in the future.
+Run `:SCNvimGenerateAssets` after starting SuperCollider to generate syntax highlighting and tags.
 
 The plugin should work "out of the box", but if you want even more fine-grained
 control please have a look at this [section](https://github.com/davidgranstrom/scnvim/wiki/Additional-configuration) in the wiki.
 
-## Note to Windows users
+## Supported platforms
+
+* Linux
+* macOS
+* Windows (tested with `nvim-qt`)
+
+### Note to Windows users
 
 To be able to boot the server you will need to add the following to your `startup.scd`:
 
@@ -143,7 +138,7 @@ if (\SCNvim.asClass.notNil) {
 
 ```plain
 scnvim - Neovim frontend for SuperCollider
-Copyright © 2018-2019 David Granström
+Copyright © 2018 David Granström
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
