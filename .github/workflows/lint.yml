@@ -1,10 +1,10 @@
-name: Lint and style check
+name: lint and style check
 
 on: [push, pull_request]
 
 jobs:
   luacheck:
-    name: Luacheck
+    name: luacheck
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
