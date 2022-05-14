@@ -12,7 +12,7 @@ setmetatable(M, {
     if not fn then
       error('[scnvim]: No such function ' .. key)
     end
-    return function(modes, flash, callback)
+    return function(modes, callback, flash)
       modes = type(modes) == 'string' and { modes } or modes
       flash = flash or true
       local wrapper = function()
