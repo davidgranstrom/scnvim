@@ -35,7 +35,9 @@ syn clear
 
 " source generated syntax file
 let generated_classes = luaeval('require"scnvim.path".get_cache_dir()') . '/classes.vim'
-execute "source " . generated_classes
+if filereadable(generated_classes)
+  execute "source " . generated_classes
+endif
 
 syn match	scAoperator	"{"
 syn match	scAoperator	"}"
