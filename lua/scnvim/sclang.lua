@@ -93,11 +93,7 @@ local function start_process()
   M.stdin = uv.new_pipe(false)
   M.stdout = uv.new_pipe(false)
   M.stderr = uv.new_pipe(false)
-
   local sclang = M.find_sclang_executable()
-  local user_opts = utils.get_var 'scnvim_sclang_options' or {}
-  assert(type(user_opts) == 'table', '[scnvim] g:scnvim_sclang_options must be an array')
-
   local options = {}
   options.stdio = {
     M.stdin,
@@ -105,12 +101,8 @@ local function start_process()
     M.stderr,
   }
   options.cwd = vim.fn.expand '%:p:h'
-  options.args = { '-i', 'scnvim', '-d', options.cwd }
-  table.insert(options.args, user_opts)
-  options.args = vim.tbl_flatten(options.args)
-  -- windows specific settings
+  options.args = { '-i', 'scnvim', '-d', options.cwd, unpack(config.sclang.options) }
   options.hide = true
-
   return uv.spawn(sclang, options, vim.schedule_wrap(on_exit))
 end
 
