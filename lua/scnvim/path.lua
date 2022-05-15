@@ -4,6 +4,7 @@
 
 local M = {}
 local uv = vim.loop
+local config = require 'scnvim.config'
 
 local function escape(path)
   if M.is_windows and not vim.opt.shellslash:get() then

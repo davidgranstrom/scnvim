@@ -8,7 +8,7 @@ local M = {}
 function M.load_file(path)
   -- this check is here because loadfile will read from stdin if nil
   if not path then
-    error('[scnvim] no path to read')
+    error '[scnvim] no path to read'
   end
   local content, err = loadfile(path)
   if not content then
