@@ -48,7 +48,7 @@ local function safe_close(handle)
   end
 end
 
-local function find_sclang_executable()
+function M.find_sclang_executable()
   if config.sclang.path then
     return config.sclang.path
   end
@@ -94,7 +94,7 @@ local function start_process()
   M.stdout = uv.new_pipe(false)
   M.stderr = uv.new_pipe(false)
 
-  local sclang = find_sclang_executable()
+  local sclang = M.find_sclang_executable()
   local user_opts = utils.get_var 'scnvim_sclang_options' or {}
   assert(type(user_opts) == 'table', '[scnvim] g:scnvim_sclang_options must be an array')
 
