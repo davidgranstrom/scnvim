@@ -3,29 +3,19 @@
 
 local M = {}
 
---- Get the content of the generated snippets file.
----@return The file contents. A lua table or a string depending on `scnvim_snippet_format`.
--- function M.get_snippets()
---   local root_dir = M.get_scnvim_root_dir()
---   local format = M.get_var 'scnvim_snippet_format' or 'snippets.nvim'
---   local snippet_dir = root_dir .. _path.sep .. 'scnvim-data'
---   if format == 'snippets.nvim' or format == 'luasnip' then
---     local filename = snippet_dir .. _path.sep .. 'scnvim_snippets.lua'
---     local ok, file = pcall(loadfile(filename))
---     if ok then
---       return file
---     else
---       print('File does not exist:' .. filename)
---       print 'Call :SCNvimTags to generate snippets.'
---     end
---   elseif format == 'ultisnips' then
---     local filename = snippet_dir .. _path.sep .. 'supercollider.snippets'
---     local file = assert(io.open(filename, 'rb'), 'File does not exists: ' .. filename)
---     local content = file:read '*all'
---     file:close()
---     return content
---   end
--- end
+--- Returns the content of a lua file on disk
+---@param path The path to the file to load
+function M.load_file(path)
+  -- this check is here because loadfile will read from stdin if nil
+  if not path then
+    error('[scnvim] no path to read')
+  end
+  local content, err = loadfile(path)
+  if not content then
+    error(err)
+  end
+  return content
+end
 
 --- Match an exact occurence of word
 -- (replacement for \b word boundary)

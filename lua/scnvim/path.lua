@@ -36,12 +36,28 @@ M.sep = M.is_windows and '\\' or '/'
 --- Get the scnvim cache directory.
 ---@return An absolute path to the cache directory
 function M.get_cache_dir()
-  local cache_path = vim.fn.stdpath 'cache'
-  cache_path = cache_path .. M.sep .. 'scnvim'
+  local cache_path = M.concat(vim.fn.stdpath 'cache', 'scnvim')
   if not uv.fs_stat(cache_path) then
     uv.fs_mkdir(cache_path, tonumber('777', 8))
   end
   return cache_path
+end
+
+--- Check if a path exists
+---@param path The path to test
+---@return True if the path exists otherwise false
+function M.exists(path)
+  return uv.fs_stat(path) ~= nil
+end
+
+--- Get the generated snippet file path
+---@return Absolute path to the snippet file
+function M.get_snippet_file()
+  local filename = 'scnvim_snippets.lua'
+  if config.snippet.engine.name == 'ultisnips' then
+    filename = 'supercollider.snippets'
+  end
+  return M.concat(M.get_cache_dir(), filename)
 end
 
 --- Normalize a path.
