@@ -4,6 +4,7 @@
 
 local sclang = require 'scnvim.sclang'
 local config = require 'scnvim.config'
+local _path = require 'scnvim.path'
 local utils = require 'scnvim.utils'
 
 local uv = vim.loop
@@ -120,13 +121,13 @@ end
 ---@return A table with method entries that is suitable for the quickfix list.
 function M.find_methods(name, target_dir)
   local path = vim.fn.expand(target_dir)
-  local docmap = M.get_docmap(path .. utils.path_sep .. 'docmap.json')
+  local docmap = M.get_docmap(path .. _path.sep .. 'docmap.json')
   local results = {}
   for _, value in pairs(docmap) do
     for _, method in ipairs(value.methods) do
       local match = utils.str_match_exact(method, name)
       if match then
-        local destpath = path .. utils.path_sep .. value.path .. '.txt'
+        local destpath = path .. _path.sep .. value.path .. '.txt'
         table.insert(results, {
           filename = destpath,
           text = string.format('.%s', name),
@@ -193,7 +194,7 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
   local cmd = string.format('SCNvimDoc.renderAll(%s)', include_extensions)
   sclang.eval(cmd, function()
     sclang.eval('SCDoc.helpTargetDir', function(help_path)
-      local sep = utils.path_sep
+      local sep = _path.sep
       local sc_help_dir = help_path .. sep .. 'Classes'
 
       local threads = {}

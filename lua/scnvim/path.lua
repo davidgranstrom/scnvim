@@ -1,9 +1,8 @@
 --- Path
---- Path related functions
+--- Path and host related functions
 ---@module scnvim.path
 
 local M = {}
-local is_win = require('scnvim.utils').is_windows
 local uv = vim.loop
 
 local function escape(path)
@@ -14,8 +13,25 @@ local function escape(path)
   end
 end
 
---- TODO: remove this from utils and refactor
-M.sep = is_win and '\\' or '/'
+--- Get the host system
+---@return 'windows', 'macos', 'linux'
+function M.get_system()
+  local sysname = uv.os_uname().sysname
+  if sysname:match 'Windows' then
+    return 'windows'
+  elseif sysname:match 'Darwin' then
+    return 'macos'
+  else
+    return 'linux'
+  end
+end
+
+--- Returns true if current system is Windows otherwise false
+M.is_windows = (M.get_system() == 'windows')
+
+--- System path separator
+--- '/' on macOS and Linux and '\\' on Windows
+M.sep = M.is_windows and '\\' or '/'
 
 --- Get the scnvim cache directory.
 ---@return An absolute path to the cache directory
