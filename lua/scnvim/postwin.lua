@@ -132,7 +132,7 @@ function M.destroy()
     pcall(api.nvim_win_close, M.win, true)
     M.win = nil
     if buf_is_valid() then
-      api.nvim_buf_delete(M.buf, true)
+      api.nvim_buf_delete(M.buf, { force = true })
       M.buf = nil
     end
   end

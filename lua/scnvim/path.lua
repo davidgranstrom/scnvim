@@ -6,7 +6,7 @@ local M = {}
 local uv = vim.loop
 
 local function escape(path)
-  if is_win and not vim.opt.shellslash:get() then
+  if M.is_windows and not vim.opt.shellslash:get() then
     return vim.fn.escape(path, '\\')
   else
     return path
@@ -49,6 +49,30 @@ end
 ---@return A normalized path.
 function M.normalize(path)
   return escape(vim.fn.expand(path))
+end
+
+--- Concatenate items using the system path separator
+---@vararg strings to concatenate into a path
+function M.concat(...)
+  local items = { ... }
+  return table.concat(items, M.sep)
+end
+
+--- Get the root dir of this plugin
+---@return Absolute path to the plugin root dir or nil if not not found
+function M.get_plugin_root_dir()
+  if M.root_dir then
+    return M.root_dir
+  end
+  local paths = vim.api.nvim_list_runtime_paths()
+  for _, path in ipairs(paths) do
+    local index = path:find 'scnvim'
+    if index and path:sub(index, -1) == 'scnvim' then
+      M.root_dir = path
+      return path
+    end
+  end
+  return nil
 end
 
 return M

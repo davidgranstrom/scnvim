@@ -2,13 +2,11 @@
 --- Cross platform installation of SCNvim SuperCollider classes.
 ---@module scnvim.install
 
-local utils = require 'scnvim.utils'
 local _path = require 'scnvim.path'
 
 local uv = vim.loop
 local M = {}
 
-local scnvim_root_dir = utils.get_scnvim_root_dir()
 local home_dir = uv.os_homedir()
 local extension_dirs
 
@@ -62,7 +60,8 @@ function M.link()
   local link_target = get_target_dir()
   local target_exists = uv.fs_stat(link_target)
   if not target_exists then
-    local source = scnvim_root_dir .. _path.sep .. 'scide_scnvim'
+    local root_dir = assert(_path.get_plugin_root_dir(), '[scnvim] could not get plugin root dir')
+    local source = _path.concat(root_dir, 'scide_scnvim')
     assert(uv.fs_symlink(source, link_target, { dir = true, junction = true }))
   end
 end
