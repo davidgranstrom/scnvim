@@ -3,6 +3,7 @@
 ---@module scnvim.install
 
 local utils = require 'scnvim.utils'
+local _path = require 'scnvim.path'
 
 local uv = vim.loop
 local M = {}
@@ -51,7 +52,7 @@ end
 
 local function get_target_dir()
   local ext_dir = assert(get_ext_dir())
-  return ext_dir .. utils.path_sep .. 'scide_scnvim'
+  return ext_dir .. _path.sep .. 'scide_scnvim'
 end
 
 -- Interface
@@ -61,7 +62,7 @@ function M.link()
   local link_target = get_target_dir()
   local target_exists = uv.fs_stat(link_target)
   if not target_exists then
-    local source = scnvim_root_dir .. utils.path_sep .. 'scide_scnvim'
+    local source = scnvim_root_dir .. _path.sep .. 'scide_scnvim'
     assert(uv.fs_symlink(source, link_target, { dir = true, junction = true }))
   end
 end

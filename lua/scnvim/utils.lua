@@ -2,6 +2,7 @@
 ---@module scnvim.utils
 
 local M = {}
+local _path = require 'scnvim.path'
 
 function M.get_var(name)
   local result, value = pcall(vim.api.nvim_get_var, name)
@@ -16,9 +17,9 @@ end
 function M.get_snippets()
   local root_dir = M.get_scnvim_root_dir()
   local format = M.get_var 'scnvim_snippet_format' or 'snippets.nvim'
-  local snippet_dir = root_dir .. M.path_sep .. 'scnvim-data'
+  local snippet_dir = root_dir .. _path.sep .. 'scnvim-data'
   if format == 'snippets.nvim' or format == 'luasnip' then
-    local filename = snippet_dir .. M.path_sep .. 'scnvim_snippets.lua'
+    local filename = snippet_dir .. _path.sep .. 'scnvim_snippets.lua'
     local ok, file = pcall(loadfile(filename))
     if ok then
       return file
@@ -27,7 +28,7 @@ function M.get_snippets()
       print 'Call :SCNvimTags to generate snippets.'
     end
   elseif format == 'ultisnips' then
-    local filename = snippet_dir .. M.path_sep .. 'supercollider.snippets'
+    local filename = snippet_dir .. _path.sep .. 'supercollider.snippets'
     local file = assert(io.open(filename, 'rb'), 'File does not exists: ' .. filename)
     local content = file:read '*all'
     file:close()
@@ -48,22 +49,6 @@ function M.print(message, hlgroup)
   local expr = string.format([[echohl %s | echom '[scnvim] ' . %s | echohl None]], hlgroup or 'ErrorMsg', message)
   vim.cmd(expr)
 end
-
---- TODO: Move to path module
-function M.get_system()
-  local sysname = vim.loop.os_uname().sysname
-  if sysname:match 'Windows' then
-    return 'windows'
-  elseif sysname:match 'Darwin' then
-    return 'macos'
-  else
-    return 'linux'
-  end
-end
-
---- Get the system path separator
-M.is_windows = M.get_system() == 'windows'
-M.path_sep = M.is_windows and '\\' or '/'
 
 --- Get the root directory of the plugin.
 ---@return The root directory of the plugin
@@ -103,7 +88,7 @@ function M.get_scnvim_root_dir()
     dir = '/'
   end
   for _, v in ipairs(path) do
-    dir = dir .. v .. M.path_sep
+    dir = dir .. v .. _path.sep
   end
   assert(#dir > 1, '[scnvim] Could not get scnvim root path')
   dir = dir:sub(1, -2) -- delete trailing slash
