@@ -56,7 +56,7 @@ function M.find_sclang_executable()
   if exe_path ~= '' then
     return exe_path
   end
-  local system = utils.get_system()
+  local system = path.get_system()
   if system == 'macos' then
     local app = 'SuperCollider.app/Contents/MacOS/sclang'
     local locations = { '/Applications', '/Applications/SuperCollider' }
