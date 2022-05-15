@@ -3,14 +3,6 @@
 
 local M = {}
 
-function M.get_var(name)
-  local result, value = pcall(vim.api.nvim_get_var, name)
-  if result then
-    return value
-  end
-  return nil
-end
-
 --- Get the content of the generated snippets file.
 ---@return The file contents. A lua table or a string depending on `scnvim_snippet_format`.
 -- function M.get_snippets()
