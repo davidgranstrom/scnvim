@@ -9,6 +9,8 @@ local map = require 'scnvim.map'
 local editor = require 'scnvim.editor'
 local help = require 'scnvim.help'
 local postwin = require 'scnvim.postwin'
+local path = require 'scnvim.path'
+local utils = require 'scnvim.utils'
 local config = require 'scnvim.config'
 local scnvim = {}
 
@@ -75,6 +77,15 @@ end
 ---@return True if sclang is running otherwise false.
 function scnvim.is_running()
   return sclang.is_running()
+end
+
+--- Get the content of the auto generated snippet file
+---@return Table with the contents of the snippet file
+function scnvim.get_snippets()
+  local filename = path.get_snippet_file()
+  if path.exists(filename) then
+    return utils.load_file(filename)
+  end
 end
 
 return scnvim
