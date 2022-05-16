@@ -25,7 +25,7 @@ end
 --- Match an exact occurence of word
 --- (replacement for \b word boundary)
 ---@param input The input string
----@param input The word to match
+---@param word The word to match
 ---@return True if word matches, otherwise false
 function M.str_match_exact(input, word)
   return string.find(input, '%f[%a]' .. word .. '%f[%A]') ~= nil

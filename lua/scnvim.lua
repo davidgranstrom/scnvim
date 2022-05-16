@@ -1,18 +1,22 @@
---- scnvim public interface.
+--- Main interface
 ---@module scnvim
 ---@author David Granström
 ---@license GPLv3
 
 local sclang = require 'scnvim.sclang'
-local installer = require 'scnvim.install'
 local editor = require 'scnvim.editor'
 local config = require 'scnvim.config'
 
 local scnvim = {}
+
+--- Map helper
 scnvim.map = require 'scnvim.map'
 
+--- Setup function
+---@param user_config A user config or an empty table.
 function scnvim.setup(user_config)
   if config.ensure_installed then
+    local installer = require 'scnvim.install'
     local ok, msg = pcall(installer.link)
     if not ok then
       error(msg)
