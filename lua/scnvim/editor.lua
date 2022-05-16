@@ -1,7 +1,7 @@
---- Editor
---- Defines functions available for key mappings (scnvim.map.<func_name>).
---- It is also responsible for extracting the text from the buffer that is sent to sclang.
+--- Connects nvim and the sclang process.
+--- Applies autocommands and forwards text to be evaluated to the sclang process.
 ---@module scnvim.editor
+
 local sclang = require 'scnvim.sclang'
 local config = require 'scnvim.config'
 local postwin = require 'scnvim.postwin'
@@ -14,10 +14,18 @@ local M = {}
 
 local flash_ns = api.nvim_create_namespace 'scnvim_flash'
 
+--- Get a range of lines.
+---@param lstart Start index.
+---@param lend  End index.
+---@return A table with strings.
 local function get_range(lstart, lend)
   return api.nvim_buf_get_lines(0, lstart - 1, lend, false)
 end
 
+--- Flash once.
+---@param start Start range.
+---@param finish End range.
+---@param delay How long to highlight the text.
 local function flash_once(start, finish, delay)
   vim.highlight.range(0, flash_ns, 'SCNvimEval', start, finish, { inclusive = true })
   vim.defer_fn(function()
@@ -25,6 +33,7 @@ local function flash_once(start, finish, delay)
   end, delay)
 end
 
+--- Applies keymaps from the user configuration.
 local function apply_keymaps()
   for key, value in pairs(config.mapping) do
     -- handle list of mappings to same key
@@ -38,6 +47,11 @@ local function apply_keymaps()
   end
 end
 
+--- Setup function.
+---
+--- Called from the main module.
+---@see scnvim
+---@local
 function M.setup()
   local id = api.nvim_create_augroup('scnvim_editor', { clear = true })
   api.nvim_create_autocmd('VimLeavePre', {
@@ -123,6 +137,7 @@ end
 --- Flash a text region.
 ---@param start starting position (tuple {line,col} zero indexed)
 ---@param finish finish position (tuple {line,col} zero indexed)
+---@local
 function M.flash(start, finish)
   if not config.editor.flash then
     return
@@ -154,8 +169,7 @@ end
 --- Send lines.
 ---@param lines Table with the lines to send.
 ---@param callback Optional callback function.
---- Will receive the input lines as a table and must return a table.
---- Can be used for text substitution.
+---@local
 function M.send_lines(lines, callback)
   if callback then
     lines = callback(lines)
@@ -216,14 +230,17 @@ function M.hard_stop()
   sclang.send('thisProcess.stop', true)
 end
 
+--- Toggle the post window.
 function M.postwin_toggle()
   postwin.toggle()
 end
 
+--- Clear the post window.
 function M.postwin_clear()
   postwin.clear()
 end
 
+--- Show the function signature under the cursor.
 function M.show_signature()
   signature.show()
 end

@@ -9,10 +9,29 @@ local config = require 'scnvim.config'
 
 local scnvim = {}
 
---- Map helper
+--- Map helper.
+---
+--- Returns a function with the signature `(modes, callback, flash)`
+---
+--- The actions that can be mapped are documented in `scnvim.editor`
+---
+--- * modes - table of vim modes ('i', 'n', 'x' etc.). A string can be used for a single mode.
+--- * callback - An optional callback that receives a table of lines as its only
+--- argument. The function must always return a table.
+--- * flash - Apply the editor flash for this action (default is true)
+---
+---@see scnvim.editor
+---@usage scnvim.map.send_line('n'),
+---@usage scnvim.map.send_line({'i', 'n'}, function(data)
+---    local line = data[1]
+---    line = line:gsub('goodbye', 'hello')
+---    return {line}
+---  end)
 scnvim.map = require 'scnvim.map'
 
---- Setup function
+--- Setup function.
+---
+--- This function is called from the user's config to initialize scnvim.
 ---@param user_config A user config or an empty table.
 function scnvim.setup(user_config)
   if config.ensure_installed then
@@ -27,21 +46,24 @@ function scnvim.setup(user_config)
   editor.setup()
 end
 
---- Evalute a SuperCollider expression.
+--- Evalute an expression.
 ---@param expr Any valid SuperCollider expression.
 function scnvim.send(expr)
   sclang.send(expr, false)
 end
 
---- Evalute a SuperCollider expression without feedback from the post window.
+--- Evalute an expression without feedback from the post window.
 ---@param expr Any valid SuperCollider expression.
 function scnvim.send_silent(expr)
   sclang.send(expr, true)
 end
 
---- Evalute a SuperCollider expression and get the result in a callback.
+--- Evalute an expression and get the return value in lua.
 ---@param expr Any valid SuperCollider expression.
----@param cb A callback with a result argument.
+---@param cb A callback that will receive the return value as its first argument.
+---@usage scnvim.eval('1 + 1', function(res)
+---  print(res)
+--- end)
 function scnvim.eval(expr, cb)
   sclang.eval(expr, cb)
 end
