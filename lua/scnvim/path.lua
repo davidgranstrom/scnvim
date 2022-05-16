@@ -14,6 +14,14 @@ local function escape(path)
   end
 end
 
+local function get_snippet_file()
+  local filename = 'scnvim_snippets.lua'
+  if config.snippet.engine.name == 'ultisnips' then
+    filename = 'supercollider.snippets'
+  end
+  return M.concat(M.get_cache_dir(), filename)
+end
+
 --- Get the host system
 ---@return 'windows', 'macos', 'linux'
 function M.get_system()
@@ -51,14 +59,22 @@ function M.exists(path)
   return uv.fs_stat(path) ~= nil
 end
 
---- Get the generated snippet file path
----@return Absolute path to the snippet file
-function M.get_snippet_file()
-  local filename = 'scnvim_snippets.lua'
-  if config.snippet.engine.name == 'ultisnips' then
-    filename = 'supercollider.snippets'
+--- Get the path to a generated assset
+---@param name The asset to get.
+--- one of: snippets, syntax, tags
+function M.get_asset(name)
+  local ret
+  if name == 'snippets' then
+    ret = get_snippet_file()
+  elseif name == 'syntax' then
+    ret = M.concat(M.get_cache_dir(), 'classes.vim')
+  elseif name == 'tags' then
+    ret = M.concat(M.get_cache_dir(), 'tags')
   end
-  return M.concat(M.get_cache_dir(), filename)
+  if not M.exists(ret) then
+    error('[scnvim] No such file: ' .. tostring(ret))
+  end
+  return ret
 end
 
 --- Normalize a path.
