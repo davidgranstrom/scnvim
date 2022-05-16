@@ -2,7 +2,7 @@
 --- The interpreter's post window.
 ---@module scnvim.postwin
 
-local utils = require 'scnvim.utils'
+local path = require 'scnvim.path'
 local config = require 'scnvim.config'
 local api = vim.api
 local M = {}
@@ -168,7 +168,7 @@ function M.post(line)
     end
   end
 
-  if utils.is_windows then
+  if path.is_windows then
     line = line:gsub('\r', '')
   end
   vim.api.nvim_buf_set_lines(M.buf, -1, -1, true, { line })
