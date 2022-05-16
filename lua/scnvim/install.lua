@@ -7,28 +7,6 @@ local _path = require 'scnvim.path'
 local uv = vim.loop
 local M = {}
 
-local home_dir = uv.os_homedir()
-local extension_dirs
-
-local xdg_data_home = uv.os_getenv 'XDG_DATA_HOME'
-if xdg_data_home then
-  local extensions = xdg_data_home .. '/SuperCollider/Extensions'
-  -- indexed with keys returned by uname
-  extension_dirs = {
-    Darwin = extensions,
-    Linux = extensions,
-    Windows = home_dir .. '\\AppData\\Local\\SuperCollider\\Extensions',
-  }
-else
-  extension_dirs = {
-    Darwin = home_dir .. '/Library/Application Support/SuperCollider/Extensions',
-    Linux = home_dir .. '/.local/share/SuperCollider/Extensions',
-    Windows = home_dir .. '\\AppData\\Local\\SuperCollider\\Extensions',
-  }
-end
-
--- Utils
-
 local function is_symlink(path)
   local stat = uv.fs_lstat(path)
   if stat then
@@ -38,22 +16,27 @@ local function is_symlink(path)
 end
 
 local function get_ext_dir()
-  local sysname = uv.os_uname().sysname
-  -- Windows is Windows_NT or WindowsNT
-  sysname = sysname:gsub('_NT', ''):gsub('NT', '')
-  local dir = extension_dirs[sysname]
-  if not dir then
-    return nil, 'Could not get SuperCollider Extensions dir'
+  local sysname = _path.get_system()
+  local xdg = uv.os_getenv 'XDG_DATA_HOME'
+  local home_dir = uv.os_homedir()
+  if sysname == 'windows' then
+    return _path.escape(_path.concat(home_dir, 'AppData', 'Local', 'SuperCollider', 'Extensions'))
   end
-  return dir
+  if xdg then
+    return _path.concat(xdg, 'SuperCollider', 'Extensions')
+  end
+  if sysname == 'linux' then
+    return _path.concat(home_dir, '.local', 'share', 'SuperCollider', 'Extensions')
+  elseif sysname == 'macos' then
+    return _path.concat(home_dir, 'Library', 'Application Support', 'SuperCollider', 'Extensions')
+  end
+  error '[scnvim] could not get SuperCollider Extensions dir'
 end
 
 local function get_target_dir()
   local ext_dir = assert(get_ext_dir())
-  return ext_dir .. _path.sep .. 'scide_scnvim'
+  return _path.concat(ext_dir, 'scide_scnvim')
 end
-
--- Interface
 
 --- Create a symlink to the SCNvim classes
 function M.link()
@@ -75,6 +58,7 @@ function M.unlink()
 end
 
 --- Check if classes are linked
+---@return Absolute path to Extensions/scide_scnvim
 function M.check()
   local link_target = get_target_dir()
   return is_symlink(link_target) and link_target or nil
