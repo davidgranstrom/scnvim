@@ -41,24 +41,30 @@ local default = {
     -- The direction of the post window, 'left' or 'right'.
     -- If 'horizontal' is true, then use 'top' or 'bottom'.
     direction = 'right',
-    -- Use a fixed size for the post window.
+    -- Use a fixed size for the post window. The window will always use this size if closed.
     fixed_size = nil,
+    -- Use a custom initial size
+    size = nil,
     -- Use a horizontal split instead of vertical
     horizontal = false,
     -- Use a floating post window.
-    -- float = {
-    --   -- Horizontal offset. Increasing this value will "push" the window to the left of the editor.
-    --   offset_x = 0,
-    --   -- Vertical offset. Increasing this value will "push" the window to the bottom of the editor.
-    --   offset_y = 0,
-    --   -- Set window local options for the post window
-    --   win_options = function(id)
-    --   end
-    --   -- See :h nvim_open_win for possible values
-    --   config = {
-    --     border = 'single',
-    --   }
-    -- },
+    float = {
+      -- Use a floating post window
+      enabled = false,
+      -- Horizontal offset. Increasing this value will "push" the window to the left of the editor.
+      offset_x = 0,
+      -- Vertical offset. Increasing this value will "push" the window to the bottom of the editor.
+      offset_y = 0,
+      -- See :h nvim_open_win for possible values
+      config = {
+        border = 'single',
+      },
+      -- Callback that runs whenever the floating window was opened.
+      -- Can be used to set window local options.
+      callback = function(id)
+        vim.api.nvim_win_set_option(id, 'winblend', 10)
+      end,
+    },
   },
   editor = {
     -- Set to `false` to disable flash

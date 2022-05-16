@@ -7,14 +7,6 @@ local config = require 'scnvim.config'
 local api = vim.api
 local M = {}
 
--- Values to be cached
-local scrollback
-local auto_toggle_error
-local direction
-local orientation
-local fixed_size
-local float_options
-
 --- Test that the post window buffer is valid.
 ---@return True if the buffer is valid otherwise false.
 ---@private
@@ -39,8 +31,8 @@ end
 --- Save the last size of the post window.
 --@private
 local function save_last_size()
-  if not float_options then
-    if orientation == 'vertical' then
+  if not config.postwin.float.enabled then
+    if not config.postwin.horizontal then
       M.last_size = api.nvim_win_get_width(M.win)
     else
       M.last_size = api.nvim_win_get_height(M.win)
@@ -59,21 +51,43 @@ local function open_float()
     border = 'single',
     style = 'minimal',
   }
-  local offset_x = 0
-  local offset_y = 0
-  local win_options = function(id)
-    api.nvim_win_set_option(id, 'winblend', 10)
-  end
-  if type(float_options) == 'table' then
-    options = vim.tbl_deep_extend('keep', float_options.config, options)
-    offset_x = float_options.offset_x or 0
-    offset_y = float_options.offset_y or 0
-    win_options = float_options.win_options or win_options
-  end
+  local offset_x = config.postwin.float.offset_x
+  local offset_y = config.postwin.float.offset_y
+  options = vim.tbl_deep_extend('keep', config.postwin.float.config, options)
   options.col = vim.o.columns - offset_x
   options.row = offset_y
   local id = api.nvim_open_win(M.buf, false, options)
-  win_options(id)
+  local callback = config.postwin.float.callback
+  if callback then
+    callback(id)
+  end
+  return id
+end
+
+--- Open a post window as a split
+---@private
+local function open_split()
+  local direction = config.postwin.direction == 'right' and 'botright' or 'topleft'
+  local orientation = config.postwin.horizontal and '' or 'vertical'
+  vim.cmd(string.format('%s %s new', orientation, direction))
+  local id = api.nvim_get_current_win()
+  local size
+  if config.postwin.fixed_size then
+    size = config.postwin.fixed_size
+  else
+    size = M.last_size or config.postwin.size
+  end
+  if orientation == 'vertical' then
+    api.nvim_win_set_width(id, size or math.floor(vim.o.columns / 2))
+  else
+    api.nvim_win_set_height(id, size or math.floor(vim.o.lines / 3))
+  end
+  api.nvim_win_set_buf(id, M.buf)
+  api.nvim_exec_autocmds('FileType', {
+    buffer = M.buf,
+    modeline = false,
+  })
+  vim.cmd [[ wincmd p ]]
   return id
 end
 
@@ -86,27 +100,12 @@ function M.open()
   if not buf_is_valid() then
     create()
   end
-  if float_options then
+  if config.postwin.float.enabled then
     M.win = open_float()
-    return M.win
-  end
-  vim.cmd(string.format('%s %s new', orientation, direction))
-  local id = api.nvim_get_current_win()
-  if orientation == 'vertical' then
-    local width = fixed_size or M.last_size or math.floor(vim.o.columns / 2)
-    api.nvim_win_set_width(id, width)
   else
-    local height = fixed_size or M.last_size or math.floor(vim.o.lines / 3)
-    api.nvim_win_set_height(id, height)
+    M.win = open_split()
   end
-  api.nvim_win_set_buf(id, M.buf)
-  api.nvim_exec_autocmds('FileType', {
-    buffer = M.buf,
-    modeline = false,
-  })
-  vim.cmd [[ wincmd p ]]
-  M.win = id
-  return id
+  return M.win
 end
 
 --- Test if the window is open.
@@ -161,6 +160,9 @@ function M.post(line)
     return
   end
 
+  local auto_toggle_error = config.postwin.auto_toggle_error
+  local scrollback = config.postwin.scrollback
+
   local found_error = line:match '^ERROR'
   if found_error and auto_toggle_error then
     if not M.is_open() then
@@ -209,25 +211,6 @@ function M.settings()
   vim.opt_local.foldcolumn = '0'
   vim.opt_local.winfixwidth = true
   vim.opt_local.tabstop = 4
-end
-
---- Setup function.
---- Cache some values.
----@private
-function M.setup()
-  if config.postwin.direction == 'right' then
-    direction = 'botright'
-  elseif config.direction == 'left' then
-    direction = 'topleft'
-  end
-  orientation = 'vertical'
-  if config.postwin.horizontal then
-    orientation = ''
-  end
-  auto_toggle_error = config.postwin.auto_toggle_error
-  scrollback = config.postwin.scrollback
-  fixed_size = config.postwin.fixed_size
-  float_options = config.postwin.float
 end
 
 return M

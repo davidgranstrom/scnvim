@@ -7,7 +7,6 @@ local sclang = require 'scnvim.sclang'
 local installer = require 'scnvim.install'
 local editor = require 'scnvim.editor'
 local help = require 'scnvim.help'
-local postwin = require 'scnvim.postwin'
 local config = require 'scnvim.config'
 
 local scnvim = {}
@@ -22,17 +21,8 @@ function scnvim.setup(user_config)
   end
   user_config = user_config or {}
   config.resolve(user_config)
-  local modules = {
-    editor,
-    help,
-    postwin,
-  }
-  for _, module in ipairs(modules) do
-    local ok, err = pcall(module.setup, config)
-    if not ok then
-      print(string.format('[scnvim] %s error: %s', module.name, err))
-    end
-  end
+  editor.setup()
+  help.setup()
 end
 
 --- Evalute a SuperCollider expression.
