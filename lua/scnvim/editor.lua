@@ -25,6 +25,19 @@ local function flash_once(start, finish, delay)
   end, delay)
 end
 
+local function apply_keymaps()
+  for key, value in pairs(config.mapping) do
+    -- handle list of mappings to same key
+    if value[1] ~= nil then
+      for _, v in ipairs(value) do
+        vim.keymap.set(v.modes, key, v.fn, { buffer = true })
+      end
+    else
+      vim.keymap.set(value.modes, key, value.fn, { buffer = true })
+    end
+  end
+end
+
 function M.setup()
   local id = api.nvim_create_augroup('scnvim_editor', { clear = true })
   api.nvim_create_autocmd('VimLeavePre', {
@@ -50,6 +63,12 @@ function M.setup()
     desc = 'Apply settings',
     pattern = 'supercollider',
     callback = settings,
+  })
+  api.nvim_create_autocmd('FileType', {
+    group = id,
+    pattern = 'supercollider',
+    desc = 'Apply mappings',
+    callback = apply_keymaps,
   })
   api.nvim_create_autocmd('FileType', {
     group = id,
