@@ -7,11 +7,7 @@ local uv = vim.loop
 local config = require 'scnvim.config'
 
 local function escape(path)
-  if M.is_windows and not vim.opt.shellslash:get() then
-    return vim.fn.escape(path, '\\')
-  else
-    return path
-  end
+  return vim.fn.escape(path, [[ \]])
 end
 
 --- Get the host system
