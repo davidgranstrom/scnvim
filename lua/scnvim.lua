@@ -6,7 +6,6 @@
 local sclang = require 'scnvim.sclang'
 local installer = require 'scnvim.install'
 local editor = require 'scnvim.editor'
-local help = require 'scnvim.help'
 local config = require 'scnvim.config'
 
 local scnvim = {}
@@ -22,7 +21,6 @@ function scnvim.setup(user_config)
   user_config = user_config or {}
   config.resolve(user_config)
   editor.setup()
-  help.setup()
 end
 
 --- Evalute a SuperCollider expression.
