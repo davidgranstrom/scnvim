@@ -43,12 +43,10 @@ M.is_windows = (M.get_system() == 'windows')
 M.sep = M.is_windows and '\\' or '/'
 
 --- Get the scnvim cache directory.
----@return An absolute path to the cache directory
+---@return The absolute path to the cache directory
 function M.get_cache_dir()
   local cache_path = M.concat(vim.fn.stdpath 'cache', 'scnvim')
-  if not uv.fs_stat(cache_path) then
-    uv.fs_mkdir(cache_path, tonumber('777', 8))
-  end
+  vim.fn.mkdir(cache_path, 'p')
   return cache_path
 end
 
