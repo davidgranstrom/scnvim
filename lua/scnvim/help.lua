@@ -95,6 +95,30 @@ local function open_from_quickfix(index)
   end
 end
 
+--- Default selector implementation
+---@param err nil if no error otherwise string
+---@param results Table with results
+local function default_selector(err, results)
+  assert(not err, err)
+  local id = api.nvim_create_augroup('scnvim_qf_conceal', { clear = true })
+  api.nvim_create_autocmd('BufWinEnter', {
+    group = id,
+    desc = 'Apply quickfix conceal',
+    pattern = 'quickfix',
+    callback = function()
+      vim.cmd [[syntax match SCNvimConcealResults /^.*Help\/\|.txt\||.*|\|/ conceal]]
+      vim.opt_local.conceallevel = 2
+      vim.opt_local.concealcursor = 'nvic'
+    end,
+  })
+  vim.fn.setqflist(results)
+  vim.cmd [[ copen ]]
+  vim.keymap.set('n', '<Enter>', function()
+    local linenr = api.nvim_win_get_cursor(0)[1]
+    open_from_quickfix(linenr)
+  end, { buffer = true })
+end
+
 --- Get a JSON document with documentation overview
 -- @param target_dir The target help directory
 -- @return A JSON string with the document map
@@ -169,13 +193,7 @@ function M.prepare_help_for(subject)
       if selector then
         selector(err, results)
       else
-        -- Default implementation
-        vim.fn.setqflist(results)
-        vim.cmd [[ copen ]]
-        vim.keymap.set('n', '<Enter>', function()
-          local linenr = api.nvim_win_get_cursor(0)[1]
-          open_from_quickfix(linenr)
-        end, { buffer = true })
+        default_selector(err, results)
       end
     end)
   end
@@ -265,27 +283,6 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
       schedule(concurrent_jobs)
     end)
   end)
-end
-
---- Setup function
----@private
-function M.setup()
-  if config.documentation then
-    local selector = config.documentation.selector
-    if not selector then
-      local id = api.nvim_create_augroup('scnvim_qf_conceal', { clear = true })
-      api.nvim_create_autocmd('BufWinEnter', {
-        group = id,
-        desc = 'Apply quickfix conceal',
-        pattern = 'quickfix',
-        callback = function()
-          vim.cmd [[syntax match SCNvimConcealResults /^.*Help\/\|.txt\||.*|\|/ conceal]]
-          vim.opt_local.conceallevel = 2
-          vim.opt_local.concealcursor = 'nvic'
-        end,
-      })
-    end
-  end
 end
 
 return M
