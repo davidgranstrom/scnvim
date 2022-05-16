@@ -73,7 +73,7 @@ function M.normalize(path)
 end
 
 --- Concatenate items using the system path separator
----@vararg strings to concatenate into a path
+---@param ... strings to concatenate into a path
 function M.concat(...)
   local items = { ... }
   return table.concat(items, M.sep)
