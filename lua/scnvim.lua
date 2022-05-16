@@ -5,14 +5,13 @@
 
 local sclang = require 'scnvim.sclang'
 local installer = require 'scnvim.install'
-local map = require 'scnvim.map'
 local editor = require 'scnvim.editor'
 local help = require 'scnvim.help'
 local postwin = require 'scnvim.postwin'
 local config = require 'scnvim.config'
-local scnvim = {}
 
-scnvim.map = map
+local scnvim = {}
+scnvim.map = require 'scnvim.map'
 
 function scnvim.setup(user_config)
   if config.ensure_installed then
@@ -26,7 +25,6 @@ function scnvim.setup(user_config)
   local modules = {
     editor,
     help,
-    map,
     postwin,
   }
   for _, module in ipairs(modules) do
