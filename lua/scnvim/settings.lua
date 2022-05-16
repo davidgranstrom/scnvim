@@ -4,13 +4,12 @@
 ---@module scnvim.settings
 
 local config = require 'scnvim.config'
-local get_cache_dir = require('scnvim.path').get_cache_dir
-local uv = vim.loop
+local path = require 'scnvim.path'
 
 return function()
   -- tags
-  local tags_file = get_cache_dir() .. '/tags'
-  if uv.fs_stat(tags_file) then
+  local tags_file = path.get_asset 'tags'
+  if path.exists(tags_file) then
     vim.opt_local.tags:append(tags_file)
   end
 
