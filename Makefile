@@ -1,4 +1,4 @@
-source = lua ftdetect
+source = lua ftdetect test/spec
 
 all: stylua luacheck
 
