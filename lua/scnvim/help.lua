@@ -1,6 +1,8 @@
---- Help system
---- Convert schelp files into plain text and display them in nvim.
+--- Help system.
+--- Convert schelp files into plain text by using an external program (e.g. pandoc) and display them in nvim.
+--- Uses the built-in HelpBrowser if no `config.documentation.cmd` is found.
 ---@module scnvim.help
+---@see scnvim.config
 
 local sclang = require 'scnvim.sclang'
 local config = require 'scnvim.config'
@@ -119,9 +121,9 @@ local function default_selector(err, results)
   end, { buffer = true })
 end
 
---- Get a JSON document with documentation overview
--- @param target_dir The target help directory
--- @return A JSON string with the document map
+--- Get a table with a documentation overview
+---@param target_dir The target help directory (SCDoc.helpTargetDir)
+---@return A JSON formatted string
 function M.get_docmap(target_dir)
   if M.docmap then
     return M.docmap
@@ -145,7 +147,7 @@ end
 ---@return A table with method entries that is suitable for the quickfix list.
 function M.find_methods(name, target_dir)
   local path = vim.fn.expand(target_dir)
-  local docmap = M.get_docmap(path .. _path.sep .. 'docmap.json')
+  local docmap = M.get_docmap(_path.concat(path, 'docmap.json'))
   local results = {}
   for _, value in pairs(docmap) do
     for _, method in ipairs(value.methods) do
