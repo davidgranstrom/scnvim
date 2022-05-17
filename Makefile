@@ -14,4 +14,7 @@ stylua:
 doc:
 	ldoc lua -c .ldoc .
 
-.PHONY: luacheck stylua doc
+test:
+	make --directory test
+
+.PHONY: luacheck stylua doc test
