@@ -1,5 +1,4 @@
---- Path
---- Path and host related functions
+--- Path and platform related functions
 ---@module scnvim.path
 
 local M = {}
@@ -45,10 +44,15 @@ function M.exists(path)
   return uv.fs_stat(path) ~= nil
 end
 
---- Get the path to a generated assset
+--- Get the path to a generated assset.
+---
+--- * snippets
+--- * syntax
+--- * tags
+---
 ---@param name The asset to get.
---- one of: snippets, syntax, tags
 ---@return Absolute path to the asset
+---@usage path.get_asset 'snippets'
 function M.get_asset(name)
   local cache_dir = M.get_cache_dir()
   if name == 'snippets' then
@@ -73,14 +77,18 @@ function M.normalize(path)
 end
 
 --- Concatenate items using the system path separator
----@param ... strings to concatenate into a path
+---@param ... items to concatenate into a path
+---@usage
+--- local cache_dir = path.get_cache_dir()
+--- local res = path.concat(cache_dir, 'subdir', 'file.txt')
+--- print(res) -- /Users/usr/.cache/nvim/scnvim/subdir/file.txt
 function M.concat(...)
   local items = { ... }
   return table.concat(items, M.sep)
 end
 
 --- Get the root dir of this plugin
----@return Absolute path to the plugin root dir or nil if not not found
+---@return Absolute path to the plugin root dir
 function M.get_plugin_root_dir()
   if M.root_dir then
     return M.root_dir
@@ -93,7 +101,7 @@ function M.get_plugin_root_dir()
       return path
     end
   end
-  return nil
+  error '[scnvim] could not get plugin root dir'
 end
 
 return M
