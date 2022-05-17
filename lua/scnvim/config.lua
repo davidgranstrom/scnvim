@@ -67,20 +67,30 @@ local default = {
     },
   },
   editor = {
-    -- Set to `false` to disable flash
-    flash = {
-      -- The duration of the flash in ms.
-      duration = 100,
-      -- The number of repeats.
-      repeats = 2,
+    highlight = {
       -- Use an existing highlight group for the flash color.
-      hl_group = 'TermCursor',
-      -- Or use specified colors directly
-      -- Setting any of these will override the `hl_group` entry above.
-      -- guifg = 'black',
-      -- guifg = 'white'
-      -- ctermfg = 'black',
-      -- ctermfg = 'white'
+      color = 'TermCursor',
+      -- Use a table for custom colors.
+      -- color = {
+      --   guifg = 'black',
+      --   guibg = 'white',
+      --   ctermfg = 'black',
+      --   ctermbg = 'white',
+      -- },
+      -- The highligh type
+      type = 'flash', -- 'fade', 'none'
+      -- Flash options
+      flash = {
+        -- The duration of the flash in ms.
+        duration = 100,
+        -- The number of repeats.
+        repeats = 2,
+      },
+      -- Fade options
+      fade = {
+        -- The duration of the fade in ms
+        duration = 375,
+      },
     },
   },
   completion = {
