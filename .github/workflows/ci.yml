@@ -18,13 +18,13 @@ jobs:
           # - os: windows-latest
           #   url: https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-win64.zip
     steps:
+      - uses: actions/checkout@v3
       - name: prepare
         run: |
           mkdir -p _neovim
           curl -sL ${{ matrix.url }} | tar xzf - --strip-components=1 -C "${PWD}/_neovim"
 
       - name: run tests
-        uses: actions/checkout@v3
         run: |
           export PATH="${PWD}/_neovim/bin:${PATH}"
           export VIM="${PWD}/_neovim/share/nvim/runtime"
