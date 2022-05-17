@@ -34,7 +34,7 @@ local function get_ext_dir()
 end
 
 local function get_target_dir()
-  local ext_dir = assert(get_ext_dir())
+  local ext_dir = get_ext_dir()
   return _path.concat(ext_dir, 'scide_scnvim')
 end
 
@@ -43,9 +43,9 @@ function M.link()
   local link_target = get_target_dir()
   local target_exists = uv.fs_stat(link_target)
   if not target_exists then
-    local root_dir = assert(_path.get_plugin_root_dir(), '[scnvim] could not get plugin root dir')
+    local root_dir = _path.get_plugin_root_dir()
     local source = _path.concat(root_dir, 'scide_scnvim')
-    assert(uv.fs_symlink(source, link_target, { dir = true, junction = true }))
+    uv.fs_symlink(source, link_target, { dir = true, junction = true })
   end
 end
 
@@ -53,7 +53,7 @@ end
 function M.unlink()
   local link_target = get_target_dir()
   if is_symlink(link_target) then
-    assert(uv.fs_unlink(link_target))
+    uv.fs_unlink(link_target)
   end
 end
 
