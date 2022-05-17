@@ -4,7 +4,7 @@ local eq = assert.are.same
 
 describe('path', function()
   it('tests that a directory exists', function()
-    local cur_dir = vim.fn.expand('%:p:h')
+    local cur_dir = vim.fn.expand '%:p:h'
     local dir = path.concat(cur_dir, 'spec', 'fixtures')
     assert.is_true(path.exists(dir))
     dir = path.concat(cur_dir, 'spec', 'nop')
@@ -12,7 +12,7 @@ describe('path', function()
   end)
 
   it('tests that a file exists', function()
-    local cur_dir = vim.fn.expand('%:p:h')
+    local cur_dir = vim.fn.expand '%:p:h'
     local file = path.concat(cur_dir, 'spec', 'fixtures', 'file.lua')
     assert.is_true(path.exists(file))
     file = path.concat(cur_dir, 'spec', 'fixtures', 'nop.lua')
@@ -36,7 +36,9 @@ describe('path', function()
     asset = path.get_asset 'tags'
     asset = string.match(asset, 'tags')
     eq(asset, 'tags')
-    assert.has_errors(function() path.get_asset 'foo' end)
+    assert.has_errors(function()
+      path.get_asset 'foo'
+    end)
   end)
 
   it('returns the cache directory', function()
