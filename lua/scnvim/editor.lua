@@ -12,8 +12,6 @@ local api = vim.api
 local uv = vim.loop
 local M = {}
 
-local flash_ns = api.nvim_create_namespace 'scnvim_flash'
-
 --- Get a range of lines.
 ---@param lstart Start index.
 ---@param lend  End index.
@@ -27,10 +25,95 @@ end
 ---@param finish End range.
 ---@param delay How long to highlight the text.
 local function flash_once(start, finish, delay)
-  vim.highlight.range(0, flash_ns, 'SCNvimEval', start, finish, { inclusive = true })
+  local ns = api.nvim_create_namespace 'scnvim_flash'
+  vim.highlight.range(0, ns, 'SCNvimEval', start, finish, { inclusive = true })
   vim.defer_fn(function()
-    api.nvim_buf_clear_namespace(0, flash_ns, 0, -1)
+    api.nvim_buf_clear_namespace(0, ns, 0, -1)
   end, delay)
+end
+
+--- Apply a flashing effect to a text region.
+---@param start starting position (tuple {line,col} zero indexed)
+---@param finish finish position (tuple {line,col} zero indexed)
+---@local
+local function flash_region(start, finish)
+  local duration = config.editor.highlight.flash.duration
+  local repeats = config.editor.highlight.flash.repeats
+  if duration == 0 or repeats == 0 then
+    return
+  end
+  local delta = duration / repeats
+  flash_once(start, finish, delta)
+  if repeats > 1 then
+    local count = 0
+    local timer = uv.new_timer()
+    timer:start(
+      duration,
+      duration,
+      vim.schedule_wrap(function()
+        flash_once(start, finish, delta)
+        count = count + 1
+        if count == repeats - 1 then
+          timer:stop()
+        end
+      end)
+    )
+  end
+end
+
+--- Apply a fading effect to a text region.
+---@param start starting position (tuple {line,col} zero indexed)
+---@param finish finish position (tuple {line,col} zero indexed)
+---@local
+local function fade_region(start, finish)
+  local lstart = start[1]
+  local lend = finish[1]
+  local width = 1
+  if vim.fn.mode() == 'v' then
+    width = finish[2]
+  else
+    local lines = get_range(lstart + 1, lend + 1)
+    for _, line in ipairs(lines) do
+      if #line > width then
+        width = #line
+      end
+    end
+  end
+  local curwin = api.nvim_get_current_win()
+  local buf = M.fade_buf or api.nvim_create_buf(false, true)
+  local options = {
+    relative = 'win',
+    win = curwin,
+    width = width > 0 and width or 1,
+    height = lend - lstart + 1,
+    bufpos = { lstart - 1, 0 },
+    focusable = false,
+    style = 'minimal',
+    border = 'none',
+  }
+  local id = api.nvim_open_win(buf, false, options)
+  api.nvim_win_set_option(id, 'winhl', 'Normal:' .. 'SCNvimEval')
+  local timer = uv.new_timer()
+  local rate = 50
+  local accum = 0
+  local duration = math.floor(config.editor.highlight.fade.duration)
+  timer:start(
+    0,
+    rate,
+    vim.schedule_wrap(function()
+      accum = accum + rate
+      if accum > duration then
+        accum = duration
+      end
+      local value = math.pow(accum / duration, 2.5)
+      api.nvim_win_set_option(id, 'winblend', math.floor(100 * value))
+      if accum >= duration then
+        timer:stop()
+        api.nvim_win_close(id, true)
+      end
+    end)
+  )
+  M.fade_buf = buf
 end
 
 --- Applies keymaps from the user configuration.
@@ -47,12 +130,28 @@ local function apply_keymaps()
   end
 end
 
---- Setup function.
----
---- Called from the main module.
----@see scnvim
+--- Create a highlight command
+---@return The highlight ex command string
 ---@local
-function M.setup()
+local function create_hl_group()
+  local color = config.editor.highlight.color
+  if type(color) == 'string' then
+    color = string.format('highlight default link SCNvimEval %s', color)
+  elseif type(color) == 'table' then
+    color = string.format(
+      'highlight default SCNvimEval guifg=%s guibg=%s ctermfg=%s ctermbg=%s',
+      color.guifg or 'black',
+      color.guibg or 'white',
+      color.ctermfg or 'black',
+      color.ctermbg or 'white'
+    )
+  end
+  vim.cmd(color)
+  return color
+end
+
+--- Create autocommands
+local function create_autocmds()
   local id = api.nvim_create_augroup('scnvim_editor', { clear = true })
   api.nvim_create_autocmd('VimLeavePre', {
     group = id,
@@ -98,34 +197,7 @@ function M.setup()
       callback = signature.ins_show,
     })
   end
-
-  if not config.editor.flash then
-    return
-  end
-
-  M.flash_duration = config.editor.flash.duration
-  M.flash_repeats = config.editor.flash.repeats
-
-  local hl_group = config.editor.flash.hl_group
-  local guifg = config.editor.flash.guifg
-  local guibg = config.editor.flash.guibg
-  local ctermfg = config.editor.flash.ctermfg
-  local ctermbg = config.editor.flash.ctermbg
-  local hl_cmd
-  if guifg or guibg or ctermfg or ctermbg then
-    hl_cmd = string.format(
-      'highlight default SCNvimEval guifg=%s guibg=%s ctermfg=%s ctermbg=%s',
-      guifg or 'black',
-      guibg or 'white',
-      ctermfg or 'black',
-      ctermbg or 'white'
-    )
-  else
-    hl_cmd = string.format('highlight default link SCNvimEval %s', hl_group)
-  end
-
-  -- Create the highlight group
-  vim.cmd(hl_cmd)
+  local hl_cmd = create_hl_group()
   api.nvim_create_autocmd('ColorScheme', {
     group = id,
     desc = 'Reapply custom highlight group',
@@ -134,35 +206,20 @@ function M.setup()
   })
 end
 
---- Flash a text region.
----@param start starting position (tuple {line,col} zero indexed)
----@param finish finish position (tuple {line,col} zero indexed)
+--- Setup function.
+---
+--- Called from the main module.
+---@see scnvim
 ---@local
-function M.flash(start, finish)
-  if not config.editor.flash then
-    return
-  end
-  local duration = M.flash_duration
-  local repeats = M.flash_repeats
-  if duration == 0 or repeats == 0 then
-    return
-  end
-  local delta = duration / repeats
-  flash_once(start, finish, delta)
-  if repeats > 1 then
-    local count = 0
-    local timer = uv.new_timer()
-    timer:start(
-      duration,
-      duration,
-      vim.schedule_wrap(function()
-        flash_once(start, finish, delta)
-        count = count + 1
-        if count == repeats - 1 then
-          timer:stop()
-        end
-      end)
-    )
+function M.setup()
+  create_autocmds()
+  local highlight = config.editor.highlight
+  if highlight.type == 'flash' then
+    M.highlight = flash_region
+  elseif highlight.type == 'fade' then
+    M.highlight = fade_region
+  else
+    M.highlight = function() end
   end
 end
 
@@ -187,7 +244,7 @@ function M.send_line(cb, flash)
   if flash then
     local start = { linenr - 1, 0 }
     local finish = { linenr - 1, #line[1] }
-    M.flash(start, finish)
+    M.highlight(start, finish)
   end
 end
 
@@ -208,7 +265,7 @@ function M.send_block(cb, flash)
   if flash then
     local start = { lstart - 1, 0 }
     local finish = { lend - 1, 0 }
-    M.flash(start, finish)
+    M.highlight(start, finish)
   end
 end
 
@@ -221,7 +278,7 @@ function M.send_selection(cb, flash)
   if flash then
     local start = { ret.line_start - 1, ret.col_start - 1 }
     local finish = { ret.line_end - 1, ret.col_end - 1 }
-    M.flash(start, finish)
+    M.highlight(start, finish)
   end
 end
 
