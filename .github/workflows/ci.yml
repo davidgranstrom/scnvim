@@ -24,6 +24,7 @@ jobs:
           curl -sL ${{ matrix.url }} | tar xzf - --strip-components=1 -C "${PWD}/_neovim"
 
       - name: run tests
+        uses: actions/checkout@v3
         run: |
           export PATH="${PWD}/_neovim/bin:${PATH}"
           export VIM="${PWD}/_neovim/share/nvim/runtime"
