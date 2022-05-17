@@ -1,6 +1,10 @@
---- Map
---- Helper object to define a mapping
+--- Helper object to define a mapping.
+--- Usually used exported from the scnvim module
 ---@module scnvim.map
+---@see scnvim.editor
+---@see scnvim
+---@usage map.action(modes, callback, flash)
+---@usage scnvim.map.send_line({'i', 'n'})
 
 local editor = require 'scnvim.editor'
 

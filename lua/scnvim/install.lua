@@ -1,5 +1,5 @@
---- Installation
---- Cross platform installation of SCNvim SuperCollider classes.
+--- Installer for SCNvim SuperCollider classes.
+--- Cross platform installation that respects XDG Base Directory Specification.
 ---@module scnvim.install
 
 local _path = require 'scnvim.path'
@@ -38,7 +38,7 @@ local function get_target_dir()
   return _path.concat(ext_dir, 'scide_scnvim')
 end
 
---- Create a symlink to the SCNvim classes
+--- Create a symbolic link to the SCNvim classes
 function M.link()
   local link_target = get_target_dir()
   local target_exists = uv.fs_stat(link_target)
@@ -49,7 +49,7 @@ function M.link()
   end
 end
 
---- Remove symlink to the SCNvim classes
+--- Remove the symbolic link to the SCNvim classes
 function M.unlink()
   local link_target = get_target_dir()
   if is_symlink(link_target) then
