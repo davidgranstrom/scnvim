@@ -171,7 +171,7 @@ function M.prepare_help_for(subject)
     return
   end
 
-  if not config.documentation then
+  if not config.documentation.cmd then
     local cmd = string.format([[HelpBrowser.openHelpFor(\"%s\")]], subject)
     sclang.send(cmd, true)
     return
