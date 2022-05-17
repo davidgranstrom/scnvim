@@ -1,25 +1,19 @@
--- Configuration
---
---
---@module scnvim.config
+--- Default configuration.
+--- Provides fallback values not specified in the user config.
+--- Please see source file for the default values.
+---@module scnvim.config
 
+--- default configuration
 local default = {
-  -- If installed once, this can be set to false to improve startup time.
-  ensure_installed = true,
+  ensure_installed = true, -- If installed once, this can be set to false to improve startup time.
   sclang = {
-    -- Path to the sclang executable. Not needed if `sclang` is already in your $PATH.
-    path = nil,
-    -- Command line options passed to the `sclang` executable.
-    options = {},
-    -- The interval of updating the server status line
-    server_status_interval = 1,
+    path = nil, -- Path to the sclang executable. Not needed if `sclang` is already in your $PATH.
+    options = {}, -- Command line options passed to the `sclang` executable.
+    server_status_interval = 1, -- The interval of updating the server status line
   },
-  -- Mappings, empty by default.
-  mapping = {},
-  -- Set to `false` in order to use the HelpBrowser
+  mapping = {}, -- Mappings, empty by default.
   documentation = {
-    -- Absolute path to the render program (e.g. /opt/homebrew/bin/pandoc)
-    cmd = nil,
+    cmd = nil, -- Absolute path to the render program (e.g. /opt/homebrew/bin/pandoc)
     -- Options given to the render program. The default options are for
     -- `pandoc`. Any program that can convert html into plain text should work.
     --
@@ -32,29 +26,19 @@ local default = {
     selector = nil,
   },
   postwin = {
-    -- Use syntax colored post window output.
-    syntax = true,
-    -- Auto-toggle post window on errors.
-    auto_toggle_error = true,
-    -- The number of lines to save in the post window history.
-    scrollback = 5000,
+    syntax = true, -- Use syntax colored post window output.
+    auto_toggle_error = true, -- Auto-toggle post window on errors.
+    scrollback = 5000, -- The number of lines to save in the post window history.
     -- The direction of the post window, 'left' or 'right'.
     -- If 'horizontal' is true, then use 'top' or 'bottom'.
     direction = 'right',
-    -- Use a fixed size for the post window. The window will always use this size if closed.
-    fixed_size = nil,
-    -- Use a custom initial size
-    size = nil,
-    -- Use a horizontal split instead of vertical
-    horizontal = false,
-    -- Use a floating post window.
+    horizontal = false, -- Use a horizontal split instead of vertical
+    size = nil, -- Use a custom initial size
+    fixed_size = nil, -- Use a fixed size for the post window. The window will always use this size if closed.
     float = {
-      -- Use a floating post window
-      enabled = false,
-      -- Horizontal offset. Increasing this value will "push" the window to the left of the editor.
-      offset_x = 0,
-      -- Vertical offset. Increasing this value will "push" the window to the bottom of the editor.
-      offset_y = 0,
+      enabled = false, -- Use a floating post window
+      offset_x = 0, -- Horizontal offset. Increasing this value will "push" the window to the left of the editor.
+      offset_y = 0, -- Vertical offset. Increasing this value will "push" the window to the bottom of the editor.
       -- See :h nvim_open_win for possible values
       config = {
         border = 'single',
@@ -77,44 +61,32 @@ local default = {
       --   ctermfg = 'black',
       --   ctermbg = 'white',
       -- },
-      -- The highligh type
-      type = 'flash', -- 'fade', 'none'
-      -- Flash options
+      type = 'flash', -- highlight type: 'flash', 'fade' or 'none'
       flash = {
-        -- The duration of the flash in ms.
-        duration = 100,
-        -- The number of repeats.
-        repeats = 2,
+        duration = 100, -- The duration of the flash in ms.
+        repeats = 2, -- The number of repeats.
       },
-      -- Fade options
       fade = {
-        -- The duration of the fade in ms
-        duration = 375,
+        duration = 375, -- The duration of the fade in ms
       },
     },
   },
   completion = {
     signature = {
-      -- Show function signatures in a floating window
-      float = true,
-      -- Float configuration (see if we can use vim.diagnostic instead..)
-      config = {},
-      -- Show function signatures while typing in insert mode
-      auto = true,
+      float = true, -- Show function signatures in a floating window
+      auto = true, -- Show function signatures while typing in insert mode
+      config = {}, -- Float configuration (see if we can use vim.diagnostic instead..)
     },
   },
   snippet = {
     engine = {
-      -- name of the snippet engine
-      name = 'luasnip',
+      name = 'luasnip', -- name of the snippet engine
       -- engine specific options
       options = {
         descriptions = true, -- luasnip descriptions
       },
     },
-    -- Include mul/add arguments for UGens
-    mul_add = false,
-    -- Snippet style
+    mul_add = false, -- Include mul/add arguments for UGens
     style = 'default', -- 'compact' = do not put spaces between args, etc.
   },
 }
