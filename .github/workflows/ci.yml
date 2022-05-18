@@ -23,12 +23,9 @@ jobs:
         run: |
           mkdir -p _neovim
           curl -sL ${{ matrix.url }} | tar xzf - --strip-components=1 -C "${PWD}/_neovim"
-          mkdir -p test/.deps
-          git clone --depth 1 https://github.com/nvim-lua/plenary.nvim.git test/.deps/plenary.nvim
       - name: Run tests
         run: |
           export PATH="${PWD}/_neovim/bin:${PATH}"
           export VIM="${PWD}/_neovim/share/nvim/runtime"
           nvim --version
-          cd test
-          make unit_tests
+          make test
