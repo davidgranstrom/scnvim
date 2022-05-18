@@ -1,7 +1,11 @@
 # adapted from https://github.com/nvim-telescope/telescope.nvim/blob/master/.github/workflows/ci.yml
 name: unit tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
 
 jobs:
   unit_tests:
@@ -13,10 +17,8 @@ jobs:
         include:
           - os: ubuntu-20.04
             url: https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-linux64.tar.gz
-          # - os: macos-10.15
-          #   url: https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-macos.tar.gz
-          # - os: windows-latest
-          #   url: https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-win64.zip
+          - os: macos-10.15
+            url: https://github.com/neovim/neovim/releases/download/v0.7.0/nvim-macos.tar.gz
     steps:
       - uses: actions/checkout@v3
       - name: Prepare
@@ -28,4 +30,4 @@ jobs:
           export PATH="${PWD}/_neovim/bin:${PATH}"
           export VIM="${PWD}/_neovim/share/nvim/runtime"
           nvim --version
-          make test
+          SCNVIM_CI=1 make test
