@@ -1,3 +1,3 @@
-set rtp+=.
 set rtp+=../
-runtime! .deps/plenary.nvim/plugin/plenary.vim
+set packpath+=.
+packadd plenary.nvim
