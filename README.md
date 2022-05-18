@@ -2,13 +2,14 @@
 
 [Neovim][neovim] frontend for [SuperCollider][supercollider].
 
-[![lint and style check](https://github.com/davidgranstrom/scnvim/actions/workflows/lint.yml/badge.svg)](https://github.com/davidgranstrom/scnvim/actions/workflows/lint.yml) | [Documentation](https://github.com/davidgranstrom/scnvim/wiki) | [Showcase](https://github.com/davidgranstrom/scnvim/wiki/Showcase)
+[![unit tests](https://github.com/davidgranstrom/scnvim/actions/workflows/ci.yml/badge.svg)](https://github.com/davidgranstrom/scnvim/actions/workflows/ci.yml)
+[![lint and style check](https://github.com/davidgranstrom/scnvim/actions/workflows/lint.yml/badge.svg)](https://github.com/davidgranstrom/scnvim/actions/workflows/lint.yml) 
 
 ---
 
 ## News
 
-This plugin has recently undergone a big rewrite, take a look at the [installation](#installation) and [usage](#usage) and update your config.
+This plugin has recently undergone a big rewrite, take a look at the [installation](#installation) and [usage](#usage) sections to update your config.
 
 Have questions? Start a [discussion](https://github.com/davidgranstrom/scnvim/discussions) or join the [IRC channel](https://kiwiirc.com/client/irc.libera.chat/?&theme=mini#scnvim).
 
@@ -108,7 +109,7 @@ Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStar
 | `SCNvimStop`           | Stop SuperCollider                                             |
 | `SCNvimRecompile`      | Recompile SCClassLibrary                                       |
 | `SCNvimGenerateAssets` | Generate tags, syntax, snippets etc.                           |
-| `SCNvimHelp <subject>` | Open HelpBrowser for \<subject\>                               |
+| `SCNvimHelp <subject>` | Open help for \<subject\> (By default mapped to `K`)           |
 | `SCNvimStatusLine`     | Start to poll server status to be displayed in the status line |
 
 ### Additional setup
