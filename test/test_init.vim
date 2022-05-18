@@ -1,3 +1,3 @@
 set rtp+=../
-set packpath+=.
+set packpath+=.deps
 packadd plenary.nvim
