@@ -5,10 +5,6 @@ local M = {}
 local uv = vim.loop
 local config = require 'scnvim.config'
 
-local function escape(path)
-  return vim.fn.escape(path, [[ \]])
-end
-
 --- Get the host system
 ---@return 'windows', 'macos' or 'linux'
 function M.get_system()
