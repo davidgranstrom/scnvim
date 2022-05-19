@@ -128,7 +128,7 @@ end
 function M.set_current_path()
   if M.is_running() then
     local curpath = vim.fn.expand '%:p'
-    curpath = path.normalize(curpath)
+    curpath = vim.fn.escape(curpath, [[ \]])
     curpath = string.format('SCNvim.currentPath = "%s"', curpath)
     M.send(curpath, true)
   end
