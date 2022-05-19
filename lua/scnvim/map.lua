@@ -5,6 +5,7 @@
 ---@see scnvim
 ---@usage map.action(modes, callback, flash)
 ---@usage scnvim.map.send_line({'i', 'n'})
+---@local
 
 local editor = require 'scnvim.editor'
 

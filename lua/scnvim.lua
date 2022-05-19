@@ -1,4 +1,4 @@
---- Main interface
+--- Main module
 ---@module scnvim
 ---@author David Granström
 ---@license GPLv3

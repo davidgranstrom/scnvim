@@ -1,5 +1,6 @@
 --- Signature help.
 ---@module scnvim.completion.signature
+---@local
 
 --- TODO: refactor to use vim.diagnostic?
 
