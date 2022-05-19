@@ -35,6 +35,7 @@ end
 
 local function get_target_dir()
   local ext_dir = get_ext_dir()
+  vim.fn.mkdir(ext_dir, 'p')
   return _path.concat(ext_dir, 'scide_scnvim')
 end
 
