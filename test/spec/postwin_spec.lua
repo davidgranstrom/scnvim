@@ -33,8 +33,8 @@ describe('post window', function()
   end)
 
   it('can add lines to its buffer', function()
-    local id = postwin.open()
     local expected = '-> this is some output'
+    postwin.open()
     postwin.post(expected)
     local lines = vim.api.nvim_buf_get_lines(postwin.buf, -2, -1, true)
     assert.equals(1, #lines)
