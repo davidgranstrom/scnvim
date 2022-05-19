@@ -69,13 +69,6 @@ function M.get_asset(name)
   error '[scnvim] wrong asset type'
 end
 
---- Normalize a path.
----@param path The path to normalize.
----@return A normalized path.
-function M.normalize(path)
-  return escape(vim.fn.expand(path))
-end
-
 --- Concatenate items using the system path separator
 ---@param ... items to concatenate into a path
 ---@usage
