@@ -26,4 +26,3 @@ describe('commands', function()
     vim.cmd [[ bd! ]]
   end)
 end)
-
