@@ -1,6 +1,7 @@
 --- Perform health checks.
 ---@module scnvim.health
 ---@usage :checkhealth scnvim
+---@local
 
 local health = require 'health'
 local install = require 'scnvim.install'

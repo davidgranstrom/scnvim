@@ -1,6 +1,8 @@
 --- UDP
---- Communication between nvim and sclang.
+--- Receive data from sclang as UDP datagrams.
+--- The data should be in the form of JSON formatted strings.
 ---@module scnvim.udp
+---@local
 
 local uv = vim.loop
 local M = {}
@@ -11,11 +13,11 @@ local eval_callbacks = {}
 local callback_id = '0'
 
 --- UDP handlers.
--- Run the matching function in this table for the incoming 'action' parameter.
--- @see on_receive
+--- Run the matching function in this table for the incoming 'action' parameter.
 local Handlers = {}
 
 --- Evaluate a piece of lua code sent from sclang
+---@local
 function Handlers.luaeval(codestring)
   if not codestring then
     return
@@ -28,6 +30,7 @@ function Handlers.luaeval(codestring)
 end
 
 --- Receive data from sclang
+---@local
 function Handlers.eval(object)
   assert(object)
   local callback = eval_callbacks[object.id]
@@ -74,7 +77,8 @@ function M.stop_server()
 end
 
 --- Push a callback to be evaluated later.
--- utility function for the scnvim.eval API.
+--- Utility function for the scnvim.eval API.
+---@local
 function M.push_eval_callback(cb)
   vim.validate {
     cb = { cb, 'function' },

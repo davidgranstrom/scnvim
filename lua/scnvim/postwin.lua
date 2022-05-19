@@ -190,6 +190,8 @@ function M.post(line)
 end
 
 --- Apply default post window settings
+--- Used by an autocmd defined in scnvim.editor
+---@local
 function M.settings()
   vim.opt_local.buftype = 'nofile'
   vim.opt_local.bufhidden = 'hide'
