@@ -67,9 +67,17 @@ end
 --- Open a post window as a split
 ---@private
 local function open_split()
-  local direction = config.postwin.direction == 'right' and 'botright' or 'topleft'
-  local orientation = config.postwin.horizontal and '' or 'vertical'
-  vim.cmd(string.format('%s %s new', orientation, direction))
+  local horizontal = config.postwin.horizontal
+  local direction = config.postwin.direction
+  if direction == 'top' or direction == 'left' then
+    direction = 'topleft'
+  elseif direction == 'right' or direction == 'bot' then
+    direction = 'botright'
+  else
+    error '[scnvim] invalid config.postwin.direction'
+  end
+  local win_cmd = string.format('%s %s', direction, horizontal and 'new' or 'vnew')
+  vim.cmd(win_cmd)
   local id = api.nvim_get_current_win()
   local size
   if config.postwin.fixed_size then
@@ -77,10 +85,10 @@ local function open_split()
   else
     size = M.last_size or config.postwin.size
   end
-  if orientation == 'vertical' then
-    api.nvim_win_set_width(id, size or math.floor(vim.o.columns / 2))
-  else
+  if horizontal then
     api.nvim_win_set_height(id, size or math.floor(vim.o.lines / 3))
+  else
+    api.nvim_win_set_width(id, size or math.floor(vim.o.columns / 2))
   end
   api.nvim_win_set_buf(id, M.buf)
   api.nvim_exec_autocmds('FileType', {
