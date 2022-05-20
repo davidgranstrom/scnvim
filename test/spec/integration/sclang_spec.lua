@@ -4,7 +4,7 @@ local timeout = 5000
 local sclang_path = vim.loop.os_getenv 'SCNVIM_SCLANG_PATH'
 local stdout
 
-config.sclang.path = sclang_path
+config.sclang.cmd = sclang_path
 
 sclang.on_start = function()
   stdout = { '' }

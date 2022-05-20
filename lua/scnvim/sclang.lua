@@ -49,8 +49,8 @@ local function safe_close(handle)
 end
 
 function M.find_sclang_executable()
-  if config.sclang.path then
-    return config.sclang.path
+  if config.sclang.cmd then
+    return config.sclang.cmd
   end
   local exe_path = vim.fn.exepath 'sclang'
   if exe_path ~= '' then
@@ -101,7 +101,15 @@ local function start_process()
     M.stderr,
   }
   options.cwd = vim.fn.expand '%:p:h'
-  options.args = { '-i', 'scnvim', '-d', options.cwd, unpack(config.sclang.options) }
+  for _, arg in ipairs(config.sclang.args) do
+    if arg:match '-i' then
+      error '[scnvim] invalid sclang argument "-i"'
+    end
+    if arg:match '-d' then
+      error '[scnvim] invalid sclang argument "-d"'
+    end
+  end
+  options.args = { '-i', 'scnvim', '-d', options.cwd, unpack(config.sclang.args) }
   options.hide = true
   return uv.spawn(sclang, options, vim.schedule_wrap(on_exit))
 end
@@ -136,7 +144,7 @@ end
 
 --- Start polling the server status
 function M.poll_server_status()
-  local cmd = string.format('SCNvim.updateStatusLine(%d)', config.sclang.server_status_interval)
+  local cmd = string.format('SCNvim.updateStatusLine(%d)', config.statusline.poll_interval)
   M.send(cmd, true)
 end
 
