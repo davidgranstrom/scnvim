@@ -26,7 +26,17 @@ local function open_help_file(uri, pattern)
   if is_open then
     vim.cmd(expr)
   else
-    vim.cmd('topleft split | ' .. expr)
+    local horizontal = config.documentation.horizontal
+    local direction = config.documentation.direction
+    if direction == 'top' or direction == 'left' then
+      direction = 'leftabove'
+    elseif direction == 'right' or direction == 'bot' then
+      direction = 'rightbelow'
+    else
+      error '[scnvim] invalid config.documentation.direction'
+    end
+    local win_cmd = string.format('%s %s | %s', direction, horizontal and 'split' or 'vsplit', expr)
+    vim.cmd(win_cmd)
     win_id = vim.fn.win_getid()
   end
 end
