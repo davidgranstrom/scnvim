@@ -24,17 +24,15 @@ local default = {
     -- The function will receive two arguments: err (nil or message), results (table).
     -- Use nil for the default implementation (quickfix window)
     selector = nil,
-    direction = 'top', -- direction of the split: 'top', 'right', 'bot', 'left'
     horizontal = true, -- Open the help window as a horizontal split
+    direction = 'top', -- direction of the split: 'top', 'right', 'bot', 'left'
   },
   postwin = {
     syntax = true, -- Use syntax colored post window output.
     auto_toggle_error = true, -- Auto-toggle post window on errors.
     scrollback = 5000, -- The number of lines to save in the post window history.
-    -- The direction of the post window, 'left' or 'right'.
-    -- If 'horizontal' is true, then use 'top' or 'bottom'.
-    direction = 'right',
-    horizontal = false, -- Use a horizontal split instead of vertical
+    horizontal = false, -- Open the post window as a horizontal split
+    direction = 'right', -- direction of the split: 'top', 'right', 'bot', 'left'
     size = nil, -- Use a custom initial size
     fixed_size = nil, -- Use a fixed size for the post window. The window will always use this size if closed.
     float = {
