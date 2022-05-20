@@ -24,6 +24,8 @@ local default = {
     -- The function will receive two arguments: err (nil or message), results (table).
     -- Use nil for the default implementation (quickfix window)
     selector = nil,
+    direction = 'top', -- direction of the split: 'top', 'right', 'bot', 'left'
+    horizontal = true, -- Open the help window as a horizontal split
   },
   postwin = {
     syntax = true, -- Use syntax colored post window output.
