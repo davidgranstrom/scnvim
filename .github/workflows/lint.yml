@@ -3,7 +3,7 @@ name: lint and style check
 on:
   push:
     branches:
-      - 'main'
+      - main
   pull_request:
 
 jobs:
