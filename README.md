@@ -4,6 +4,7 @@
 
 [![unit tests](https://github.com/davidgranstrom/scnvim/actions/workflows/ci.yml/badge.svg)](https://github.com/davidgranstrom/scnvim/actions/workflows/ci.yml)
 [![lint and style check](https://github.com/davidgranstrom/scnvim/actions/workflows/lint.yml/badge.svg)](https://github.com/davidgranstrom/scnvim/actions/workflows/lint.yml) 
+[![docs](https://github.com/davidgranstrom/scnvim/actions/workflows/docs.yml/badge.svg)](https://github.com/davidgranstrom/scnvim/actions/workflows/docs.yml)
 
 ---
 
@@ -15,21 +16,23 @@ Have questions? Start a [discussion](https://github.com/davidgranstrom/scnvim/di
 
 ## Features
 
-* Post window is displayed in a regular vim buffer
-  - Use vim key bindings to navigate/move/copy etc.
-  - Toggles back if hidden on a SuperCollider error
+* Post window output is displayed in a scratch buffer
+  - Uses a split or a floating window for display
+  - Navigate/move/copy etc. as with any other window
+  - Toggle back automatically if an error was detected
 * Automatic display of method arguments
+  - Uses a floating window next to the cursor by default
 * Status line widgets
-  - Display SuperCollider server status in the status line.
+  - SuperCollider server status in the status line
 * Snippet generator
   - Generates snippets for creation methods in SCClassLibrary.
 * Can be used with Neovim [GUI frontends](https://github.com/neovim/neovim/wiki/Related-projects#gui)
 * Supports [on-demand loading](https://github.com/junegunn/vim-plug#on-demand-loading-of-plugins)
-* Context aware evaluation (like `Cmd-Enter` in ScIDE)
+* Context aware (block or line) evaluation (like `Cmd-Enter` in ScIDE)
 * Flashy eval flash (configurable)
 * Partial `Document` support (e.g. `thisProcess.nowExecutingPath`, `.load` etc.)
-* Display SuperCollider documentation inside nvim
-  - Be able to evaluate examples
+* Plain text help system for SuperCollider documentation
+  - Evaluate code examples inside the help buffer
 
 ## Installation
 
@@ -40,7 +43,7 @@ Have questions? Start a [discussion](https://github.com/davidgranstrom/scnvim/di
 
 ### Install
 
-1. [Install SuperCollider](https://supercollider.github.io/download).
+1. [Install SuperCollider](https://supercollider.github.io/download) if you have not already done so.
 2. Use your favourite package manager to install the plugin
 
 * Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
@@ -74,7 +77,9 @@ Run `:checkhealth scnvim` to verify that the installation was successful.
 
 ### Configuration
 
-The only configuration needed to start using scnvim is for the mappings.
+`scnvim` is configurable from lua only.
+
+The only configuration explictly needed is for mappings.
 
 Here are the suggested defaults:
 
@@ -95,7 +100,7 @@ require('scnvim').setup {
 }
 ```
 
-Read about more advanced configuration [here](). (TODO)
+See the [default configuration]() for available options.
 
 ### Start
 
@@ -134,6 +139,10 @@ if (\SCNvim.asClass.notNil) {
   Server.program = (Platform.resourceDir +/+ "scsynth.exe").quote;
 }
 ```
+
+## Developers
+
+* [API documentation](https://davidgranstrom.github.io/scnvim/)
 
 ## License
 
