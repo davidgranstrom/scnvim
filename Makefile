@@ -17,4 +17,7 @@ doc:
 test:
 	make --directory test
 
+unit_tests:
+	make --directory test automated
+
 .PHONY: luacheck stylua doc test

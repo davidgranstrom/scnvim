@@ -30,4 +30,4 @@ jobs:
           export PATH="${PWD}/_neovim/bin:${PATH}"
           export VIM="${PWD}/_neovim/share/nvim/runtime"
           nvim --version
-          SCNVIM_CI=1 make test
+          SCNVIM_CI=1 make unit_tests
