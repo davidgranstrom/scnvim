@@ -10,7 +10,8 @@
 scriptencoding utf-8
 
 " Check if syntax highlighting for the post window is active
-if !get(g:, 'scnvim_postwin_syntax_hl', 1)
+let enable_hl = luaeval('require("scnvim.config").postwin.highlight')
+if !enable_hl
 	finish
 end
 

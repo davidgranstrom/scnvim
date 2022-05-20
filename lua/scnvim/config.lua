@@ -28,7 +28,7 @@ local default = {
     direction = 'top', -- direction of the split: 'top', 'right', 'bot', 'left'
   },
   postwin = {
-    syntax = true, -- Use syntax colored post window output.
+    highlight = true, -- Use syntax colored post window output.
     auto_toggle_error = true, -- Auto-toggle post window on errors.
     scrollback = 5000, -- The number of lines to save in the post window history.
     horizontal = false, -- Open the post window as a horizontal split
