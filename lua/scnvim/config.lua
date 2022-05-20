@@ -7,9 +7,8 @@
 local default = {
   ensure_installed = true, -- If installed once, this can be set to false to improve startup time.
   sclang = {
-    path = nil, -- Path to the sclang executable. Not needed if `sclang` is already in your $PATH.
-    options = {}, -- Command line options passed to the `sclang` executable.
-    server_status_interval = 1, -- The interval of updating the server status line
+    cmd = nil, -- Path to the sclang executable. Not needed if `sclang` is already in your $PATH.
+    args = {}, -- Comma separated arguments passed to the `sclang` executable.
   },
   mapping = {}, -- Mappings, empty by default.
   documentation = {
@@ -88,6 +87,9 @@ local default = {
     },
     mul_add = false, -- Include mul/add arguments for UGens
     style = 'default', -- 'compact' = do not put spaces between args, etc.
+  },
+  statusline = {
+    poll_interval = 1, -- The interval to update the status line widgets in seconds
   },
 }
 
