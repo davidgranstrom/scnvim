@@ -1,0 +1,347 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>scnvim reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>scnvim</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/scnvim.html">scnvim</a></li>
+  <li><a href="../modules/scnvim.config.html">scnvim.config</a></li>
+  <li><a href="../modules/scnvim.editor.html">scnvim.editor</a></li>
+  <li><a href="../modules/scnvim.help.html">scnvim.help</a></li>
+  <li><a href="../modules/scnvim.install.html">scnvim.install</a></li>
+  <li><a href="../modules/scnvim.path.html">scnvim.path</a></li>
+  <li><a href="../modules/scnvim.postwin.html">scnvim.postwin</a></li>
+  <li><strong>scnvim.sclang</strong></li>
+  <li><a href="../modules/scnvim.statusline.html">scnvim.statusline</a></li>
+  <li><a href="../modules/scnvim.utils.html">scnvim.utils</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>scnvim.sclang</code></h1>
+<p>sclang
+ Spawn a sclang process.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#on_start">on_start ()</a></td>
+	<td class="summary">Function to run on sclang start</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_exit">on_exit (code, signal)</a></td>
+	<td class="summary">Function to run on sclang exit</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on_read">on_read (line)</a></td>
+	<td class="summary">Function to run on sclang output</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#set_current_path">set_current_path ()</a></td>
+	<td class="summary">Set the current document path</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#poll_server_status">poll_server_status ()</a></td>
+	<td class="summary">Start polling the server status</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#generate_assets">generate_assets (on_done)</a></td>
+	<td class="summary">Generate assets.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#is_running">is_running ()</a></td>
+	<td class="summary">Check if the process is running.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#send">send (data, silent)</a></td>
+	<td class="summary">Send code to the interpreter.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#eval">eval (expr, cb)</a></td>
+	<td class="summary">Evaluate a SuperCollider expression and return the result to lua.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#start">start ()</a></td>
+	<td class="summary">Start the sclang process.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#stop">stop ()</a></td>
+	<td class="summary">Stop the sclang process.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#recompile">recompile ()</a></td>
+	<td class="summary">Recompile the class library.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "on_start"></a>
+    <strong>on_start ()</strong>
+    </dt>
+    <dd>
+    Function to run on sclang start
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_exit"></a>
+    <strong>on_exit (code, signal)</strong>
+    </dt>
+    <dd>
+    Function to run on sclang exit
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">code</span>
+         The exit code
+        </li>
+        <li><span class="parameter">signal</span>
+         The Signal
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "on_read"></a>
+    <strong>on_read (line)</strong>
+    </dt>
+    <dd>
+    Function to run on sclang output
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">line</span>
+         sclang post window output
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "set_current_path"></a>
+    <strong>set_current_path ()</strong>
+    </dt>
+    <dd>
+    Set the current document path
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "poll_server_status"></a>
+    <strong>poll_server_status ()</strong>
+    </dt>
+    <dd>
+    Start polling the server status
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "generate_assets"></a>
+    <strong>generate_assets (on_done)</strong>
+    </dt>
+    <dd>
+    Generate assets.  tags syntax etc.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">on_done</span>
+         Optional callback that runs when all assets have been created.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "is_running"></a>
+    <strong>is_running ()</strong>
+    </dt>
+    <dd>
+    Check if the process is running.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        True if running otherwise false.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "send"></a>
+    <strong>send (data, silent)</strong>
+    </dt>
+    <dd>
+    Send code to the interpreter.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+         The code to send.
+        </li>
+        <li><span class="parameter">silent</span>
+         If true will not echo output to the post window.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "eval"></a>
+    <strong>eval (expr, cb)</strong>
+    </dt>
+    <dd>
+    Evaluate a SuperCollider expression and return the result to lua.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">expr</span>
+         The expression to evaluate.
+        </li>
+        <li><span class="parameter">cb</span>
+         The callback with a single argument that contains the result.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "start"></a>
+    <strong>start ()</strong>
+    </dt>
+    <dd>
+    Start the sclang process.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "stop"></a>
+    <strong>stop ()</strong>
+    </dt>
+    <dd>
+    Stop the sclang process.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "recompile"></a>
+    <strong>recompile ()</strong>
+    </dt>
+    <dd>
+    Recompile the class library.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2022-05-20 14:18:47 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

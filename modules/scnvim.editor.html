@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>scnvim reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>scnvim</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/scnvim.html">scnvim</a></li>
+  <li><a href="../modules/scnvim.config.html">scnvim.config</a></li>
+  <li><strong>scnvim.editor</strong></li>
+  <li><a href="../modules/scnvim.help.html">scnvim.help</a></li>
+  <li><a href="../modules/scnvim.install.html">scnvim.install</a></li>
+  <li><a href="../modules/scnvim.path.html">scnvim.path</a></li>
+  <li><a href="../modules/scnvim.postwin.html">scnvim.postwin</a></li>
+  <li><a href="../modules/scnvim.sclang.html">scnvim.sclang</a></li>
+  <li><a href="../modules/scnvim.statusline.html">scnvim.statusline</a></li>
+  <li><a href="../modules/scnvim.utils.html">scnvim.utils</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>scnvim.editor</code></h1>
+<p>Connects nvim and the sclang process.</p>
+<p> Applies autocommands and forwards text to be evaluated to the sclang process.</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#send_line">send_line (cb, flash)</a></td>
+	<td class="summary">Get the current line and send it to sclang.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#send_block">send_block (cb, flash)</a></td>
+	<td class="summary">Get the current block of code and send it to sclang.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#send_selection">send_selection (cb, flash)</a></td>
+	<td class="summary">Send a visual selection.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#hard_stop">hard_stop ()</a></td>
+	<td class="summary">Send a "hard stop" to the interpreter.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#postwin_toggle">postwin_toggle ()</a></td>
+	<td class="summary">Toggle the post window.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#postwin_clear">postwin_clear ()</a></td>
+	<td class="summary">Clear the post window.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#show_signature">show_signature ()</a></td>
+	<td class="summary">Show the function signature under the cursor.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "send_line"></a>
+    <strong>send_line (cb, flash)</strong>
+    </dt>
+    <dd>
+    Get the current line and send it to sclang.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cb</span>
+         An optional callback function.
+        </li>
+        <li><span class="parameter">flash</span>
+         Highlight the selected text
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "send_block"></a>
+    <strong>send_block (cb, flash)</strong>
+    </dt>
+    <dd>
+    Get the current block of code and send it to sclang.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cb</span>
+         An optional callback function.
+        </li>
+        <li><span class="parameter">flash</span>
+         Highlight the selected text
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "send_selection"></a>
+    <strong>send_selection (cb, flash)</strong>
+    </dt>
+    <dd>
+    Send a visual selection.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cb</span>
+         An optional callback function.
+        </li>
+        <li><span class="parameter">flash</span>
+         Highlight the selected text
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "hard_stop"></a>
+    <strong>hard_stop ()</strong>
+    </dt>
+    <dd>
+    Send a "hard stop" to the interpreter.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "postwin_toggle"></a>
+    <strong>postwin_toggle ()</strong>
+    </dt>
+    <dd>
+    Toggle the post window.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "postwin_clear"></a>
+    <strong>postwin_clear ()</strong>
+    </dt>
+    <dd>
+    Clear the post window.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "show_signature"></a>
+    <strong>show_signature ()</strong>
+    </dt>
+    <dd>
+    Show the function signature under the cursor.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2022-05-20 14:18:47 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
