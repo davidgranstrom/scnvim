@@ -100,8 +100,8 @@ x * 2;
 (
 var y = 3;
 y * 2;
-)
 )]]
+      assert.are.equal(expected, block)
       return data
     end)
   end)
