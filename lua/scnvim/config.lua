@@ -19,12 +19,19 @@ local default = {
     -- The string $1 will be replaced with the input file path and $2 will be
     -- replaced with the output file path.
     args = { '$1', '--from', 'html', '--to', 'plain', '-o', '$2' },
-    -- Custom selector function used for browsing methods.
-    -- The function will receive two arguments: err (nil or message), results (table).
-    -- Use nil for the default implementation (quickfix window)
-    selector = nil,
     horizontal = true, -- Open the help window as a horizontal split
     direction = 'top', -- direction of the split: 'top', 'right', 'bot', 'left'
+    -- Custom function to use when opening a help file.
+    -- If this function is nil a split window will be opened.
+    -- @param err Nil on success or reason for the error
+    -- @param uri Absolute uri to the help file
+    -- @param pattern A regular expression to search for in the help file (nil if not opening a method)
+    on_open = nil,
+    -- Custom function to use when selecting a method.
+    -- If this function is nil the quickfix window will be used.
+    -- @param err Nil on success or reason for the error
+    -- @param results Table with method entries
+    on_select = nil,
   },
   postwin = {
     highlight = true, -- Use syntax colored post window output.

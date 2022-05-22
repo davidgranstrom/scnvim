@@ -17,7 +17,11 @@ local M = {}
 --- Open a vim buffer for uri with an optional pattern.
 ---@param uri Help file URI
 ---@param pattern (optional) move cursor to line matching regex pattern
-local function open_help_file(uri, pattern)
+local function default_open(err, uri, pattern)
+  if err then
+    utils.print(err)
+    return
+  end
   local is_open = vim.fn.win_gotoid(win_id) == 1
   local expr = string.format('edit %s', uri)
   if pattern then
@@ -58,100 +62,12 @@ local function get_render_args(input_path, output_path)
   return args
 end
 
---- Helper function for the default browser implementation
----@param index The item to get from the quickfix list
-local function open_from_quickfix(index)
-  local list = vim.fn.getqflist()
-  local item = list[index]
-  if item then
-    local uri = vim.fn.bufname(item.bufnr)
-    if uv.fs_stat(uri) then
-      open_help_file(uri, item.pattern)
-    else
-      local cmd = string.format([[SCNvim.getFileNameFromUri(\"%s\")]], uri)
-      sclang.eval(cmd, function(subject)
-        M.render_help_file(subject, function(result)
-          open_help_file(result, item.pattern)
-        end)
-      end)
-    end
-  end
-end
-
---- Default selector implementation
----@param err nil if no error otherwise string
----@param results Table with results
-local function default_selector(err, results)
-  assert(not err, err)
-  local id = api.nvim_create_augroup('scnvim_qf_conceal', { clear = true })
-  api.nvim_create_autocmd('BufWinEnter', {
-    group = id,
-    desc = 'Apply quickfix conceal',
-    pattern = 'quickfix',
-    callback = function()
-      vim.cmd [[syntax match SCNvimConcealResults /^.*Help\/\|.txt\||.*|\|/ conceal]]
-      vim.opt_local.conceallevel = 2
-      vim.opt_local.concealcursor = 'nvic'
-    end,
-  })
-  vim.fn.setqflist(results)
-  vim.cmd [[ copen ]]
-  vim.keymap.set('n', '<Enter>', function()
-    local linenr = api.nvim_win_get_cursor(0)[1]
-    open_from_quickfix(linenr)
-  end, { buffer = true })
-end
-
---- Get a table with a documentation overview
----@param target_dir The target help directory (SCDoc.helpTargetDir)
----@return A JSON formatted string
-function M.get_docmap(target_dir)
-  if M.docmap then
-    return M.docmap
-  end
-  local stat = uv.fs_stat(target_dir)
-  assert(stat, 'Could not find docmap.json')
-  local fd = uv.fs_open(target_dir, 'r', 0)
-  local size = stat.size
-  local file = uv.fs_read(fd, size, 0)
-  local ok, result = pcall(vim.fn.json_decode, file)
-  uv.fs_close(fd)
-  if not ok then
-    error(result)
-  end
-  return result
-end
-
---- Find help files for a method
----@param name Method name to find.
----@param target_dir The help target dir (SCDoc.helpTargetDir)
----@return A table with method entries that is suitable for the quickfix list.
-function M.find_methods(name, target_dir)
-  local path = vim.fn.expand(target_dir)
-  local docmap = M.get_docmap(_path.concat(path, 'docmap.json'))
-  local results = {}
-  for _, value in pairs(docmap) do
-    for _, method in ipairs(value.methods) do
-      local match = utils.str_match_exact(method, name)
-      if match then
-        local destpath = path .. _path.sep .. value.path .. '.txt'
-        table.insert(results, {
-          filename = destpath,
-          text = string.format('.%s', name),
-          pattern = string.format('^\\.%s', name),
-        })
-      end
-    end
-  end
-  return results
-end
-
 --- Render a schelp file into vim help format.
 --- Uses config.documentation.cmd as the renderer.
 ---@param subject The subject to render (e.g. SinOsc)
 ---@param on_done A callback that receives the path to the rendered help file as its single argument
 --- TODO: cache. compare timestamp of help source with rendered .txt
-function M.render_help_file(subject, on_done)
+local function render_help_file(subject, on_done)
   local cmd = string.format('SCNvim.getHelpUri("%s")', subject)
   sclang.eval(cmd, function(input_path)
     local basename = input_path:gsub('%.html%.scnvim', '')
@@ -179,38 +95,127 @@ function M.render_help_file(subject, on_done)
   end)
 end
 
+--- Helper function for the default browser implementation
+---@param index The item to get from the quickfix list
+local function open_from_quickfix(index)
+  local list = vim.fn.getqflist()
+  local item = list[index]
+  if item then
+    local uri = vim.fn.bufname(item.bufnr)
+    if uv.fs_stat(uri) then
+      default_open(nil, uri, item.pattern)
+    else
+      local cmd = string.format('SCNvim.getFileNameFromUri("%s")', uri)
+      sclang.eval(cmd, function(subject)
+        render_help_file(subject, function(result)
+          default_open(nil, result, item.pattern)
+        end)
+      end)
+    end
+  end
+end
+
+--- Default selector implementation
+---@param err nil if no error otherwise string
+---@param results Table with results
+local function default_select(err, results)
+  if err then
+    print(err)
+    return
+  end
+  local id = api.nvim_create_augroup('scnvim_qf_conceal', { clear = true })
+  api.nvim_create_autocmd('BufWinEnter', {
+    group = id,
+    desc = 'Apply quickfix conceal',
+    pattern = 'quickfix',
+    callback = function()
+      vim.cmd [[syntax match SCNvimConcealResults /^.*Help\/\|.txt\||.*|\|/ conceal]]
+      vim.opt_local.conceallevel = 2
+      vim.opt_local.concealcursor = 'nvic'
+    end,
+  })
+  vim.fn.setqflist(results)
+  vim.cmd [[ copen ]]
+  vim.keymap.set('n', '<Enter>', function()
+    local linenr = api.nvim_win_get_cursor(0)[1]
+    open_from_quickfix(linenr)
+  end, { buffer = true })
+end
+
+--- Find help files for a method
+---@param name Method name to find.
+---@param target_dir The help target dir (SCDoc.helpTargetDir)
+---@return A table with method entries that is suitable for the quickfix list.
+local function find_methods(name, target_dir)
+  local path = vim.fn.expand(target_dir)
+  local docmap = M.get_docmap(_path.concat(path, 'docmap.json'))
+  local results = {}
+  for _, value in pairs(docmap) do
+    for _, method in ipairs(value.methods) do
+      local match = utils.str_match_exact(method, name)
+      if match then
+        local destpath = path .. _path.sep .. value.path .. '.txt'
+        table.insert(results, {
+          filename = destpath,
+          text = string.format('.%s', name),
+          pattern = string.format('^\\.%s', name),
+        })
+      end
+    end
+  end
+  return results
+end
+
+--- Get a table with a documentation overview
+---@param target_dir The target help directory (SCDoc.helpTargetDir)
+---@return A JSON formatted string
+function M.get_docmap(target_dir)
+  if M.docmap then
+    return M.docmap
+  end
+  local stat = uv.fs_stat(target_dir)
+  assert(stat, 'Could not find docmap.json')
+  local fd = uv.fs_open(target_dir, 'r', 0)
+  local size = stat.size
+  local file = uv.fs_read(fd, size, 0)
+  local ok, result = pcall(vim.fn.json_decode, file)
+  uv.fs_close(fd)
+  if not ok then
+    error(result)
+  end
+  return result
+end
+
 --- Open a help file.
 ---@param subject The help subject (SinOsc, tanh, etc.)
 function M.open_help_for(subject)
+  local open_func = config.documentation.on_open or default_open
+  local select_func = config.documentation.on_select or default_select
+
   if not sclang.is_running() then
-    print '[scnvim] sclang not running'
+    open_func 'sclang not running'
     return
   end
 
   if not config.documentation.cmd then
-    local cmd = string.format([[HelpBrowser.openHelpFor("%s")]], subject)
+    local cmd = string.format('HelpBrowser.openHelpFor("%s")', subject)
     sclang.send(cmd, true)
     return
   end
 
   local is_class = subject:sub(1, 1):match '%u'
   if is_class then
-    M.render_help_file(subject, function(result)
-      open_help_file(result)
+    render_help_file(subject, function(result)
+      open_func(nil, result)
     end)
   else
     sclang.eval('SCDoc.helpTargetDir', function(dir)
-      local results = M.find_methods(subject, dir)
+      local results = find_methods(subject, dir)
       local err = nil
       if #results == 0 then
         err = 'No results for ' .. tostring(subject)
       end
-      local selector = config.documentation.selector
-      if selector then
-        selector(err, results)
-      else
-        default_selector(err, results)
-      end
+      select_func(err, results)
     end)
   end
 end
@@ -256,8 +261,8 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
 
       local function on_done(exit_code, filename)
         if exit_code ~= 0 then
-          local err = string.format('[scnvim] ERROR: Could not convert help file %s (code: %d)', filename, exit_code)
-          print(err)
+          local err = string.format('ERROR: Could not convert help file %s (code: %d)', filename, exit_code)
+          utils.print(err)
         end
         active_threads = active_threads - 1
         local last_run = active_threads > #threads
@@ -286,7 +291,7 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
             uv.spawn(config.documentation.cmd, options, function(code)
               local ret = uv.fs_unlink(input_path)
               if not ret then
-                print('[scnvim] ERROR: Could not unlink ' .. input_path)
+                utils.print('ERROR: Could not unlink ' .. input_path)
               end
               on_done(code, input_path)
             end)
