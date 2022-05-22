@@ -35,7 +35,7 @@ end
 ---@param message The message to print.
 ---@param hlgroup The highlight group to use. Default = ErrorMsg
 function M.print(message, hlgroup)
-  local expr = string.format([[echohl %s | echom '[scnvim] ' . %s | echohl None]], hlgroup or 'ErrorMsg', message)
+  local expr = string.format('echohl %s | echom "[scnvim] " . "%s" | echohl None', hlgroup or 'ErrorMsg', message)
   vim.cmd(expr)
 end
 
