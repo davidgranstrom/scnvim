@@ -1,6 +1,10 @@
 --- Help system.
 --- Convert schelp files into plain text by using an external program (e.g. pandoc) and display them in nvim.
 --- Uses the built-in HelpBrowser if no `config.documentation.cmd` is found.
+---
+--- Users and plugin authors can override `config.documentation.on_open` and
+---`config.documentation.on_select` callbacks to display help files or method
+--- results.
 ---@module scnvim.help
 ---@see scnvim.config
 
@@ -15,6 +19,7 @@ local win_id = 0
 local M = {}
 
 --- Open a vim buffer for uri with an optional pattern.
+---@param err nil on success or reason of error
 ---@param uri Help file URI
 ---@param pattern (optional) move cursor to line matching regex pattern
 local function default_open(err, uri, pattern)
