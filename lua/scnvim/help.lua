@@ -58,35 +58,6 @@ local function get_render_args(input_path, output_path)
   return args
 end
 
---- TODO: cache. compare timestamp of help source with rendered .txt
-local function render_help_file(subject, on_done)
-  local cmd = string.format('SCNvim.getHelpUri("%s")', subject)
-  sclang.eval(cmd, function(input_path)
-    local basename = input_path:gsub('%.html%.scnvim', '')
-    local output_path = basename .. '.txt'
-    local args = get_render_args(input_path, output_path)
-    local options = {
-      args = args,
-      hide = true,
-    }
-    local prg = config.documentation.cmd
-    uv.spawn(
-      prg,
-      options,
-      vim.schedule_wrap(function(code)
-        if code ~= 0 then
-          error(string.format('%s error: %d', prg, code))
-        end
-        local ret = uv.fs_unlink(input_path)
-        if not ret then
-          print('[scnvim] Could not unlink ' .. input_path)
-        end
-        on_done(output_path)
-      end)
-    )
-  end)
-end
-
 --- Helper function for the default browser implementation
 ---@param index The item to get from the quickfix list
 local function open_from_quickfix(index)
@@ -99,7 +70,7 @@ local function open_from_quickfix(index)
     else
       local cmd = string.format([[SCNvim.getFileNameFromUri(\"%s\")]], uri)
       sclang.eval(cmd, function(subject)
-        render_help_file(subject, function(result)
+        M.render_help_file(subject, function(result)
           open_help_file(result, item.pattern)
         end)
       end)
@@ -175,9 +146,42 @@ function M.find_methods(name, target_dir)
   return results
 end
 
---- Prepare a help file.
+--- Render a schelp file into vim help format.
+--- Uses config.documentation.cmd as the renderer.
+---@param subject The subject to render (e.g. SinOsc)
+---@param on_done A callback that receives the path to the rendered help file as its single argument
+--- TODO: cache. compare timestamp of help source with rendered .txt
+function M.render_help_file(subject, on_done)
+  local cmd = string.format('SCNvim.getHelpUri("%s")', subject)
+  sclang.eval(cmd, function(input_path)
+    local basename = input_path:gsub('%.html%.scnvim', '')
+    local output_path = basename .. '.txt'
+    local args = get_render_args(input_path, output_path)
+    local options = {
+      args = args,
+      hide = true,
+    }
+    local prg = config.documentation.cmd
+    uv.spawn(
+      prg,
+      options,
+      vim.schedule_wrap(function(code)
+        if code ~= 0 then
+          error(string.format('%s error: %d', prg, code))
+        end
+        local ret = uv.fs_unlink(input_path)
+        if not ret then
+          print('[scnvim] Could not unlink ' .. input_path)
+        end
+        on_done(output_path)
+      end)
+    )
+  end)
+end
+
+--- Open a help file.
 ---@param subject The help subject (SinOsc, tanh, etc.)
-function M.prepare_help_for(subject)
+function M.open_help_for(subject)
   if not sclang.is_running() then
     print '[scnvim] sclang not running'
     return
@@ -191,7 +195,7 @@ function M.prepare_help_for(subject)
 
   local is_class = subject:sub(1, 1):match '%u'
   if is_class then
-    render_help_file(subject, function(result)
+    M.render_help_file(subject, function(result)
       open_help_file(result)
     end)
   else
