@@ -26,7 +26,7 @@ return function()
 
   local options = { nargs = 1, desc = 'Open help for subject' }
   local open_help = function(tbl)
-    help.prepare_help_for(tbl.args)
+    help.open_help_for(tbl.args)
   end
   vim.api.nvim_buf_create_user_command(0, 'SCNvimHelp', open_help, options)
 
