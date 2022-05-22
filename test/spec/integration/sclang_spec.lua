@@ -74,6 +74,17 @@ describe('sclang', function()
     assert.are.equal(49, result)
   end)
 
+  it('eval correctly escapes strings', function()
+    local result
+    sclang.eval('"hello"', function(res)
+      result = res
+    end)
+    vim.wait(timeout, function()
+      return result == 'hello'
+    end)
+    assert.are.equal('hello', result)
+  end)
+
   it('can stop the interpreter', function()
     sclang.stop()
     vim.wait(timeout, function()

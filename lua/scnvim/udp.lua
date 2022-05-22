@@ -80,9 +80,6 @@ end
 --- Utility function for the scnvim.eval API.
 ---@local
 function M.push_eval_callback(cb)
-  vim.validate {
-    cb = { cb, 'function' },
-  }
   callback_id = tostring(tonumber(callback_id) + 1)
   eval_callbacks[callback_id] = cb
   return callback_id

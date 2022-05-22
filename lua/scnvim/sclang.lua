@@ -180,6 +180,11 @@ end
 ---@param expr The expression to evaluate.
 ---@param cb The callback with a single argument that contains the result.
 function M.eval(expr, cb)
+  vim.validate {
+    expr = { expr, 'string' },
+    cb = { cb, 'function' },
+  }
+  expr = vim.fn.escape(expr, '"')
   local id = udp.push_eval_callback(cb)
   local cmd = string.format('SCNvim.eval("%s", "%s");', expr, id)
   M.send(cmd, true)

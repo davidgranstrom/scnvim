@@ -12,7 +12,7 @@ local lsp_util = vim.lsp.util
 local M = {}
 
 local function get_method_signature(object, cb)
-  local cmd = string.format([[SCNvim.methodArgs(\"%s\")]], object)
+  local cmd = string.format('SCNvim.methodArgs("%s")', object)
   sclang.eval(cmd, cb)
 end
 
