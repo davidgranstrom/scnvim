@@ -32,6 +32,10 @@ local function flash_once(start, finish, delay)
   end, delay)
 end
 
+--- Fallback highlight function
+---@local
+M.highlight = function() end
+
 --- Apply a flashing effect to a text region.
 ---@param start starting position (tuple {line,col} zero indexed)
 ---@param finish finish position (tuple {line,col} zero indexed)
@@ -218,8 +222,6 @@ function M.setup()
     M.highlight = flash_region
   elseif highlight.type == 'fade' then
     M.highlight = fade_region
-  else
-    M.highlight = function() end
   end
 end
 
@@ -238,6 +240,9 @@ end
 ---@param cb An optional callback function.
 ---@param flash Highlight the selected text
 function M.send_line(cb, flash)
+  if flash == nil then
+    flash = true
+  end
   local linenr = api.nvim_win_get_cursor(0)[1]
   local line = get_range(linenr, linenr)
   M.send_lines(line, cb)
@@ -252,6 +257,9 @@ end
 ---@param cb An optional callback function.
 ---@param flash Highlight the selected text
 function M.send_block(cb, flash)
+  if flash == nil then
+    flash = true
+  end
   local lstart, lend = unpack(vim.fn['scnvim#editor#get_block']())
   if lstart == 0 or lend == 0 then
     M.send_line(cb, flash)
@@ -273,6 +281,9 @@ end
 ---@param cb An optional callback function.
 ---@param flash Highlight the selected text
 function M.send_selection(cb, flash)
+  if flash == nil then
+    flash = true
+  end
   local ret = vim.fn['scnvim#editor#get_visual_selection']()
   M.send_lines(ret.lines, cb)
   if flash then
