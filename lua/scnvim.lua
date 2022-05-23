@@ -11,22 +11,35 @@ local scnvim = {}
 
 --- Map helper.
 ---
---- Returns a function with the signature `(modes, callback, flash)`
+--- Can be used in two ways:
 ---
---- The actions that can be mapped are documented in `scnvim.editor`
+--- 1) As a table to map functions from scnvim.editor
 ---
---- * modes - table of vim modes ('i', 'n', 'x' etc.). A string can be used for a single mode.
---- * callback - An optional callback that receives a table of lines as its only
---- argument. The function must always return a table.
---- * flash - Apply the editor flash for this action (default is true)
+--- 2) As a function to set up an arbitrary mapping.
+---
+--- When indexed, it returns a function with the signature `(modes, callback, flash)`
+---
+--- * modes: Table of vim modes ('i', 'n', 'x' etc.). A string can be used for
+--- a single mode. Default mode is 'n' (normal mode).
+---
+--- * callback: A callback that receives a table of lines as its only
+--- argument. The callback should always return a table. (Only used
+--- by functions that manipulates text).
+---
+--- * flash: Apply the editor flash effect for the selected text (default is
+---   true) (Only used by functions that manipulates text).
 ---
 ---@see scnvim.editor
 ---@usage scnvim.map.send_line('n'),
 ---@usage scnvim.map.send_line({'i', 'n'}, function(data)
----    local line = data[1]
----    line = line:gsub('goodbye', 'hello')
----    return {line}
----  end)
+---   local line = data[1]
+---   line = line:gsub('goodbye', 'hello')
+---   return {line}
+--- end)
+---@usage scnvim.map(function()
+---  vim.cmd [[ SCNvimGenerateAssets ]]
+--- end, { 'n' })
+---@usage scnvim.map(scnvim.recompile)
 scnvim.map = require 'scnvim.map'
 
 --- Setup function.
@@ -87,6 +100,20 @@ end
 ---@return True if sclang is running otherwise false.
 function scnvim.is_running()
   return sclang.is_running()
+end
+
+function scnvim.register_extension(plugin)
+  return plugin
+end
+
+function scnvim.load_plugin(name, cfg)
+  local ok, plugin = pcall(require, 'scnvim._extensions.' .. name)
+  if not ok then
+    error '[scnvim] Plugin not installed'
+  end
+  if plugin.setup then
+    plugin.setup(cfg, config)
+  end
 end
 
 return scnvim

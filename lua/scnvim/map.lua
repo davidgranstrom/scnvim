@@ -10,6 +10,13 @@
 local editor = require 'scnvim.editor'
 
 return setmetatable({}, {
+  __call = function(_, fn, modes)
+    modes = type(modes) == 'string' and { modes } or modes
+    modes = modes or { 'n' }
+    if type(fn) == 'function' then
+      return { modes = modes, fn = fn }
+    end
+  end,
   __index = function(_, key)
     local fn = editor[key]
     if not fn then
@@ -17,6 +24,7 @@ return setmetatable({}, {
     end
     return function(modes, callback, flash)
       modes = type(modes) == 'string' and { modes } or modes
+      modes = modes or { 'n' }
       flash = flash or true
       local wrapper = function()
         fn(callback, flash)
