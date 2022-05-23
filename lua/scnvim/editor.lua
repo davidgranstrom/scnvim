@@ -308,6 +308,11 @@ function M.postwin_clear()
   postwin.clear()
 end
 
+--- Focus the post window.
+function M.postwin_focus()
+  postwin.focus()
+end
+
 --- Show the function signature under the cursor.
 function M.show_signature()
   signature.show()

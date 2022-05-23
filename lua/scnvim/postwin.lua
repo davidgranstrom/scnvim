@@ -161,6 +161,12 @@ function M.clear()
   end
 end
 
+--- Open the post window and move to it.
+function M.focus()
+  local win = M.open()
+  vim.fn.win_gotoid(win)
+end
+
 --- Print a line to the post window.
 ---@param line The line to print.
 function M.post(line)
