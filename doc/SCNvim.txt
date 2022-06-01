@@ -1,4 +1,4 @@
-*SCNvim.txt*    For nvim version 0.4.4 or later.
+*SCNvim.txt*    For nvim version 0.7.0 or later.
 
         Neovim frontend for SuperCollider
 
@@ -6,12 +6,12 @@ SCNvim                                      *scnvim*
 
 1. Description..............................|scnvim-description|
    1.1 Acknowledgments
-2. Mappings.................................|scnvim-mappings|
-   2.1 Remapping
-3. Commands.................................|scnvim-commands|
-4. Help system..............................|scnvim-help-system|
-5. Configuration............................|scnvim-configuration|
-6. License..................................|scnvim-license|
+2. Setup....................................|scnvim-setup|
+3. Mappings.................................|scnvim-mappings|
+4. Commands.................................|scnvim-commands|
+5. Help system..............................|scnvim-help-system|
+6. Configuration............................|scnvim-configuration|
+7. License..................................|scnvim-license|
 
 ==============================================================================
 DESCRIPTION                                                 *scnvim-description*
@@ -28,81 +28,106 @@ This plugin borrows some code and ideas from the original scvim
 implementation, for example the code for indent and syntax highlighting.
 
 ==============================================================================
+SETUP                                                             *scnvim-setup*
+
+Enable the plugin by calling the setup function in your init.lua
+>
+  scnvim.setup {}
+<
+This plugin uses lua for configuration, so you may need to surround the
+above statement using a |lua-heredoc| if you are using vim script.
+
+Run `:checkhealth scnvim` to check that the installation was succesful.
+
+==============================================================================
 MAPPINGS                                                       *scnvim-mappings*
 
-<C-e>                   Send current block or line.
-                        (depending on context).
-                        Mode: Insert, Normal
-                        Name: `<Plug>(scnvim-send-block)`
-
-<C-e>                   Send current selection.
-                        Mode: Visual
-                        Name: `<Plug>(scnvim-send-selection)`
-
-<M-e>                   Send current line.
-                        Mode: Insert, Normal
-                        Name: `<Plug>(scnvim-send-line)`
-
-<F12>                   Hard stop.
-                        Mode: Insert, Normal
-                        Name: `<Plug>(scnvim-hard-stop)`
-
-<CR>                    Toggle post window buffer.
-                        Mode: Insert, Normal
-                        Name: `<Plug>(scnvim-postwindow-toggle)`
-
-<M-L>                   Clear post window buffer.
-                        Mode:  Insert, Normal
-                        Name: `<Plug>(scnvim-postwindow-clear)`
-
-K                       Open documentation.
-                        See `keywordprg`
-                        Mode: Normal
-
-<C-k>                   Show function signature for object under cursor.
-                        Mode:  Insert, Normal
-                        Name: `<Plug>(scnvim-show-signature)`
-
-Remapping~
-
-You can remap all of the default mappings using the `<Plug>` mappings in the
-table above. Notice the usage of `nmap` rather than `nnoremap` in the following
-examples, since we actually want to map to the `<Plug>` mappings recursively.
+No mappings are defined by default. Use the `scnvim.setup` function to set your
+key mappings.
 >
-  nmap <F5> <Plug>(scnvim-send-block)
-  nmap <C-s> <Plug>(scnvim-send-line)
-  imap <C-s> <c-o><Plug>(scnvim-send-line)
+  scnvim.setup {
+    mapping = {
+      ['<M-e>'] = scnvim.map.send_line({'i', 'n'}),
+      ['<C-e>'] = {
+        scnvim.map.send_block({'i', 'n'}),
+        scnvim.map.send_selection('x'),
+      },
+      ['<CR>'] = scnvim.map.postwin_toggle('n'),
+      ['<M-CR>'] = scnvim.map.postwin_toggle('i'),
+      ['<M-L>'] = scnvim.map.postwin_clear({'n', 'i'}),
+      ['<C-k>'] = scnvim.map.show_signature({'n', 'i'}),
+      ['<F12>'] = scnvim.map.hard_stop({'n', 'x', 'i'}),
+      ['<leader>st'] = scnvim.map(scnvim.start),
+      ['<leader>sk'] = scnvim.map(scnvim.recompile),
+    },
+  }
+<
+The following functions are accessible from the `scnvim.map` helper object:
+
+Function               Description
+--------               -----------
+`send_line`              Get the current line and send it to sclang.
+`send_block`             Get the current block of code and send it to sclang.
+`send_selection`         Send a visual selection.
+`hard_stop`              Send a "hard stop" to the interpreter.
+`postwin_toggle`         Toggle the post window.
+`postwin_clear`          Clear the post window.
+`postwin_focus`          Focus the post window.
+`show_signature`         Show the function signature under the cursor.
+
+Note that it is possible to map arbitrary functions using the `scnvim.map`
+helper:
+>
+  scnvim.map(function()
+    vim.cmd('SCNvimGenerateAssets')
+  end)
+<
+Note the example above uses the `scnvim.map` helper object as a convenience.
+But it is also possible to use the scnvim API directly with |vim.keymap.set|.
 
 ==============================================================================
 COMMANDS                                                       *scnvim-commands*
 
-Command                        Description
--------                        -----------
-`SCNvimStart`                    Start SuperCollider
-`SCNvimStop`                     Stop SuperCollider
-`SCNvimRecompile`                Recompile SCClassLibrary
-`SCNvimTags`                     Create auto-generated utility files
-`SCNvimHelp` <subject>           Open HelpBrowser or window split for <subject>
-`SCNvimStatusLine`               Display server status in 'statusline'
+Command                   Description
+-------                   -----------
+`SCNvimStart`               Start SuperCollider
+`SCNvimStop`                Stop SuperCollider
+`SCNvimRecompile`           Recompile SCClassLibrary
+`SCNvimGenerateAssets`      Generate syntax highlightning and snippets
+`SCNvimHelp` <subject>      Open HelpBrowser or window split for <subject>
+`SCNvimStatusLine`          Display server status in 'statusline' if configured.
 
 ==============================================================================
 HELP SYSTEM                                                 *scnvim-help-system*
 
 SCNvim can be configured to render SCDoc help files (.schelp) to plain text
-and display the result in a split window, much like Nvim's default help system.
+and display the result inside nvim. In order to do so, the scnvim help system
+needs a program to convert HTML help files into plain text e.g. `pandoc[1]`
 
-The scnvim help system needs a program to convert HTML help files into plain
-text. By default it looks for `pandoc`[1], so it should be enough to have `pandoc`
-accessible in your `$PATH`.
-
-Set the global variable `g:scnvim_scdoc` in your `init.vim` to enable the
-help system.
+Set the path to your converter program in the config passed to `scnvim.setup`
 >
-  let g:scnvim_scdoc = 1
+  scnvim.setup{
+    documentation = {
+      cmd = '/opt/homebrew/bin/pandoc',
+    },
+  }
 <
-To view documentation in the regular HelpBrowser, set `g:scnvim_scdoc` to
-a value of zero (you don't need to restart vim for this to take effect).
 
+Customization~
+
+The help system is configured to use `pandoc` by default. To use another
+program you will also need to supply the command line arguments needed to
+perform the HTML to plain text conversion. The example below is for the
+`html2text` program. `$1` is a placeholder for the *input file* and `$2` is a
+placeholder for the *output file*, these are replaced automatically.
+>
+  scnvim.setup{
+    documentation = {
+      cmd = '/usr/local/bin/html2text',
+      args = {'$1', '-o', '$2'}
+    },
+  }
+<
 Useful hints ~
 
 Use the `K` command to open a split window with the documentation of the word
@@ -114,145 +139,57 @@ To see an overview (outline) of the content of the help file press `gO`. This
 will open a window local quickfix window (a 'location-list'), use this list to
 jump to different sections of the document.
 
-Customization ~
-
-If you want to use another program as html to plain text converter, or if you
-have `pandoc` installed but not accessible in your `$PATH` you can set
-`g:scnvim_scdoc_render_prg` to point to an executable of your choice. If you
-are not using `pandoc` you will also need to supply an argument string which
-will be used for file input and output. The default format string is:
->
-  let g:scnvim_scdoc_render_args = '% --from html --to plain -o %'
-<
-Note the two sclang format symbols ('%'), the first '%' represents the input file
-(html) and the second one is the output file (txt).
-
-A complete custom example using `html2text`:
->
-  let g:scnvim_scdoc_render_prg = '/usr/local/bin/html2text'
-  let g:scnvim_scdoc_render_args = '% -o %'
-<
-
 [1]: https://pandoc.org/
 
 ==============================================================================
 CONFIGURATION                                             *scnvim-configuration*
 
-The following variables are used to configure scnvim. This plugin should work
-out-of-the-box so it is not necessary to set them if you are happy with the
-defaults.
+All user configuration is handled by the `scnvim.setup` function.
 
-Run `:checkhealth` to diagnose common problems with your config.
+The default values are defined and documented in `lua/scnvim/config.lua`in the
+root directory of this plugin.
 
-Post window~
-Disable syntax colouring in the post window
-Default is 1 (on)
+You can also view an up-to-date HTML version of the documentation by visiting
+this link: https://davidgranstrom.github.io/scnvim/modules/scnvim.config.html
+
+Example configuration~
 >
-  let g:scnvim_postwin_syntax_hl = 0
-
-Vertical "v" or horizontal "h" split.
->
-  let g:scnvim_postwin_orientation = 'v'
-
-Position of the post window "right" or "left".
->
-  let g:scnvim_postwin_direction = 'right'
-
-Set the size of the post window.
-Default is half the terminal size for vertical and a third for horizontal.
->
-  let g:scnvim_postwin_size = 25
-
-Automatically open post window on a SuperCollider error
->
-  let g:scnvim_postwin_auto_toggle = 1
-
-Set the scrollback limit for the post window. (default: 5000 lines)
-A value of -1 means infinite scrollback (use with care in high output situations).
->
-  let g:scnvim_postwin_scrollback = 5000
-
-Eval flash~
-
-Duration of the highlight in milliseconds. A value of 0 disables eval flash.
->
-  let g:scnvim_eval_flash_duration = 100
-
-Number of flashes. A value of 0 disables eval flash.
->
-  let g:scnvim_eval_flash_repeats = 2
-
-Configure the color
->
-  highlight SCNvimEval guifg=black guibg=white ctermfg=black ctermbg=white
-
-Extras~
-
-Path to the sclang executable.
-SCNvim will look in some known locations for sclang, but if it can't find it
-use this variable instead (setting this also improves startup time slightly).
->
-  let g:scnvim_sclang_executable = ''
-
-Update rate for server info in status line (seconds)
-(don't set this to low or vim will get slow)
->
-  let g:scnvim_statusline_interval = 1
-
-Set this variable if you don't want the signature help feature
->
-  let g:scnvim_echo_args = 0
-
-Set this variable if you don't want the floating window feature
->
-  let g:scnvim_echo_args_float = 0
-
-Set this variable if you don't want any default mappings
->
-  let g:scnvim_no_mappings = 1
-
-Browse SuperCollider documentation in nvim (see |scnvim-help-system| for more information)
->
-  let g:scnvim_scdoc = 1
-
-Set the snippet format generated by :SCNvimTags
-SCNvim supports "ultisnips", "luasnip" and "snippets.nvim"
->
-  let g:scnvim_snippet_format = "snippets.nvim"
-
-in lua
->
-  vim.g.scnvim_snippet_format = "snippets.nvim"
-
-If scnvim_snippet_format is unset/empty it will default to "ultisnips"
-
-Sclang Options Customization ~
-
-If you wanted to pass options to the call that SCNVim uses when it starts
-sclang, you can use `g:scnvim_sclang_options` to add additional parameters.
-For example, if you wanted to change the udp port that sclang uses, you could
-set:
->
-    let g:scnvim_sclang_options = ['-u', 9999]
-
-or if you wanted to change the yaml file it uses on startup, you could set:
->
-    let g:scnvim_sclang_options = ['-l', "/path/to/config.yaml"]
-
-if you wanted to set both, you could use:
->
-    let g:scnvim_sclang_options = ['-l', '/path/to/config.yaml', '-u', 9999]
-
-Note that the -i and the -d flags are already set by SCNVim, so they do not
-need to be used, and some parameters (i.e. -a, -v, -i and -D) will cause
-sclang to not behave nicely with SCNvim. This option is provided to the
-advanced user without any error checks, so be careful.
-
+  scnvim.setup {
+    mapping = {
+      ['<M-e>'] = scnvim.map.send_line({'i', 'n'}),
+      ['<C-e>'] = {
+        scnvim.map.send_block({'i', 'n'}),
+        scnvim.map.send_selection('x'),
+      },
+      ['<CR>'] = scnvim.map.postwin_toggle('n'),
+      ['<M-CR>'] = scnvim.map.postwin_toggle('i'),
+      ['<M-L>'] = scnvim.map.postwin_clear({'n', 'i'}),
+      ['<C-k>'] = scnvim.map.show_signature({'n', 'i'}),
+      ['<F12>'] = scnvim.map.hard_stop({'n', 'x', 'i'}),
+      ['<leader>st'] = scnvim.map(scnvim.start),
+      ['<leader>sk'] = scnvim.map(scnvim.recompile),
+    },
+    editor = {
+      highlight = {
+        color = 'IncSearch',
+        type = 'fade',
+      },
+    },
+    documentation = {
+      cmd = '/opt/homebrew/bin/pandoc',
+    },
+    postwin = {
+      float = {
+        enabled = true,
+      },
+    },
+  }
+<
 ==============================================================================
 LICENSE                                                         *scnvim-license*
 
 scnvim - SuperCollider integration for Neovim
-Copyright © 2018-2019 David Granström
+Copyright © 2018 David Granström
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
