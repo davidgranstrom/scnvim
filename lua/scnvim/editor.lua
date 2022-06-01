@@ -201,7 +201,7 @@ local function create_autocmds()
       callback = signature.ins_show,
     })
   end
-  if config.ft_supercollider then
+  if config.editor.ft_supercollider then
     api.nvim_create_autocmd({
       'BufNewFile',
       'BufRead',
