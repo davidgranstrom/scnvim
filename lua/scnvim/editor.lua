@@ -201,6 +201,19 @@ local function create_autocmds()
       callback = signature.ins_show,
     })
   end
+  if config.ft_supercollider then
+    api.nvim_create_autocmd({
+      'BufNewFile',
+      'BufRead',
+      'BufEnter',
+      'BufWinEnter',
+    }, {
+      group = id,
+      desc = 'Set *.sc to filetype supercollider',
+      pattern = '*.sc',
+      command = 'set filetype=supercollider',
+    })
+  end
   local hl_cmd = create_hl_group()
   api.nvim_create_autocmd('ColorScheme', {
     group = id,
