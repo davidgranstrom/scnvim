@@ -40,22 +40,31 @@ local function save_last_size()
   end
 end
 
+local function resolve(v)
+  if type(v) == 'function' then
+    return v()
+  end
+  return v
+end
+
 --- Open a floating post window
 ---@private
 local function open_float()
+  local width = resolve(config.postwin.float.width)
+  local height = resolve(config.postwin.float.height)
+  local row = resolve(config.postwin.float.row)
+  local col = resolve(config.postwin.float.col)
   local options = {
     relative = 'editor',
     anchor = 'NE',
-    width = 52,
-    height = 12,
+    row = row,
+    col = col,
+    width = width,
+    height = height,
     border = 'single',
     style = 'minimal',
   }
-  local offset_x = config.postwin.float.offset_x
-  local offset_y = config.postwin.float.offset_y
   options = vim.tbl_deep_extend('keep', config.postwin.float.config, options)
-  options.col = vim.o.columns - offset_x
-  options.row = offset_y
   local id = api.nvim_open_win(M.buf, false, options)
   local callback = config.postwin.float.callback
   if callback then

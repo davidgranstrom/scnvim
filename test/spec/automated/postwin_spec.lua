@@ -50,4 +50,26 @@ describe('post window', function()
     win_id = vim.api.nvim_tabpage_get_win(0)
     assert.are.equal(win_id, postwin_id)
   end)
+
+  it('can use configuration for the floating window', function()
+    config.postwin.float.enabled = true
+    config.postwin.float.row = 3
+    config.postwin.float.col = function()
+      return 3
+    end
+    config.postwin.float.width = 12
+    config.postwin.float.height = 12
+    config.postwin.float.config = {
+      anchor = 'NW',
+    }
+    local id = postwin.open()
+    local cfg = vim.api.nvim_win_get_config(id)
+    assert.are.equal(3, cfg.row[true])
+    assert.are.equal(3, cfg.col[true])
+    assert.are.equal(12, cfg.width)
+    assert.are.equal(12, cfg.height)
+    assert.are.equal('NW', cfg.anchor)
+    postwin.close()
+    config.postwin.float.enabled = false
+  end)
 end)
