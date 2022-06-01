@@ -102,18 +102,4 @@ function scnvim.is_running()
   return sclang.is_running()
 end
 
-function scnvim.register_extension(plugin)
-  return plugin
-end
-
-function scnvim.load_plugin(name, cfg)
-  local ok, plugin = pcall(require, 'scnvim._extensions.' .. name)
-  if not ok then
-    error '[scnvim] Plugin not installed'
-  end
-  if plugin.setup then
-    plugin.setup(cfg, config)
-  end
-end
-
 return scnvim
