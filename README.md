@@ -43,9 +43,6 @@ Have questions? Start a [discussion](https://github.com/davidgranstrom/scnvim/di
 
 ### Install
 
-1. [Install SuperCollider](https://supercollider.github.io/download) if you have not already done so.
-2. Use your favourite package manager to install the plugin
-
 * Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
@@ -77,30 +74,45 @@ Run `:checkhealth scnvim` to verify that the installation was successful.
 
 ### Configuration
 
-`scnvim` is configurable from lua only.
-
-The only configuration explictly needed is for mappings.
-
-Here are the suggested defaults:
+`scnvim` is configurable from lua only. Here is an example configuration that
+you can copy and paste to your init.vim.
 
 ```lua
-require('scnvim').setup {
+lua << EOF
+local scnvim = require 'scnvim'
+local map = scnvim.map
+scnvim.setup {
   mapping = {
-    ['<M-e>'] = scnvim.map.send_line({'i', 'n'}),
+    ['<M-e>'] = map.send_line({'i', 'n'}),
     ['<C-e>'] = {
-      scnvim.map.send_block({'i', 'n'}),
-      scnvim.map.send_selection('x'),
+      map.send_block({'i', 'n'}),
+      map.send_selection('x'),
     },
-    ['<F12>'] = scnvim.map.hard_stop({'n', 'x', 'i'}),
-    ['<CR>'] = scnvim.map.postwin_toggle('n'),
-    ['<M-CR>'] = scnvim.map.postwin_toggle('i'),
-    ['<M-L>'] = scnvim.map.postwin_clear({'n', 'i'}),
-    ['<C-k>'] = scnvim.map.show_signature({'n', 'i'}),
+    ['<CR>'] = map.postwin_toggle('n'),
+    ['<M-CR>'] = map.postwin_toggle('i'),
+    ['<M-L>'] = map.postwin_clear({'n', 'i'}),
+    ['<C-k>'] = map.show_signature({'n', 'i'}),
+    ['<F12>'] = map.hard_stop({'n', 'x', 'i'}),
+    ['<leader>st'] = map(scnvim.start),
+    ['<leader>sk'] = map(scnvim.recompile),
+  },
+  editor = {
+    highlight = {
+      color = 'IncSearch',
+      type = 'flash',
+    },
+  },
+  documentation = {
+    cmd = '/opt/homebrew/bin/pandoc',
+  },
+  postwin = {
+    float = {
+      enabled = true,
+    },
   },
 }
+EOF
 ```
-
-See the [default configuration]() for available options.
 
 ### Start
 
