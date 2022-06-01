@@ -114,11 +114,11 @@ y * 2;
       editor.setup() -- add autocmds
       vim.cmd [[edit Test.sc]]
       assert.are.equal('supercollider', vim.bo.filetype)
-      config.ft_supercollider = false
+      config.editor.ft_supercollider = false
       editor.setup()
       vim.cmd [[edit Test.sc]]
       assert.are.equal('scala', vim.bo.filetype)
-      config.ft_supercollider = true
+      config.editor.ft_supercollider = true
     end)
   end)
 end)
