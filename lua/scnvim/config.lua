@@ -85,18 +85,22 @@ local default = {
 
     --- table
     ---@table default.postwin.float
-    ---@field enabled (default: false) Use a floating post window
-    ---@field offset_x (default: 0) Horizontal offset. Increasing this value
-    --- will "push" the window to the left of the editor.
-    ---@field offset_y (default: 0) Vertical offset. Increasing this value will
-    --- "push" the window to the bottom of the editor.
+    ---@field enabled (default: false) Use a floating post window.
+    ---@field row (default: 0) The row position, can be a function.
+    ---@field col (default: vim.o.columns) The column position, can be a function.
+    ---@field width (default: 64) The width, can be a function.
+    ---@field height (default: 14) The height, can be a function.
     ---@field callback (default: `function(id) vim.api.nvim_win_set_option(id, 'winblend', 10) end`)
     --- Callback that runs whenever the floating window was opened.
     --- Can be used to set window local options.
     float = {
       enabled = false,
-      offset_x = 0,
-      offset_y = 0,
+      row = 0,
+      col = function()
+        return vim.o.columns
+      end,
+      width = 64,
+      height = 14,
       --- table
       ---@table default.postwin.float.config
       ---@field border (default: 'single')
