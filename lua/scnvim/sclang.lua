@@ -193,7 +193,7 @@ end
 --- Start the sclang process.
 function M.start()
   if M.is_running() then
-    utils.print 'sclang is already running'
+    vim.notify('sclang already started', vim.log.levels.INFO)
     return
   end
 
@@ -239,7 +239,7 @@ end
 --- Recompile the class library.
 function M.recompile()
   if not M.is_running() then
-    utils.print 'sclang is already running'
+    vim.notify('sclang not started', vim.log.levels.ERROR)
     return
   end
   M.send(cmd_char.recompile, true)
