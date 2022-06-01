@@ -30,6 +30,11 @@
   <li><a href="../index.html">Index</a></li>
 </ul>
 
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
 
 
 <h2>Modules</h2>
@@ -52,22 +57,534 @@
 
 <h1>Module <code>scnvim.config</code></h1>
 <p>Default configuration.</p>
-<p> Provides fallback values not specified in the user config.
- Please see source file for the default values.</p>
+<p> Provides fallback values not specified in the user config.</p>
 
 
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#resolve">resolve (config)</a></td>
+	<td class="summary">Merge the user configuration with the default values.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#default">default</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#default.sclang">default.sclang</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#default.mapping">default.mapping</a></td>
+	<td class="summary">array (empty by default)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#default.documentation">default.documentation</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#default.postwin">default.postwin</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#default.postwin.float">default.postwin.float</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#default.postwin.float.config">default.postwin.float.config</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#default.editor">default.editor</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#editor.highlight">editor.highlight</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#editor.highlight.flash">editor.highlight.flash</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#editor.highlight.fade">editor.highlight.fade</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#completion">completion</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#completion.signature">completion.signature</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#snippet">snippet</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#snippet.engine">snippet.engine</a></td>
+	<td class="summary">table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#statusline">statusline</a></td>
+	<td class="summary">table</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "resolve"></a>
+    <strong>resolve (config)</strong>
+    </dt>
+    <dd>
+    Merge the user configuration with the default values.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">config</span>
+         The user configuration
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "default"></a>
+    <strong>default</strong>
+    </dt>
+    <dd>
+    table
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">ensure_installed</span>
+         (default: true) If installed once, this can be set to false to improve startup time.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "default.sclang"></a>
+    <strong>default.sclang</strong>
+    </dt>
+    <dd>
+    table
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">cmd</span>
+         Path to the sclang executable. Not needed if sclang is already in your $PATH.
+        </li>
+        <li><span class="parameter">args</span>
+         Comma separated arguments passed to the sclang executable.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "default.mapping"></a>
+    <strong>default.mapping</strong>
+    </dt>
+    <dd>
+    array (empty by default)
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">keymap</span>
+         scnvim.map
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">mapping = {
+   [<span class="string">'&lt;M-e&gt;'</span>] = scnvim.map.send_line({<span class="string">'i'</span>, <span class="string">'n'</span>}),
+   [<span class="string">'&lt;C-e&gt;'</span>] = {
+     scnvim.map.send_block({<span class="string">'i'</span>, <span class="string">'n'</span>}),
+     scnvim.map.send_selection(<span class="string">'x'</span>),
+   },
+   [<span class="string">'&lt;leader&gt;st'</span>] = scnvim.map(scnvim.start),
+   [<span class="string">'&lt;leader&gt;sk'</span>] = scnvim.map(scnvim.recompile),
+ }</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "default.documentation"></a>
+    <strong>default.documentation</strong>
+    </dt>
+    <dd>
+    table
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">cmd</span>
+         Absolute path to the render program (e.g. /opt/homebrew/bin/pandoc)
+        </li>
+        <li><span class="parameter">args</span>
+         (default: <code>{ &apos;$1&apos;, &apos;--from&apos;, &apos;html&apos;, &apos;--to&apos;, &apos;plain&apos;, &apos;-o&apos;, &apos;$2&apos; }</code>)</p>
+
+<p> Arguments given to the render program. The default args are for
+<code>pandoc</code>. Any program that can convert html into plain text should work. The
+ string $1 will be replaced with the input file path and $2 will be replaced
+ with the output file path.
+        </li>
+        <li><span class="parameter">horizontal</span>
+         (default: true) Open the help window as a horizontal split
+        </li>
+        <li><span class="parameter">direction</span>
+         (default: 'top') Direction of the split: 'top', 'right', 'bot', 'left'
+        </li>
+        <li><span class="parameter">on_open</span>
+         Custom callback with the following signature that will be called when opening a help file.</p>
+
+<ul>
+    <li><code>err</code> Nil on success or reason for the error</li>
+    <li><code>uri</code> Absolute uri to the help file</li>
+    <li><code>pattern</code> A regular expression to search for in the help file (nil if not opening a method)</li>
+</ul>
+
+<p> If this function is <code>nil</code> a split window will be opened.
+        </li>
+        <li><span class="parameter">on_select</span>
+         Custom callback with the following signature that will be called when selecting a method.</p>
+
+<ul>
+    <li>err Nil on success or reason for the error</li>
+    <li>results Table with method entries</li>
+</ul>
+
+<p> If this function is <code>nil</code> the quickfix window will be opened.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "default.postwin"></a>
+    <strong>default.postwin</strong>
+    </dt>
+    <dd>
+    table
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">highlight</span>
+         (default: true) Use syntax colored post window output.
+        </li>
+        <li><span class="parameter">auto_toggle_error</span>
+         (default: true) Auto-toggle post window on errors.
+        </li>
+        <li><span class="parameter">scrollback</span>
+         (default: 5000) The number of lines to save in the post window history.
+        </li>
+        <li><span class="parameter">horizontal</span>
+         (default: false) Open the post window as a horizontal split
+        </li>
+        <li><span class="parameter">direction</span>
+         (default: 'right') Direction of the split: 'top', 'right', 'bot', 'left'
+        </li>
+        <li><span class="parameter">size</span>
+         Use a custom initial size
+        </li>
+        <li><span class="parameter">fixed_size</span>
+         Use a fixed size for the post window. The window will always use this size if closed.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "default.postwin.float"></a>
+    <strong>default.postwin.float</strong>
+    </dt>
+    <dd>
+    table
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">enabled</span>
+         (default: false) Use a floating post window
+        </li>
+        <li><span class="parameter">offset_x</span>
+         (default: 0) Horizontal offset. Increasing this value
+ will "push" the window to the left of the editor.
+        </li>
+        <li><span class="parameter">offset_y</span>
+         (default: 0) Vertical offset. Increasing this value will
+ "push" the window to the bottom of the editor.
+        </li>
+        <li><span class="parameter">callback</span>
+         (default: <code>function(id) vim.api.nvim_win_set_option(id, &apos;winblend&apos;, 10) end</code>)
+ Callback that runs whenever the floating window was opened.
+ Can be used to set window local options.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "default.postwin.float.config"></a>
+    <strong>default.postwin.float.config</strong>
+    </dt>
+    <dd>
+    table
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">border</span>
+         (default: 'single')
+        </li>
+        <li><span class="parameter">...</span>
+         See <code>:help nvim_open_win</code> for possible values
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "default.editor"></a>
+    <strong>default.editor</strong>
+    </dt>
+    <dd>
+    table
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">ft_supercollider</span>
+         (default: true) Treat .sc files as supercollider. If false, use nvim's native ftdetect.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "editor.highlight"></a>
+    <strong>editor.highlight</strong>
+    </dt>
+    <dd>
+    table
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">color</span>
+         (default: <code>TermCursor</code>) Highlight group for the flash color.
+ Use a table for custom colors:
+ <code>color = { guifg = &apos;black&apos;, guibg = &apos;white&apos;, ctermfg = &apos;black&apos;, ctermbg = &apos;white&apos; }</code>
+        </li>
+        <li><span class="parameter">type</span>
+         (default: 'flash') Highligt flash type: 'flash', 'fade' or 'none'
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "editor.highlight.flash"></a>
+    <strong>editor.highlight.flash</strong>
+    </dt>
+    <dd>
+    table
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">duration</span>
+         (default: 100) The duration of the flash in ms.
+        </li>
+        <li><span class="parameter">repeats</span>
+         (default: 2) The number of repeats.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "editor.highlight.fade"></a>
+    <strong>editor.highlight.fade</strong>
+    </dt>
+    <dd>
+    table
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">duration</span>
+         (default: 375) The duration of the flash in ms.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "completion"></a>
+    <strong>completion</strong>
+    </dt>
+    <dd>
+    table
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "completion.signature"></a>
+    <strong>completion.signature</strong>
+    </dt>
+    <dd>
+    table
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">float</span>
+         (default: true) Show function signatures in a floating window
+        </li>
+        <li><span class="parameter">auto</span>
+         (default: true) Show function signatures while typing in insert mode
+        </li>
+        <li><span class="parameter">config</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "snippet"></a>
+    <strong>snippet</strong>
+    </dt>
+    <dd>
+    table
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "snippet.engine"></a>
+    <strong>snippet.engine</strong>
+    </dt>
+    <dd>
+    table
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+         Name of the snippet engine
+        </li>
+        <li><span class="parameter">options</span>
+         Table of engine specific options (note, currently not in use)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "statusline"></a>
+    <strong>statusline</strong>
+    </dt>
+    <dd>
+    table
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">poll_interval</span>
+         (default: 1) The interval to update the status line widgets in seconds.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2022-06-01 14:39:58 </i>
+<i style="float:right;">Last updated 2022-06-01 19:20:30 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
