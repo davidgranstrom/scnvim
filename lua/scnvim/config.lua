@@ -6,6 +6,7 @@
 --- default configuration
 local default = {
   ensure_installed = true, -- If installed once, this can be set to false to improve startup time.
+  ft_supercollider = true, -- Treat .sc files as supercollider (if false, use native ft detect scala/supercollider)
   sclang = {
     cmd = nil, -- Path to the sclang executable. Not needed if `sclang` is already in your $PATH.
     args = {}, -- Comma separated arguments passed to the `sclang` executable.
