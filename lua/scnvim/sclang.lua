@@ -115,6 +115,7 @@ local function start_process()
 end
 
 --- Function to run on sclang start
+---@local
 M.on_start = function()
   postwin.open()
 end
@@ -122,17 +123,20 @@ end
 --- Function to run on sclang exit
 --@param code The exit code
 --@param signal The Signal
+---@local
 M.on_exit = function(code, signal) -- luacheck: no unused args
   postwin.destroy()
 end
 
 --- Function to run on sclang output
 --@param line sclang post window output
+---@local
 M.on_read = function(line)
   postwin.post(line)
 end
 
 --- Set the current document path
+---@local
 function M.set_current_path()
   if M.is_running() then
     local curpath = vim.fn.expand '%:p'
@@ -143,6 +147,7 @@ function M.set_current_path()
 end
 
 --- Start polling the server status
+---@local
 function M.poll_server_status()
   local cmd = string.format('SCNvim.updateStatusLine(%d)', config.statusline.poll_interval)
   M.send(cmd, true)
