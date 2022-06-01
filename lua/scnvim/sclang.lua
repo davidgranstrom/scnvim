@@ -5,7 +5,6 @@
 local postwin = require 'scnvim.postwin'
 local udp = require 'scnvim.udp'
 local path = require 'scnvim.path'
-local utils = require 'scnvim.utils'
 local config = require 'scnvim.config'
 
 local uv = vim.loop
