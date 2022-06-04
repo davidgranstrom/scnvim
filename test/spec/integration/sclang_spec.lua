@@ -6,17 +6,17 @@ local stdout
 
 config.sclang.cmd = sclang_path
 
-sclang.on_start = function()
+sclang.on_init:append(function()
   stdout = { '' }
-end
+end)
 
-sclang.on_read = function(line)
+sclang.on_output:append(function(line)
   table.insert(stdout, line)
-end
+end)
 
-sclang.on_exit = function()
+sclang.on_exit:append(function()
   stdout = nil
-end
+end)
 
 describe('sclang', function()
   it('can start the interpreter', function()
