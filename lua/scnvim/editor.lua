@@ -18,8 +18,8 @@ local M = {}
 
 --- Action that runs to highlight buffer content sent to sclang.
 --- The default function depends on the user config.
----@param start Start range {row, col} (zero indexed)
----@param finish End range {row, col} (zero indexed)
+---@param start Start range ({row, col} zero indexed)
+---@param finish End range ({row, col} zero indexed)
 M.on_highlight = action.new(function(start, finish) end)
 
 --- Action that runs when buffer content is sent to sclang.
