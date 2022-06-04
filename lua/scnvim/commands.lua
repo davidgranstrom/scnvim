@@ -6,6 +6,7 @@
 
 local sclang = require 'scnvim.sclang'
 local help = require 'scnvim.help'
+local extensions = require 'scnvim.extensions'
 local get_cache_dir = require('scnvim.path').get_cache_dir
 
 local function add_command(name, fn, desc)
@@ -29,6 +30,13 @@ return function()
     help.open_help_for(tbl.args)
   end
   vim.api.nvim_buf_create_user_command(0, 'SCNvimHelp', open_help, options)
+
+  vim.api.nvim_buf_create_user_command(
+    0,
+    'SCNvimExt',
+    extensions.run_user_command,
+    { nargs = '+', desc = 'Run an extension command' }
+  )
 
   -- deprecated
   add_command('SCNvimTags', function()
