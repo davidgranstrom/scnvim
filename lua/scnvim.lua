@@ -6,6 +6,7 @@
 local sclang = require 'scnvim.sclang'
 local editor = require 'scnvim.editor'
 local config = require 'scnvim.config'
+local extensions = require 'scnvim.extensions'
 
 local scnvim = {}
 
@@ -100,6 +101,14 @@ end
 ---@return True if sclang is running otherwise false.
 function scnvim.is_running()
   return sclang.is_running()
+end
+
+function scnvim.register_extension(ext)
+  return extensions.register(ext)
+end
+
+function scnvim.load_extension(ext)
+  return extensions.load(ext)
 end
 
 return scnvim

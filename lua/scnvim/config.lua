@@ -188,6 +188,8 @@ local default = {
   statusline = {
     poll_interval = 1,
   },
+
+  extensions = {},
 }
 
 local M = {}
