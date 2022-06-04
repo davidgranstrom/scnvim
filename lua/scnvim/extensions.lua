@@ -1,4 +1,7 @@
---- Extensions
+--- Extensions.
+--- API used to manage and register third party scnvim extensions.
+--- Heavily inspired by the extension model used by telescope.nvim
+--- https://github.com/nvim-telescope/telescope.nvim
 ---@module extensions
 local config = require 'scnvim.config'
 local M = {}
@@ -28,10 +31,16 @@ M.manager = setmetatable({}, {
   end,
 })
 
+--- Register an extension.
+---@param ext The extension to register.
+---@return The extension.
 function M.register(ext)
   return ext
 end
 
+--- Load an extension.
+---@param name The extension to load.
+---@return The exported extension API.
 function M.load(name)
   return M.manager[name]
 end

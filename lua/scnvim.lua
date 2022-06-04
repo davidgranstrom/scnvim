@@ -103,12 +103,20 @@ function scnvim.is_running()
   return sclang.is_running()
 end
 
+--- Register an extension.
+---@param ext The extension to register.
+---@return The extension.
 function scnvim.register_extension(ext)
   return extensions.register(ext)
 end
 
-function scnvim.load_extension(ext)
-  return extensions.load(ext)
+--- Load an extension.
+--- Should only be called after `scnvim.setup`.
+---@param name The extension to load.
+---@return The exported functions from the extension.
+---@usage scnvim.load_extension('logger')
+function scnvim.load_extension(name)
+  return extensions.load(name)
 end
 
 return scnvim
