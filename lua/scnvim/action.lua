@@ -1,6 +1,22 @@
 --- Define actions.
---- An action can be overriden by the user or by an extension
----@module action
+--- An action defines an object that can be overriden by the user or by an extension.
+---
+--- **Actions overview**
+---
+--- See the corresponding module for detailed documentation.
+---
+--- `scnvim.sclang`
+---
+--- * on_init
+--- * on_exit
+--- * on_output
+---
+--- `scnvim.help`
+---
+--- * on_open
+--- * on_select
+---
+---@module scnvim.action
 local action = {}
 
 --- Create a new action.
@@ -21,17 +37,18 @@ function action.new(fn)
   return self
 end
 
---- Replace the default action.
+--- Replace the default function.
 ---@param fn The replacement function. The signature and return values *must*
---- match the default function.
+--- match the function to be replaced.
 function action:replace(fn)
   self.default_fn = fn
 end
 
---- Append an action.
---- The appended action will run after the default function and receive its return values as input.
----@param fn The function to append. The signature and return values *must*
---- match the default function.
+--- Append a function.
+--- The appended function will run after the default function and will receive
+--- the same input arguments. There can be several appended functions and they
+--- will be executed in the order they were appended.
+---@param fn The function to append.
 function action:append(fn)
   table.insert(self.appended, fn)
 end
