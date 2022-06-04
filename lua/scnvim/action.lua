@@ -16,6 +16,11 @@
 --- * on_open
 --- * on_select
 ---
+--- `scnvim.editor`
+---
+--- * on_highlight
+--- * on_send
+---
 ---@module scnvim.action
 local action = {}
 
