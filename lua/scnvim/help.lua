@@ -12,17 +12,22 @@ local sclang = require 'scnvim.sclang'
 local config = require 'scnvim.config'
 local _path = require 'scnvim.path'
 local utils = require 'scnvim.utils'
+local action = require 'scnvim.action'
 
 local uv = vim.loop
 local api = vim.api
 local win_id = 0
 local M = {}
 
---- Open a vim buffer for uri with an optional pattern.
+--- Actions
+---@section actions
+
+--- Action that runs when a help file is opened.
+--- The default is to open a split buffer.
 ---@param err nil on success or reason of error
 ---@param uri Help file URI
 ---@param pattern (optional) move cursor to line matching regex pattern
-local function default_open(err, uri, pattern)
+M.on_open = action.new(function(err, uri, pattern)
   if err then
     utils.print(err)
     return
@@ -48,7 +53,7 @@ local function default_open(err, uri, pattern)
     vim.cmd(win_cmd)
     win_id = vim.fn.win_getid()
   end
-end
+end)
 
 --- Get the render arguments with correct input and output file paths.
 ---@param input_path The input path to use.
@@ -108,22 +113,23 @@ local function open_from_quickfix(index)
   if item then
     local uri = vim.fn.bufname(item.bufnr)
     if uv.fs_stat(uri) then
-      default_open(nil, uri, item.pattern)
+      M.on_open(nil, uri, item.pattern)
     else
       local cmd = string.format('SCNvim.getFileNameFromUri("%s")', uri)
       sclang.eval(cmd, function(subject)
         render_help_file(subject, function(result)
-          default_open(nil, result, item.pattern)
+          M.on_open(nil, result, item.pattern)
         end)
       end)
     end
   end
 end
 
---- Default selector implementation
+--- Action that runs when selecting documentation for a method.
+--- The default is to present the results in the quickfix window.
 ---@param err nil if no error otherwise string
 ---@param results Table with results
-local function default_select(err, results)
+M.on_select = action.new(function(err, results)
   if err then
     print(err)
     return
@@ -145,7 +151,7 @@ local function default_select(err, results)
     local linenr = api.nvim_win_get_cursor(0)[1]
     open_from_quickfix(linenr)
   end, { buffer = true })
-end
+end)
 
 --- Find help files for a method
 ---@param name Method name to find.
@@ -171,6 +177,9 @@ local function find_methods(name, target_dir)
   return results
 end
 
+--- Functions
+---@section functions
+
 --- Get a table with a documentation overview
 ---@param target_dir The target help directory (SCDoc.helpTargetDir)
 ---@return A JSON formatted string
@@ -194,11 +203,8 @@ end
 --- Open a help file.
 ---@param subject The help subject (SinOsc, tanh, etc.)
 function M.open_help_for(subject)
-  local open_func = config.documentation.on_open or default_open
-  local select_func = config.documentation.on_select or default_select
-
   if not sclang.is_running() then
-    open_func 'sclang not running'
+    M.on_open 'sclang not running'
     return
   end
 
@@ -211,7 +217,7 @@ function M.open_help_for(subject)
   local is_class = subject:sub(1, 1):match '%u'
   if is_class then
     render_help_file(subject, function(result)
-      open_func(nil, result)
+      M.on_open(nil, result)
     end)
   else
     sclang.eval('SCDoc.helpTargetDir', function(dir)
@@ -220,7 +226,7 @@ function M.open_help_for(subject)
       if #results == 0 then
         err = 'No results for ' .. tostring(subject)
       end
-      select_func(err, results)
+      M.on_select(err, results)
     end)
   end
 end
