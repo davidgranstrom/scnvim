@@ -11,6 +11,7 @@ describe('commands', function()
       'SCNvimStart',
       'SCNvimStatusLine',
       'SCNvimStop',
+      'SCNvimExt',
       'SCNvimTags', -- deprecated
     }
     local cmds = vim.api.nvim_buf_get_commands(0, {})
