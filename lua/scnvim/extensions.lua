@@ -2,7 +2,8 @@
 --- API used to manage and register third party scnvim extensions.
 --- Heavily inspired by the extension model used by telescope.nvim
 --- https://github.com/nvim-telescope/telescope.nvim
----@module extensions
+---@module scnvim.extensions
+---@local
 local config = require 'scnvim.config'
 local M = {}
 
