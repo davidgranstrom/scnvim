@@ -20,7 +20,7 @@ local M = {}
 --- The default function depends on the user config.
 ---@param start Start range ({row, col} zero indexed)
 ---@param finish End range ({row, col} zero indexed)
-M.on_highlight = action.new(function(start, finish) end)
+M.on_highlight = action.new(function(start, finish) end) -- luacheck: ignore
 
 --- Action that runs when buffer content is sent to sclang.
 --- The default is to send the content as a string to sclang.
