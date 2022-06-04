@@ -6,6 +6,7 @@ local postwin = require 'scnvim.postwin'
 local udp = require 'scnvim.udp'
 local path = require 'scnvim.path'
 local config = require 'scnvim.config'
+local action = require 'scnvim.action'
 
 local uv = vim.loop
 local M = {}
@@ -30,9 +31,7 @@ local on_stdout = function()
         local lines = vim.gsplit(str, '\n')
         for line in lines do
           if line ~= '' then
-            if M.on_read then
-              M.on_read(line)
-            end
+            M.on_output(line)
           end
         end
         stack = { '' }
@@ -46,6 +45,33 @@ local function safe_close(handle)
     handle:close()
   end
 end
+
+--- Actions
+---@section actions
+
+--- Action that runs before sclang is started.
+--- The default is to open the post window.
+M.on_init = action.new(function()
+  postwin.open()
+end)
+
+--- Action that runs on sclang exit
+--- The default is to destory the post window.
+---@param code The exit code
+---@param signal Terminating signal
+M.on_exit = action.new(function(code, signal) -- luacheck: no unused args
+  postwin.destroy()
+end)
+
+--- Action that runs on sclang output.
+--- The default is to print a line to the post window.
+---@param line A complete line of sclang output.
+M.on_output = action.new(function(line)
+  postwin.post(line)
+end)
+
+--- Functions
+---@section functions
 
 function M.find_sclang_executable()
   if config.sclang.cmd then
@@ -82,9 +108,7 @@ local function on_exit(code, signal)
   safe_close(M.stdout)
   safe_close(M.stderr)
   safe_close(M.proc)
-  if M.on_exit then
-    M.on_exit(code, signal)
-  end
+  M.on_exit(code, signal)
   M.proc = nil
 end
 
@@ -111,27 +135,6 @@ local function start_process()
   options.args = { '-i', 'scnvim', '-d', options.cwd, unpack(config.sclang.args) }
   options.hide = true
   return uv.spawn(sclang, options, vim.schedule_wrap(on_exit))
-end
-
---- Function to run on sclang start
----@local
-M.on_start = function()
-  postwin.open()
-end
-
---- Function to run on sclang exit
---@param code The exit code
---@param signal The Signal
----@local
-M.on_exit = function(code, signal) -- luacheck: no unused args
-  postwin.destroy()
-end
-
---- Function to run on sclang output
---@param line sclang post window output
----@local
-M.on_read = function(line)
-  postwin.post(line)
 end
 
 --- Set the current document path
@@ -201,9 +204,7 @@ function M.start()
     return
   end
 
-  if M.on_start then
-    M.on_start()
-  end
+  M.on_init()
 
   M.proc = start_process()
   assert(M.proc, 'Could not start sclang process')

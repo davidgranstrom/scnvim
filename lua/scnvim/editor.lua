@@ -8,9 +8,33 @@ local postwin = require 'scnvim.postwin'
 local commands = require 'scnvim.commands'
 local settings = require 'scnvim.settings'
 local signature = require 'scnvim.completion.signature'
+local action = require 'scnvim.action'
 local api = vim.api
 local uv = vim.loop
 local M = {}
+
+--- Actions
+---@section actions
+
+--- Action that runs to highlight buffer content sent to sclang.
+--- The default function depends on the user config.
+---@param start Start range ({row, col} zero indexed)
+---@param finish End range ({row, col} zero indexed)
+M.on_highlight = action.new(function(start, finish) end) -- luacheck: ignore
+
+--- Action that runs when buffer content is sent to sclang.
+--- The default is to send the content as a string to sclang.
+---@param lines Table with the lines.
+---@param callback Optional callback function.
+M.on_send = action.new(function(lines, callback)
+  if callback then
+    lines = callback(lines)
+  end
+  sclang.send(table.concat(lines, '\n'))
+end)
+
+--- Functions
+---@section functions
 
 --- Get a range of lines.
 ---@param lstart Start index.
@@ -31,10 +55,6 @@ local function flash_once(start, finish, delay)
     api.nvim_buf_clear_namespace(0, ns, 0, -1)
   end, delay)
 end
-
---- Fallback highlight function
----@local
-M.highlight = function() end
 
 --- Apply a flashing effect to a text region.
 ---@param start starting position (tuple {line,col} zero indexed)
@@ -232,21 +252,12 @@ function M.setup()
   create_autocmds()
   local highlight = config.editor.highlight
   if highlight.type == 'flash' then
-    M.highlight = flash_region
+    M.on_highlight:replace(flash_region)
   elseif highlight.type == 'fade' then
-    M.highlight = fade_region
+    M.on_highlight:replace(fade_region)
+  else -- none
+    M.on_highlight:replace(function() end)
   end
-end
-
---- Send lines.
----@param lines Table with the lines to send.
----@param callback Optional callback function.
----@local
-function M.send_lines(lines, callback)
-  if callback then
-    lines = callback(lines)
-  end
-  sclang.send(table.concat(lines, '\n'))
 end
 
 --- Get the current line and send it to sclang.
@@ -258,11 +269,11 @@ function M.send_line(cb, flash)
   end
   local linenr = api.nvim_win_get_cursor(0)[1]
   local line = get_range(linenr, linenr)
-  M.send_lines(line, cb)
+  M.on_send(line, cb)
   if flash then
     local start = { linenr - 1, 0 }
     local finish = { linenr - 1, #line[1] }
-    M.highlight(start, finish)
+    M.on_highlight(start, finish)
   end
 end
 
@@ -282,11 +293,11 @@ function M.send_block(cb, flash)
   local last_line = lines[#lines]
   local block_end = string.find(last_line, ')')
   lines[#lines] = last_line:sub(1, block_end)
-  M.send_lines(lines, cb)
+  M.on_send(lines, cb)
   if flash then
     local start = { lstart - 1, 0 }
     local finish = { lend - 1, 0 }
-    M.highlight(start, finish)
+    M.on_highlight(start, finish)
   end
 end
 
@@ -298,11 +309,11 @@ function M.send_selection(cb, flash)
     flash = true
   end
   local ret = vim.fn['scnvim#editor#get_visual_selection']()
-  M.send_lines(ret.lines, cb)
+  M.on_send(ret.lines, cb)
   if flash then
     local start = { ret.line_start - 1, ret.col_start - 1 }
     local finish = { ret.line_end - 1, ret.col_end - 1 }
-    M.highlight(start, finish)
+    M.on_highlight(start, finish)
   end
 end
 

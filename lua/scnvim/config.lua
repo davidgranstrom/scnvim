@@ -43,26 +43,11 @@ local default = {
   ---
   ---@field horizontal (default: true) Open the help window as a horizontal split
   ---@field direction (default: 'top') Direction of the split: 'top', 'right', 'bot', 'left'
-  ---@field on_open Custom callback with the following signature that will be called when opening a help file.
-  ---
-  --- * `err` Nil on success or reason for the error
-  --- * `uri` Absolute uri to the help file
-  --- * `pattern` A regular expression to search for in the help file (nil if not opening a method)
-  ---
-  --- If this function is `nil` a split window will be opened.
-  ---@field on_select Custom callback with the following signature that will be called when selecting a method.
-  ---
-  --- * err Nil on success or reason for the error
-  --- * results Table with method entries
-  ---
-  --- If this function is `nil` the quickfix window will be opened.
   documentation = {
     cmd = nil,
     args = { '$1', '--from', 'html', '--to', 'plain', '-o', '$2' },
     horizontal = true,
     direction = 'top',
-    on_open = nil,
-    on_select = nil,
   },
 
   --- table
@@ -188,6 +173,10 @@ local default = {
   statusline = {
     poll_interval = 1,
   },
+
+  --- table
+  ---@table extensions
+  extensions = {},
 }
 
 local M = {}
