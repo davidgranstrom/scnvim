@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>scnvim reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>scnvim</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_action">Class action </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/scnvim.html">scnvim</a></li>
+  <li><strong>scnvim.action</strong></li>
+  <li><a href="../modules/scnvim.config.html">scnvim.config</a></li>
+  <li><a href="../modules/scnvim.editor.html">scnvim.editor</a></li>
+  <li><a href="../modules/extensions.html">extensions</a></li>
+  <li><a href="../modules/scnvim.help.html">scnvim.help</a></li>
+  <li><a href="../modules/scnvim.install.html">scnvim.install</a></li>
+  <li><a href="../modules/scnvim.path.html">scnvim.path</a></li>
+  <li><a href="../modules/scnvim.postwin.html">scnvim.postwin</a></li>
+  <li><a href="../modules/scnvim.sclang.html">scnvim.sclang</a></li>
+  <li><a href="../modules/scnvim.statusline.html">scnvim.statusline</a></li>
+  <li><a href="../modules/scnvim.utils.html">scnvim.utils</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>scnvim.action</code></h1>
+<p>Define actions.</p>
+<p>
+
+<p> An action defines an object that can be overriden by the user or by an extension.</p>
+
+<p> <strong>Actions overview</strong></p>
+
+<p> See the corresponding module for detailed documentation.</p>
+
+<p> <a href="../modules/scnvim.sclang.html#">scnvim.sclang</a></p>
+
+<ul>
+    <li>on_init</li>
+    <li>on_exit</li>
+    <li>on_output</li>
+</ul>
+
+<p> <a href="../modules/scnvim.help.html#">scnvim.help</a></p>
+
+<ul>
+    <li>on_open</li>
+    <li>on_select</li>
+</ul>
+
+<p> <a href="../modules/scnvim.editor.html#">scnvim.editor</a></p>
+
+<ul>
+    <li>on_highlight</li>
+    <li>on_send</li>
+</ul>
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#new">new (fn)</a></td>
+	<td class="summary">Create a new action.</td>
+	</tr>
+</table>
+<h2><a href="#Class_action">Class action </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#action:replace">action:replace (fn)</a></td>
+	<td class="summary">Replace the default function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#action:restore">action:restore ()</a></td>
+	<td class="summary">Restore the default function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#action:append">action:append (fn)</a></td>
+	<td class="summary">Append a function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#action:remove">action:remove (id)</a></td>
+	<td class="summary">Remove an appended action.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "new"></a>
+    <strong>new (fn)</strong>
+    </dt>
+    <dd>
+    Create a new action.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fn</span>
+         The default function to call.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The action.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_action"></a>Class action </h2>
+
+          <div class="section-description">
+          Methods
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "action:replace"></a>
+    <strong>action:replace (fn)</strong>
+    </dt>
+    <dd>
+    Replace the default function.
+ If several extension replace the same function then "last one wins".
+ Consider using <a href="../modules/scnvim.action.html#action:append">action:append</a> if your extensions doesn't need to replace the
+ default behaviour.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fn</span>
+         The replacement function. The signature and return values <em>must</em>
+ match the function to be replaced.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "action:restore"></a>
+    <strong>action:restore ()</strong>
+    </dt>
+    <dd>
+    Restore the default function.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "action:append"></a>
+    <strong>action:append (fn)</strong>
+    </dt>
+    <dd>
+    Append a function.
+ The appended function will run after the default function and will receive
+ the same input arguments. There can be several appended functions and they
+ will be executed in the order they were appended.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fn</span>
+         The function to append.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        An integer ID. Use this ID if you need to remove the appended action.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "action:remove"></a>
+    <strong>action:remove (id)</strong>
+    </dt>
+    <dd>
+    Remove an appended action.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">id</span>
+         ID of the action to remove.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2022-06-04 10:53:37 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
