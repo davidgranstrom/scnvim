@@ -7,6 +7,8 @@ local health = require 'health'
 local install = require 'scnvim.install'
 local sclang = require 'scnvim.sclang'
 local config = require 'scnvim.config'
+local extensions = require 'scnvim.extensions'
+
 local M = {}
 
 local function check_nvim_version()
@@ -85,6 +87,23 @@ local function check_sclang()
   end
 end
 
+local function check_extensions()
+  local installed = {}
+  for name, _ in pairs(extensions.manager) do
+    installed[#installed + 1] = name
+  end
+  table.sort(installed)
+  for _, name in ipairs(installed) do
+    local health_check = extensions._health[name]
+    if health_check then
+      health.report_start(string.format('scnvim extensions "%s"', name))
+      health_check()
+    else
+      health.report_ok(string.format('No health check for "%s"', name))
+    end
+  end
+end
+
 function M.check()
   health.report_start 'scnvim'
   check_nvim_version()
@@ -93,6 +112,8 @@ function M.check()
   check_mappings()
   health.report_start 'scnvim documentation'
   check_documentation()
+  health.report_start 'scnvim extensions'
+  check_extensions()
 end
 
 return M
