@@ -8,7 +8,6 @@ local config = require 'scnvim.config'
 local M = {}
 
 M._health = {}
-M._loaded = {}
 
 local function load_extension(name)
   local ok, ext = pcall(require, 'scnvim._extensions.' .. name)
@@ -27,7 +26,6 @@ M.manager = setmetatable({}, {
     local ext = load_extension(k)
     t[k] = ext.exports or {}
     M._health[k] = ext.health
-    M._loaded[#M._loaded + 1] = k
     return t[k]
   end,
 })
@@ -56,8 +54,7 @@ function M.run_user_command(tbl)
     error(string.format('Extension "%s" is not installed', name))
   end
   if ext[cmd] then
-    local args = { select(2, unpack(tbl.fargs)) }
-    ext[cmd](unpack(args))
+    ext[cmd](select(2, unpack(tbl.fargs)))
   else
     error(string.format('Could not find exported function "%s"', cmd))
   end
