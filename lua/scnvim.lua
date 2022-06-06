@@ -48,6 +48,9 @@ scnvim.map = require 'scnvim.map'
 --- This function is called from the user's config to initialize scnvim.
 ---@param user_config A user config or an empty table.
 function scnvim.setup(user_config)
+  user_config = user_config or {}
+  config.resolve(user_config)
+  editor.setup()
   if config.ensure_installed then
     local installer = require 'scnvim.install'
     local ok, msg = pcall(installer.link)
@@ -55,24 +58,21 @@ function scnvim.setup(user_config)
       error(msg)
     end
   end
-  user_config = user_config or {}
-  config.resolve(user_config)
-  editor.setup()
 end
 
---- Evalute an expression.
+--- Evaluate an expression.
 ---@param expr Any valid SuperCollider expression.
 function scnvim.send(expr)
   sclang.send(expr, false)
 end
 
---- Evalute an expression without feedback from the post window.
+--- Evaluate an expression without feedback from the post window.
 ---@param expr Any valid SuperCollider expression.
 function scnvim.send_silent(expr)
   sclang.send(expr, true)
 end
 
---- Evalute an expression and get the return value in lua.
+--- Evaluate an expression and get the return value in lua.
 ---@param expr Any valid SuperCollider expression.
 ---@param cb A callback that will receive the return value as its first argument.
 ---@usage scnvim.eval('1 + 1', function(res)
