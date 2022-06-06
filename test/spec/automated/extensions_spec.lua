@@ -3,6 +3,7 @@ local scnvim = require 'scnvim'
 require 'scnvim.commands'()
 
 scnvim.setup {
+  ensure_installed = false,
   extensions = {
     ['unit-test'] = {
       some_var = 123,
