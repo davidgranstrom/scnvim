@@ -165,7 +165,7 @@ local function find_methods(name, target_dir)
     for _, method in ipairs(value.methods) do
       local match = utils.str_match_exact(method, name)
       if match then
-        local destpath = path .. _path.sep .. value.path .. '.txt'
+        local destpath = _path.concat(path, value.path .. '.txt')
         table.insert(results, {
           filename = destpath,
           text = string.format('.%s', name),
@@ -244,8 +244,7 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
   local cmd = string.format('SCNvimDoc.renderAll(%s)', include_extensions)
   sclang.eval(cmd, function()
     sclang.eval('SCDoc.helpTargetDir', function(help_path)
-      local sep = _path.sep
-      local sc_help_dir = help_path .. sep .. 'Classes'
+      local sc_help_dir = _path.concat(help_path, 'Classes')
 
       local threads = {}
       local active_threads = 0
@@ -292,8 +291,8 @@ function M.render_all(callback, include_extensions, concurrent_jobs)
         local filename, type = uv.fs_scandir_next(handle)
         if type == 'file' and vim.endswith(filename, 'scnvim') then
           local basename = filename:gsub('%.html%.scnvim', '')
-          local input_path = sc_help_dir .. sep .. filename
-          local output_path = sc_help_dir .. sep .. basename .. '.txt'
+          local input_path = _path.concat(sc_help_dir, filename)
+          local output_path = _path.concat(sc_help_dir, basename .. '.txt')
           local options = {
             args = get_render_args(input_path, output_path),
             hide = true,
