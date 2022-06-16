@@ -21,9 +21,8 @@ describe('path', function()
   end)
 
   it('concatenates items into a path', function()
-    local sep = path.sep
     local value = path.concat('this', 'is', 'a', 'file.txt')
-    local expected = 'this' .. sep .. 'is' .. sep .. 'a' .. sep .. 'file.txt'
+    local expected = 'this/is/a/file.txt'
     eq(value, expected)
   end)
 
@@ -45,9 +44,14 @@ describe('path', function()
   it('returns the cache directory', function()
     local cache_dir = path.get_cache_dir()
     assert.not_nil(cache_dir)
-    cache_dir = string.match(cache_dir, 'nvim' .. path.sep .. 'scnvim')
+    cache_dir = string.match(cache_dir, 'nvim/scnvim')
     local expected = path.concat('nvim', 'scnvim')
     eq(cache_dir, expected)
+  end)
+
+  it('converts windows paths to unix style', function()
+    local s = [[C:\Users\test\AppData\Local]]
+    eq('C:/Users/test/AppData/Local', path.normalize(s))
   end)
 
   -- this test will fail on CI since we're adding scnvim as a relative path to the runtimepath

@@ -1,4 +1,5 @@
---- Path and platform related functions
+--- Path and platform related functions.
+--- '/' is the path separator for all platforms.
 ---@module scnvim.path
 
 local M = {}
@@ -21,14 +22,11 @@ end
 --- Returns true if current system is Windows otherwise false
 M.is_windows = (M.get_system() == 'windows')
 
---- System path separator
---- '/' on macOS and Linux and '\\' on Windows
-M.sep = M.is_windows and '\\' or '/'
-
 --- Get the scnvim cache directory.
 ---@return The absolute path to the cache directory
 function M.get_cache_dir()
   local cache_path = M.concat(vim.fn.stdpath 'cache', 'scnvim')
+  cache_path = M.normalize(cache_path)
   vim.fn.mkdir(cache_path, 'p')
   return cache_path
 end
@@ -73,7 +71,14 @@ end
 --- print(res) -- /Users/usr/.cache/nvim/scnvim/subdir/file.txt
 function M.concat(...)
   local items = { ... }
-  return table.concat(items, M.sep)
+  return table.concat(items, '/')
+end
+
+--- Normalize a path to use Unix style separators: '/'.
+---@param path The path to normalize.
+---@return The normalized path.
+function M.normalize(path)
+  return (path:gsub('\\', '/'))
 end
 
 --- Get the root dir of this plugin
@@ -86,8 +91,8 @@ function M.get_plugin_root_dir()
   for _, path in ipairs(paths) do
     local index = path:find 'scnvim'
     if index and path:sub(index, -1) == 'scnvim' then
-      M.root_dir = path
-      return path
+      M.root_dir = M.normalize(path)
+      return M.root_dir
     end
   end
   error '[scnvim] could not get plugin root dir'

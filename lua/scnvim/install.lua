@@ -19,16 +19,15 @@ local function get_ext_dir()
   local sysname = _path.get_system()
   local home_dir = uv.os_homedir()
   local xdg = uv.os_getenv 'XDG_DATA_HOME'
-  if sysname == 'windows' then
-    return _path.concat(home_dir, 'AppData', 'Local', 'SuperCollider', 'Extensions')
-  end
   if xdg then
-    return _path.concat(xdg, 'SuperCollider/Extensions')
+    return xdg .. '/SuperCollider/Extensions'
   end
-  if sysname == 'linux' then
-    return _path.concat(home_dir, '.local/share/SuperCollider/Extensions')
+  if sysname == 'windows' then
+    return _path.normalize(home_dir) .. '/AppData/Local/SuperCollider/Extensions'
+  elseif sysname == 'linux' then
+    return home_dir .. '/.local/share/SuperCollider/Extensions'
   elseif sysname == 'macos' then
-    return _path.concat(home_dir, 'Library/Application Support/SuperCollider/Extensions')
+    return home_dir .. '/Library/Application Support/SuperCollider/Extensions'
   end
   error '[scnvim] could not get SuperCollider Extensions dir'
 end
