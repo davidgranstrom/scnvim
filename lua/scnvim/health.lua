@@ -96,7 +96,7 @@ local function check_extensions()
   for _, name in ipairs(installed) do
     local health_check = extensions._health[name]
     if health_check then
-      health.report_start(string.format('scnvim extensions "%s"', name))
+      health.report_start(string.format('extension: "%s"', name))
       health_check()
     else
       health.report_ok(string.format('No health check for "%s"', name))
