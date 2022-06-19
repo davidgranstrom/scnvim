@@ -30,20 +30,22 @@ implementation, for example the code for indent and syntax highlighting.
 ==============================================================================
 SETUP                                                             *scnvim-setup*
 
-Enable the plugin by calling the setup function in your init.lua
+Enable the plugin by calling the setup function in your *init.lua*
 >
-  scnvim.setup {}
+  local scnvim = require('scnvim')
+  scnvim.setup({})
 <
-This plugin uses lua for configuration, so you may need to surround the
-above statement using a |lua-heredoc| if you are using vim script.
+This plugin uses lua for configuration, so you may need to surround the above
+statement using a |lua-heredoc| if you are using vim script (i.e. *init.vim* )
 
 Run `:checkhealth scnvim` to check that the installation was succesful.
 
 ==============================================================================
 MAPPINGS                                                       *scnvim-mappings*
 
-No mappings are defined by default. Use the `scnvim.setup` function to set your
-key mappings.
+No mappings are defined by default. Use the `scnvim.setup` function to set
+your key mappings. The *keywordprg* option is set by scnvim, use `K` to open
+documentation for the word under the cursor.
 >
   scnvim.setup {
     mapping = {
