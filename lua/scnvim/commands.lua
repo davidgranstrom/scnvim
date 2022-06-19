@@ -31,12 +31,11 @@ return function()
   end
   vim.api.nvim_buf_create_user_command(0, 'SCNvimHelp', open_help, options)
 
-  vim.api.nvim_buf_create_user_command(
-    0,
-    'SCNvimExt',
-    extensions.run_user_command,
-    { nargs = '+', desc = 'Run an extension command' }
-  )
+  vim.api.nvim_buf_create_user_command(0, 'SCNvimExt', extensions.run_user_command, {
+    nargs = '+',
+    complete = [[customlist,v:lua.require'scnvim.extensions'.cmd_complete]],
+    desc = 'Run an extension command',
+  })
 
   -- deprecated
   add_command('SCNvimTags', function()

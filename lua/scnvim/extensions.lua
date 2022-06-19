@@ -60,4 +60,39 @@ function M.run_user_command(tbl)
   end
 end
 
+local function get_keys(t)
+  local keys = {}
+  for name in pairs(t) do
+    keys[#keys + 1] = name
+  end
+  table.sort(keys)
+  return keys
+end
+
+local function filter(t, str)
+  if not str or #str == 0 then
+    return t
+  end
+  return vim.tbl_filter(function(s)
+    return s:match(str) ~= nil
+  end, t)
+end
+
+--- User command completion callback
+---@local
+function M.cmd_complete(arglead, cmdline, cursorpos) -- luacheck: ignore
+  local extensions = filter(get_keys(M.manager), arglead)
+  local fullmatch = arglead:match '(.*%.)'
+  if fullmatch then
+    local ext_name = fullmatch:sub(1, -2)
+    local meth_name = vim.split(arglead, '.', { plain = true })[2]
+    local exports = filter(get_keys(M.manager[ext_name]), meth_name)
+    for i, fname in ipairs(exports) do
+      exports[i] = ext_name .. '.' .. fname
+    end
+    return exports
+  end
+  return extensions
+end
+
 return M
