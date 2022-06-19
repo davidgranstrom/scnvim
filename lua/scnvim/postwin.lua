@@ -59,8 +59,8 @@ local function open_float()
     anchor = 'NE',
     row = row,
     col = col,
-    width = width,
-    height = height,
+    width = math.floor(width),
+    height = math.floor(height),
     border = 'single',
     style = 'minimal',
   }
@@ -95,9 +95,9 @@ local function open_split()
     size = M.last_size or config.postwin.size
   end
   if horizontal then
-    api.nvim_win_set_height(id, size or math.floor(vim.o.lines / 3))
+    api.nvim_win_set_height(id, math.floor(size or vim.o.lines / 3))
   else
-    api.nvim_win_set_width(id, size or math.floor(vim.o.columns / 2))
+    api.nvim_win_set_width(id, math.floor(size or vim.o.columns / 2))
   end
   api.nvim_win_set_buf(id, M.buf)
   api.nvim_exec_autocmds('FileType', {
