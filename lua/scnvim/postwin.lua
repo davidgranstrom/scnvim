@@ -147,11 +147,12 @@ function M.destroy()
     -- This call can fail if its the last window
     pcall(api.nvim_win_close, M.win, true)
     M.win = nil
-    if buf_is_valid() then
-      api.nvim_buf_delete(M.buf, { force = true })
-      M.buf = nil
-    end
   end
+  if buf_is_valid() then
+    api.nvim_buf_delete(M.buf, { force = true })
+    M.buf = nil
+  end
+  M.last_size = nil
 end
 
 --- Toggle the post window.
