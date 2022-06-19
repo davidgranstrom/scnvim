@@ -72,4 +72,21 @@ describe('post window', function()
     postwin.close()
     config.postwin.float.enabled = false
   end)
+
+  it('truncates width and height to integer values', function()
+    local id, width, height
+    config.postwin.size = 20.5
+    id = postwin.open()
+    width = vim.api.nvim_win_get_width(id)
+    assert.are.equal(20, width)
+    postwin.destroy()
+    config.postwin.float.enabled = true
+    config.postwin.float.width = 20.5
+    config.postwin.float.height = 20.5
+    id = postwin.open()
+    width = vim.api.nvim_win_get_width(id)
+    height = vim.api.nvim_win_get_height(id)
+    assert.are.equal(20, width)
+    assert.are.equal(20, height)
+  end)
 end)
