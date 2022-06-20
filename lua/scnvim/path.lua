@@ -38,6 +38,17 @@ function M.exists(path)
   return uv.fs_stat(path) ~= nil
 end
 
+--- Check if a file is a symbolic link.
+---@param path The path to test.
+---@return True if the path is a symbolic link otherwise false
+function M.is_symlink(path)
+  local stat = uv.fs_lstat(path)
+  if stat then
+    return stat.type == 'link'
+  end
+  return false
+end
+
 --- Get the path to a generated assset.
 ---
 --- * snippets
@@ -96,6 +107,42 @@ function M.get_plugin_root_dir()
     end
   end
   error '[scnvim] could not get plugin root dir'
+end
+
+--- Get the SuperCollider user extension directory.
+---@return Platform specific user extension directory.
+function M.get_user_extension_dir()
+  local sysname = M.get_system()
+  local home_dir = uv.os_homedir()
+  local xdg = uv.os_getenv 'XDG_DATA_HOME'
+  if xdg then
+    return xdg .. '/SuperCollider/Extensions'
+  end
+  if sysname == 'windows' then
+    return M.normalize(home_dir) .. '/AppData/Local/SuperCollider/Extensions'
+  elseif sysname == 'linux' then
+    return home_dir .. '/.local/share/SuperCollider/Extensions'
+  elseif sysname == 'macos' then
+    return home_dir .. '/Library/Application Support/SuperCollider/Extensions'
+  end
+  error '[scnvim] could not get SuperCollider Extensions dir'
+end
+
+--- Create a symbolic link.
+---@param source Absolute path to the source.
+---@param destination Absolute path to the destination.
+function M.link(source, destination)
+  if not uv.fs_stat(destination) then
+    uv.fs_symlink(source, destination, { dir = true, junction = true })
+  end
+end
+
+--- Remove a symbolic link.
+---@param link_path Absolute path for the file to unlink.
+function M.unlink(link_path)
+  if M.is_symlink(link_path) then
+    uv.fs_unlink(link_path)
+  end
 end
 
 return M

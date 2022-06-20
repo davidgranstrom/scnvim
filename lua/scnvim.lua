@@ -53,7 +53,7 @@ function scnvim.setup(user_config)
   editor.setup()
   if config.ensure_installed then
     local installer = require 'scnvim.install'
-    local ok, msg = pcall(installer.link)
+    local ok, msg = pcall(installer.install)
     if not ok then
       error(msg)
     end
