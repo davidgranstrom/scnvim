@@ -54,6 +54,20 @@ describe('path', function()
     eq('C:/Users/test/AppData/Local', path.normalize(s))
   end)
 
+  it('can create symbolic links', function()
+    local dir = vim.fn.expand '%:p:h'
+    local source = path.concat(dir, 'spec', 'fixtures', 'file.lua')
+    local destination = path.get_cache_dir() .. '/linktest.lua'
+    path.link(source, destination)
+    assert.is_true(path.is_symlink(destination))
+  end)
+
+  it('can delete symbolic links', function()
+    local destination = path.get_cache_dir() .. '/linktest.lua'
+    path.unlink(destination)
+    assert.is_false(path.exists(destination))
+  end)
+
   -- this test will fail on CI since we're adding scnvim as a relative path to the runtimepath
   -- TODO: maybe we need to revert to the old implemenation?
   if not is_ci then
