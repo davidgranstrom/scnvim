@@ -2,6 +2,9 @@ local path = require 'scnvim.path'
 
 local eq = assert.are.same
 local is_ci = vim.loop.os_getenv 'SCNVIM_CI'
+if is_ci then
+  path.root_dir = vim.fn.expand '%:p:h:h'
+end
 
 describe('path', function()
   it('tests that a directory exists', function()
@@ -68,13 +71,9 @@ describe('path', function()
     assert.is_false(path.exists(destination))
   end)
 
-  -- this test will fail on CI since we're adding scnvim as a relative path to the runtimepath
-  -- TODO: maybe we need to revert to the old implemenation?
-  if not is_ci then
-    it('returns plugin root dir', function()
-      local root_dir = path.get_plugin_root_dir()
-      root_dir = string.match(root_dir, 'scnvim')
-      eq(root_dir, 'scnvim')
-    end)
-  end
+  it('returns plugin root dir', function()
+    local root_dir = path.get_plugin_root_dir()
+    root_dir = string.match(root_dir, 'scnvim')
+    eq(root_dir, 'scnvim')
+  end)
 end)
