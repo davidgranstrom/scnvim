@@ -3,7 +3,9 @@ local path = require 'scnvim.path'
 local eq = assert.are.same
 local is_ci = vim.loop.os_getenv 'SCNVIM_CI'
 if is_ci then
-  path.root_dir = vim.fn.expand '%:p:h:h'
+  path.get_plugin_root_dir = function()
+    return vim.fn.expand '%:p:h:h'
+  end
 end
 
 describe('path', function()
