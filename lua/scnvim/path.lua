@@ -74,7 +74,7 @@ function M.get_asset(name)
   error '[scnvim] wrong asset type'
 end
 
---- Concatenate items using the system path separator
+--- Concatenate items using the path separator.
 ---@param ... items to concatenate into a path
 ---@usage
 --- local cache_dir = path.get_cache_dir()
@@ -92,21 +92,19 @@ function M.normalize(path)
   return (path:gsub('\\', '/'))
 end
 
---- Get the root dir of this plugin
----@return Absolute path to the plugin root dir
-function M.get_plugin_root_dir()
-  if M.root_dir then
-    return M.root_dir
-  end
+--- Get the root dir of a plugin.
+---@param plugin_name Optional plugin name, use nil to get scnvim root dir.
+---@return Absolute path to the plugin root dir.
+function M.get_plugin_root_dir(plugin_name)
+  plugin_name = plugin_name or 'scnvim'
   local paths = vim.api.nvim_list_runtime_paths()
   for _, path in ipairs(paths) do
-    local index = path:find 'scnvim'
-    if index and path:sub(index, -1) == 'scnvim' then
-      M.root_dir = M.normalize(path)
-      return M.root_dir
+    local index = path:find(plugin_name)
+    if index and path:sub(index, -1) == plugin_name then
+      return M.normalize(path)
     end
   end
-  error '[scnvim] could not get plugin root dir'
+  error(string.format('Could not get root dir for %s', plugin_name))
 end
 
 --- Get the SuperCollider user extension directory.

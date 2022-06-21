@@ -5,9 +5,31 @@
 ---@module scnvim.extensions
 ---@local
 local config = require 'scnvim.config'
+local path = require 'scnvim.path'
 local M = {}
 
 M._health = {}
+M._linked = {}
+
+local function link_classes(name)
+  local ok, root_dir, sc_ext_dir
+  ok, root_dir = pcall(path.get_plugin_root_dir, name)
+  if not ok then
+    return
+  end
+  ok, sc_ext_dir = pcall(path.get_user_extension_dir)
+  if not ok then
+    return
+  end
+  local source_dir = path.concat(root_dir, 'supercollider')
+  local dest_dir = path.concat(sc_ext_dir, 'scnvim-extensions')
+  if path.exists(source_dir) then
+    vim.fn.mkdir(dest_dir, 'p')
+    local link_path = path.concat(dest_dir, name)
+    path.link(source_dir, link_path)
+    M._linked[name] = link_path
+  end
+end
 
 local function load_extension(name)
   local ok, ext = pcall(require, 'scnvim._extensions.' .. name)
@@ -18,6 +40,7 @@ local function load_extension(name)
     local ext_config = config.extensions[name] or {}
     ext.setup(ext_config, config)
   end
+  link_classes(name)
   return ext
 end
 
