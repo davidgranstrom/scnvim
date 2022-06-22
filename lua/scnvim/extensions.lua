@@ -15,11 +15,11 @@ local function link_classes(name)
   local ok, root_dir, sc_ext_dir
   ok, root_dir = pcall(path.get_plugin_root_dir, name)
   if not ok then
-    return
+    return root_dir
   end
   ok, sc_ext_dir = pcall(path.get_user_extension_dir)
   if not ok then
-    return
+    return sc_ext_dir
   end
   local source_dir = path.concat(root_dir, 'supercollider')
   local dest_dir = path.concat(sc_ext_dir, 'scnvim-extensions')
@@ -27,8 +27,9 @@ local function link_classes(name)
     vim.fn.mkdir(dest_dir, 'p')
     local link_path = path.concat(dest_dir, name)
     path.link(source_dir, link_path)
-    M._linked[name] = link_path
+    return link_path
   end
+  return nil
 end
 
 local function load_extension(name)
@@ -40,7 +41,6 @@ local function load_extension(name)
     local ext_config = config.extensions[name] or {}
     ext.setup(ext_config, config)
   end
-  link_classes(name)
   return ext
 end
 
@@ -49,6 +49,7 @@ M.manager = setmetatable({}, {
     local ext = load_extension(k)
     t[k] = ext.exports or {}
     M._health[k] = ext.health
+    M._linked[k] = link_classes(k)
     return t[k]
   end,
 })
