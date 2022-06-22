@@ -100,7 +100,9 @@ local function check_extensions()
       health_check()
       local link = extensions._linked[name]
       if link then
-        health.report_info(string.format('installed classes "%s"', link))
+        health.report_ok(string.format('installed classes "%s"', link))
+      else
+        health.report_ok 'no classes to install'
       end
     else
       health.report_ok(string.format('No health check for "%s"', name))
