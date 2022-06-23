@@ -17,7 +17,7 @@ local default = {
     args = {},
   },
 
-  --- array (empty by default)
+  --- table (empty by default)
   ---@table default.mapping
   ---@field keymap scnvim.map
   ---@usage mapping = {
@@ -101,7 +101,8 @@ local default = {
 
   --- table
   ---@table default.editor
-  ---@field force_ft_supercollider (default: true) Treat .sc files as supercollider. If false, use nvim's native ftdetect.
+  ---@field force_ft_supercollider (default: true) Treat .sc files as supercollider.
+  --- If false, use nvim's native ftdetect.
   editor = {
     force_ft_supercollider = true,
 

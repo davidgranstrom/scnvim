@@ -33,7 +33,7 @@ SETUP                                                             *scnvim-setup*
 Enable the plugin by calling the setup function in your *init.lua*
 >
   local scnvim = require('scnvim')
-  scnvim.setup({})
+  scnvim.setup()
 <
 This plugin uses lua for configuration, so you may need to surround the above
 statement using a |lua-heredoc| if you are using vim script (i.e. *init.vim* )
@@ -101,6 +101,12 @@ Command                   Description
 
 ==============================================================================
 HELP SYSTEM                                                 *scnvim-help-system*
+
+Press `K` to view documentation for the word under the cursor. By default help
+files will be opened in the `HelpBrowser`. Read the sections below if you want
+to display documentation in nvim.
+
+View documentation in nvim~
 
 SCNvim can be configured to render SCDoc help files (.schelp) to plain text
 and display the result inside nvim. In order to do so, the scnvim help system
