@@ -114,6 +114,7 @@ local function fade_region(start, finish)
     focusable = false,
     style = 'minimal',
     border = 'none',
+    anchor = lstart > 0 and 'NW' or 'SE',
   }
   local id = api.nvim_open_win(buf, false, options)
   api.nvim_win_set_option(id, 'winhl', 'Normal:' .. 'SCNvimEval')
