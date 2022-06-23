@@ -6,7 +6,14 @@
 [![lint and style check](https://github.com/davidgranstrom/scnvim/actions/workflows/lint.yml/badge.svg)](https://github.com/davidgranstrom/scnvim/actions/workflows/lint.yml) 
 [![docs](https://github.com/davidgranstrom/scnvim/actions/workflows/docs.yml/badge.svg)](https://github.com/davidgranstrom/scnvim/actions/workflows/docs.yml)
 
----
+## Table of content
+
+* [Features](#features)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Extensions](#extensions)
+* [Supported platforms](#supported-platforms)
+* [Developers](#developers)
 
 ## News
 
@@ -49,7 +56,7 @@ Have questions? Start a [discussion](https://github.com/davidgranstrom/scnvim/di
 use {
   'davidgranstrom/scnvim',
   config = function()
-    require'scnvim'.setup{}
+    require('scnvim').setup()
   end
 }
 ```
@@ -59,10 +66,10 @@ use {
 ```vim
 Plug 'davidgranstrom/scnvim'
 
-" Add this your init.vim
+" add this after calling plug#end()
 
 lua << EOF
-require'scnvim.setup{}
+require('scnvim').setup()
 EOF
 ```
 
@@ -102,9 +109,6 @@ scnvim.setup {
       type = 'flash',
     },
   },
-  documentation = {
-    cmd = '/opt/homebrew/bin/pandoc',
-  },
   postwin = {
     float = {
       enabled = true,
@@ -134,13 +138,25 @@ Open a new file in `nvim` with a `.scd` or `.sc` extension and type `:SCNvimStar
 Run `:SCNvimGenerateAssets` after starting SuperCollider to generate syntax highlighting and tags.
 
 The plugin should work "out of the box", but if you want even more fine-grained
-control please have a look at this [section](https://github.com/davidgranstrom/scnvim/wiki/Additional-configuration) in the wiki.
+control please have a look at the [configuration
+section](https://github.com/davidgranstrom/scnvim/wiki/Configuration) in the
+wiki.
+
+## Extensions
+
+The extension system provides additional functionalities and integrations. If
+you have made a scnvim extension, please open a PR and add it to this list!
+
+* [fzf-sc](https://github.com/madskjeldgaard/fzf-sc)
+  - Combine the magic of fuzzy searching with the magic of SuperCollider in Neovim
+* [scnvim-logger](https://github.com/davidgranstrom/scnvim-logger)
+  - Log post window output to a file (example scnvim extension)
 
 ## Supported platforms
 
 * Linux
 * macOS
-* Windows (tested with `nvim-qt`)
+* Windows (tested with `nvim-qt` and `nvim.exe` in Windows PowerShell)
 
 ### Note to Windows users
 
