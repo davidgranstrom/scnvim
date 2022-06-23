@@ -101,9 +101,9 @@ local default = {
 
   --- table
   ---@table default.editor
-  ---@field ft_supercollider (default: true) Treat .sc files as supercollider. If false, use nvim's native ftdetect.
+  ---@field force_ft_supercollider (default: true) Treat .sc files as supercollider. If false, use nvim's native ftdetect.
   editor = {
-    ft_supercollider = true,
+    force_ft_supercollider = true,
 
     --- table
     ---@table editor.highlight
