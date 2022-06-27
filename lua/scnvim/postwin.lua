@@ -128,7 +128,7 @@ end
 --- Test if the window is open.
 ---@return True if open otherwise false.
 function M.is_open()
-  return M.win and api.nvim_win_is_valid(M.win)
+  return M.win ~= nil and api.nvim_win_is_valid(M.win)
 end
 
 --- Close the post window.
