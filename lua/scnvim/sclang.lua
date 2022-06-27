@@ -100,11 +100,10 @@ function M.find_sclang_executable()
 end
 
 local function on_exit(code, signal)
+  M.stdin:shutdown()
   M.stdout:read_stop()
   M.stderr:read_stop()
-  M.stdin:shutdown(function()
-    safe_close(M.stdin)
-  end)
+  safe_close(M.stdin)
   safe_close(M.stdout)
   safe_close(M.stderr)
   safe_close(M.proc)
