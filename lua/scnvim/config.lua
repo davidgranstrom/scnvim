@@ -43,11 +43,14 @@ local default = {
   ---
   ---@field horizontal (default: true) Open the help window as a horizontal split
   ---@field direction (default: 'top') Direction of the split: 'top', 'right', 'bot', 'left'
+  ---@field mapping (default: true) If true apply user keymaps to the help
+  --- window. Use a table value for explicit mappings.
   documentation = {
     cmd = nil,
     args = { '$1', '--from', 'html', '--to', 'plain', '-o', '$2' },
     horizontal = true,
     direction = 'top',
+    mapping = true,
   },
 
   --- table
@@ -59,6 +62,8 @@ local default = {
   ---@field direction (default: 'right') Direction of the split: 'top', 'right', 'bot', 'left'
   ---@field size Use a custom initial size
   ---@field fixed_size Use a fixed size for the post window. The window will always use this size if closed.
+  ---@field mapping (default: true) If true apply user keymaps to the help
+  --- window. Use a table value for explicit mappings.
   postwin = {
     highlight = true,
     auto_toggle_error = true,
@@ -67,6 +72,7 @@ local default = {
     direction = 'right',
     size = nil,
     fixed_size = nil,
+    mapping = nil,
 
     --- table
     ---@table default.postwin.float

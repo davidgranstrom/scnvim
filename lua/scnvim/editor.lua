@@ -142,8 +142,8 @@ local function fade_region(start, finish)
 end
 
 --- Applies keymaps from the user configuration.
-local function apply_keymaps()
-  for key, value in pairs(config.mapping) do
+local function apply_keymaps(mappings)
+  for key, value in pairs(mappings) do
     -- handle list of mappings to same key
     if value[1] ~= nil then
       for _, v in ipairs(value) do
@@ -206,13 +206,34 @@ local function create_autocmds()
     group = id,
     pattern = 'supercollider',
     desc = 'Apply mappings',
-    callback = apply_keymaps,
+    callback = function()
+      apply_keymaps(config.mapping)
+    end,
   })
+  local doc_maps = config.documentation.mapping
+  if doc_maps then
+    api.nvim_create_autocmd('FileType', {
+      group = id,
+      pattern = 'help.supercollider',
+      desc = 'Apply mappings for the help window',
+      callback = function()
+        doc_maps = type(doc_maps) == 'table' and doc_maps or config.mapping
+        apply_keymaps(doc_maps)
+      end,
+    })
+  end
   api.nvim_create_autocmd('FileType', {
     group = id,
     desc = 'Apply post window settings',
     pattern = 'scnvim',
-    callback = postwin.settings,
+    callback = function()
+      postwin.settings()
+      local postwin_maps = config.postwin.mapping
+      if postwin_maps then
+        postwin_maps = type(postwin_maps) == 'table' and postwin_maps or config.mapping
+        apply_keymaps(postwin_maps)
+      end
+    end,
   })
   if config.completion.signature.auto then
     api.nvim_create_autocmd('InsertCharPre', {
