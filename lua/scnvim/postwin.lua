@@ -100,10 +100,6 @@ local function open_split()
     api.nvim_win_set_width(id, math.floor(size or vim.o.columns / 2))
   end
   api.nvim_win_set_buf(id, M.buf)
-  api.nvim_exec_autocmds('FileType', {
-    buffer = M.buf,
-    modeline = false,
-  })
   vim.cmd [[ wincmd p ]]
   return id
 end
