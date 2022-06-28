@@ -111,7 +111,7 @@ y * 2;
   describe('autocmds', function()
     local config = require 'scnvim.config'
     it('treats .sc files as supercollider', function()
-      editor.setup() -- add autocmds
+      editor.setup()
       vim.cmd [[edit Test.sc]]
       assert.are.equal('supercollider', vim.bo.filetype)
       config.editor.force_ft_supercollider = false
@@ -119,6 +119,23 @@ y * 2;
       vim.cmd [[edit Test.sc]]
       assert.are.equal('scala', vim.bo.filetype)
       config.editor.force_ft_supercollider = true
+    end)
+
+    it('can use user keymaps in post window', function()
+      local postwin = require 'scnvim.postwin'
+      local map = require 'scnvim.map'
+      config.postwin.mapping = {
+        q = map(function()
+          postwin.close()
+        end),
+      }
+      editor.setup() -- add autocmds
+      vim.cmd [[edit maptest.scd]]
+      postwin.focus()
+      assert.is_true(postwin.is_open())
+      assert.are.equal('scnvim', vim.bo.filetype)
+      vim.cmd [[normal q]]
+      assert.is_false(postwin.is_open())
     end)
   end)
 end)
