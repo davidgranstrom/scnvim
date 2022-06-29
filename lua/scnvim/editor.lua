@@ -222,19 +222,18 @@ local function create_autocmds()
       end,
     })
   end
-  api.nvim_create_autocmd('FileType', {
-    group = id,
-    desc = 'Apply post window settings',
-    pattern = 'scnvim',
-    callback = function()
-      postwin.settings()
-      local postwin_maps = config.postwin.mapping
-      if postwin_maps then
+  local postwin_maps = config.postwin.mapping
+  if postwin_maps then
+    api.nvim_create_autocmd('FileType', {
+      group = id,
+      desc = 'Apply mappings for the post window',
+      pattern = 'scnvim',
+      callback = function()
         postwin_maps = type(postwin_maps) == 'table' and postwin_maps or config.mapping
         apply_keymaps(postwin_maps)
-      end
-    end,
-  })
+      end,
+    })
+  end
   if config.completion.signature.auto then
     api.nvim_create_autocmd('InsertCharPre', {
       group = id,

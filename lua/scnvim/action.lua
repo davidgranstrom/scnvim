@@ -21,6 +21,10 @@
 --- * on_highlight
 --- * on_send
 ---
+--- `scnvim.postwin`
+---
+--- * on_open
+---
 ---@module scnvim.action
 local action = {}
 
