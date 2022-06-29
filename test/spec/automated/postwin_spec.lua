@@ -89,4 +89,22 @@ describe('post window', function()
     assert.are.equal(20, width)
     assert.are.equal(20, height)
   end)
+
+  describe('actions', function()
+    before_each(function()
+      config.postwin.float.enabled = false
+      postwin.destroy()
+    end)
+
+    local x = 0
+    postwin.on_open:append(function()
+      x = x + 1
+    end)
+
+    it('applies on_open() action', function()
+      assert.are.equal(0, x)
+      postwin.open()
+      assert.are.equal(1, x)
+    end)
+  end)
 end)

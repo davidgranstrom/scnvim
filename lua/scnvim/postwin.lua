@@ -4,8 +4,40 @@
 
 local path = require 'scnvim.path'
 local config = require 'scnvim.config'
+local action = require 'scnvim.action'
 local api = vim.api
 local M = {}
+
+--- Actions
+---@section actions
+
+--- Action for when the post window opens.
+--- The default is to apply the post window settings.
+M.on_open = action.new(function()
+  vim.opt_local.buftype = 'nofile'
+  vim.opt_local.bufhidden = 'hide'
+  vim.opt_local.swapfile = false
+  local decorations = {
+    'number',
+    'relativenumber',
+    'modeline',
+    'wrap',
+    'cursorline',
+    'cursorcolumn',
+    'foldenable',
+    'list',
+  }
+  for _, s in ipairs(decorations) do
+    vim.opt_local[s] = false
+  end
+  vim.opt_local.colorcolumn = ''
+  vim.opt_local.foldcolumn = '0'
+  vim.opt_local.winfixwidth = true
+  vim.opt_local.tabstop = 4
+end)
+
+--- Functions
+---@section functions
 
 --- Test that the post window buffer is valid.
 ---@return True if the buffer is valid otherwise false.
@@ -118,6 +150,7 @@ function M.open()
   else
     M.win = open_split()
   end
+  vim.api.nvim_win_call(M.win, M.on_open)
   return M.win
 end
 
@@ -207,32 +240,6 @@ function M.post(line)
   if M.is_open() then
     vim.api.nvim_win_set_cursor(M.win, { num_lines, 0 })
   end
-end
-
---- Apply default post window settings
---- Used by an autocmd defined in scnvim.editor
----@local
-function M.settings()
-  vim.opt_local.buftype = 'nofile'
-  vim.opt_local.bufhidden = 'hide'
-  vim.opt_local.swapfile = false
-  local decorations = {
-    'number',
-    'relativenumber',
-    'modeline',
-    'wrap',
-    'cursorline',
-    'cursorcolumn',
-    'foldenable',
-    'list',
-  }
-  for _, s in ipairs(decorations) do
-    vim.opt_local[s] = false
-  end
-  vim.opt_local.colorcolumn = ''
-  vim.opt_local.foldcolumn = '0'
-  vim.opt_local.winfixwidth = true
-  vim.opt_local.tabstop = 4
 end
 
 return M
