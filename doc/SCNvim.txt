@@ -87,7 +87,8 @@ String example~
 This will create a keymap for `<CR>` for the `toggle` function from the
 `postwin` module. See the reference documentation for an overview of all
 available functions in their respecive module:
-https://davidgranstrom.github.io/scnvim/modules/scnvim.sclang.html
+
+https://davidgranstrom.github.io/scnvim/
 
 Function example~
 
