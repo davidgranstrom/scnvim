@@ -32,11 +32,11 @@ local function check_classes_installed()
   end
 end
 
-local function check_mappings()
-  if vim.tbl_count(config.mapping) == 0 then
-    health.report_info 'no mappings defined'
+local function check_keymaps()
+  if vim.tbl_count(config.keymaps) == 0 then
+    health.report_info 'no keymaps defined'
   else
-    health.report_ok 'mappings are defined'
+    health.report_ok 'keymaps are defined'
   end
 end
 
@@ -115,7 +115,7 @@ function M.check()
   check_nvim_version()
   check_sclang()
   check_classes_installed()
-  check_mappings()
+  check_keymaps()
   health.report_start 'scnvim documentation'
   check_documentation()
   health.report_start 'scnvim extensions'

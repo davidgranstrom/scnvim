@@ -124,7 +124,7 @@ y * 2;
     it('can use user keymaps in post window', function()
       local postwin = require 'scnvim.postwin'
       local map = require('scnvim.map').map
-      config.postwin.mapping = {
+      config.postwin.keymaps = {
         q = map(function()
           postwin.close()
         end),

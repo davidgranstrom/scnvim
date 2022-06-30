@@ -142,7 +142,7 @@ end
 --- Applies keymaps from the user configuration.
 local function apply_keymaps(mappings)
   for key, value in pairs(mappings) do
-    -- handle list of mappings to same key
+    -- handle list of keymaps to same key
     if value[1] ~= nil then
       for _, v in ipairs(value) do
         vim.keymap.set(v.modes, key, v.fn, { buffer = true })
@@ -203,31 +203,31 @@ local function create_autocmds()
   api.nvim_create_autocmd('FileType', {
     group = id,
     pattern = 'supercollider',
-    desc = 'Apply mappings',
+    desc = 'Apply keymaps',
     callback = function()
-      apply_keymaps(config.mapping)
+      apply_keymaps(config.keymaps)
     end,
   })
-  local doc_maps = config.documentation.mapping
+  local doc_maps = config.documentation.keymaps
   if doc_maps then
     api.nvim_create_autocmd('FileType', {
       group = id,
       pattern = 'help.supercollider',
-      desc = 'Apply mappings for the help window',
+      desc = 'Apply keymaps for the help window',
       callback = function()
-        doc_maps = type(doc_maps) == 'table' and doc_maps or config.mapping
+        doc_maps = type(doc_maps) == 'table' and doc_maps or config.keymaps
         apply_keymaps(doc_maps)
       end,
     })
   end
-  local postwin_maps = config.postwin.mapping
+  local postwin_maps = config.postwin.keymaps
   if postwin_maps then
     api.nvim_create_autocmd('FileType', {
       group = id,
-      desc = 'Apply mappings for the post window',
+      desc = 'Apply keymaps for the post window',
       pattern = 'scnvim',
       callback = function()
-        postwin_maps = type(postwin_maps) == 'table' and postwin_maps or config.mapping
+        postwin_maps = type(postwin_maps) == 'table' and postwin_maps or config.keymaps
         apply_keymaps(postwin_maps)
       end,
     })

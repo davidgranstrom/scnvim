@@ -7,7 +7,7 @@ SCNvim                                      *scnvim*
 1. Description..............................|scnvim-description|
    1.1 Acknowledgments
 2. Setup....................................|scnvim-setup|
-3. Mappings.................................|scnvim-mappings|
+3. Keymaps..................................|scnvim-keymaps|
 4. Commands.................................|scnvim-commands|
 5. Help system..............................|scnvim-help-system|
 6. Configuration............................|scnvim-configuration|
@@ -41,51 +41,78 @@ statement using a |lua-heredoc| if you are using vim script (i.e. *init.vim* )
 Run `:checkhealth scnvim` to check that the installation was succesful.
 
 ==============================================================================
-MAPPINGS                                                       *scnvim-mappings*
+KEYMAPS                                                         *scnvim-keymaps*
 
-No mappings are defined by default. Use the `scnvim.setup` function to set
-your key mappings. The *keywordprg* option is set by scnvim, use `K` to open
+No keymaps are defined by default. Use the `scnvim.setup` function to set
+your mappings. The *keywordprg* option is set by scnvim, use `K` to open
 documentation for the word under the cursor.
 >
+  local map = scnvim.map
   scnvim.setup {
-    mapping = {
-      ['<M-e>'] = scnvim.map.send_line({'i', 'n'}),
+    keymaps = {
+      ['<M-e>'] = map('editor.send_line', {'i', 'n'}),
       ['<C-e>'] = {
-        scnvim.map.send_block({'i', 'n'}),
-        scnvim.map.send_selection('x'),
+        map('editor.send_block', {'i', 'n'}),
+        map('editor.send_selection', 'x'),
       },
-      ['<CR>'] = scnvim.map.postwin_toggle('n'),
-      ['<M-CR>'] = scnvim.map.postwin_toggle('i'),
-      ['<M-L>'] = scnvim.map.postwin_clear({'n', 'i'}),
-      ['<C-k>'] = scnvim.map.show_signature({'n', 'i'}),
-      ['<F12>'] = scnvim.map.hard_stop({'n', 'x', 'i'}),
-      ['<leader>st'] = scnvim.map(scnvim.start),
-      ['<leader>sk'] = scnvim.map(scnvim.recompile),
+      ['<CR>'] = map('postwin.toggle'),
+      ['<M-CR>'] = map('postwin.toggle', 'i'),
+      ['<M-L>'] = map('postwin.clear', {'n', 'i'}),
+      ['<C-k>'] = map('signature.show', {'n', 'i'}),
+      ['<F12>'] = map('sclang.hard_stop', {'n', 'x', 'i'}),
+      ['<leader>st'] = map(scnvim.start),
+      ['<leader>sk'] = map(scnvim.recompile),
+      ['<F1>'] = map_expr('s.boot'),
+      ['<F2>'] = map_expr('s.meter'),
     },
   }
 <
-The following functions are accessible from the `scnvim.map` helper object:
+The `map` helper function can take a string or a function as input.
 
-Function               Description
---------               -----------
-`send_line`              Get the current line and send it to sclang.
-`send_block`             Get the current block of code and send it to sclang.
-`send_selection`         Send a visual selection.
-`hard_stop`              Send a "hard stop" to the interpreter.
-`postwin_toggle`         Toggle the post window.
-`postwin_clear`          Clear the post window.
-`postwin_focus`          Focus the post window.
-`show_signature`         Show the function signature under the cursor.
+When the input is a string it will be parsed as `module.function` to create
+the keymap. If the input is a function it will simply execute that function.
 
-Note that it is possible to map arbitrary functions using the `scnvim.map`
-helper:
+The following modules can be used to create a keymap from a string:
+
+* `editor`
+* `postwin`
+* `sclang`
+* `scnvim`
+* `signature`
+
+String example~
 >
-  scnvim.map(function()
+  ['<CR>'] = scnvim.map('postwin.toggle')
+<
+This will create a keymap for `<CR>` for the `toggle` function from the
+`postwin` module. See the reference documentation for an overview of all
+available functions in their respecive module:
+https://davidgranstrom.github.io/scnvim/modules/scnvim.sclang.html
+
+Function example~
+
+If the `map` helper recevies a function it will execute that function when
+pressing the key.
+>
+  ['<leader>st'] = scnvim.map(scnvim.start)
+<
+Here we're using the `scnvim.start` function. But its also possible to map
+arbitrary functions.
+>
+  ['<F1>'] = scnvim.map(function()
     vim.cmd('SCNvimGenerateAssets')
   end)
+
+Map expressions~
+
+The `map_expr` helper let's you map SuperCollider code.
+>
+  local map_expr = scnvim.map_expr
+  ['<F2>'] = map_expr('s.meter')
 <
-Note the example above uses the `scnvim.map` helper object as a convenience.
-But it is also possible to use the scnvim API directly with |vim.keymap.set|.
+Note The `scnvim.map` helper object is a convenience to setup keymaps in the
+config. But it is also possible to manage mappings manually using the scnvim
+API with |vim.keymap.set|.
 
 ==============================================================================
 COMMANDS                                                       *scnvim-commands*

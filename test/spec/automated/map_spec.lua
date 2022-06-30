@@ -20,7 +20,7 @@ describe('map', function()
     assert.are.equal('n', ret.modes[1])
   end)
 
-  it('can use callbacks for editor mappings', function()
+  it('can use callbacks for editor keymaps', function()
     local editor = require 'scnvim.editor'
     local ret = map('editor.send_line', 'n', function(data)
       assert.are.equal('foo', data[1])

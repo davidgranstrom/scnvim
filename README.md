@@ -89,7 +89,7 @@ lua << EOF
 local scnvim = require 'scnvim'
 local map = scnvim.map
 scnvim.setup {
-  mapping = {
+  keymaps = {
     ['<M-e>'] = map.send_line({'i', 'n'}),
     ['<C-e>'] = {
       map.send_block({'i', 'n'}),
