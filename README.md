@@ -162,7 +162,19 @@ you have made a scnvim extension, please open a PR and add it to this list!
 
 ### Note to Windows users
 
-To be able to boot the server you will need to add the following to your `startup.scd`:
+The path to `sclang.exe` needs to be specified in the config:
+
+```lua
+local scnvim = require 'scnvim'
+scnvim.setup {
+  sclang = {
+    cmd = 'C:/Program Files/SuperCollider-3.12.2/sclang.exe'
+  },
+```
+
+Modify the `sclang.cmd` to point to where SuperCollider is installed on your system.
+
+Additionally, to be able to boot the server you will need to add the following to `startup.scd`:
 
 ```supercollider
 if (\SCNvim.asClass.notNil) {
