@@ -3,8 +3,9 @@
 ---@module scnvim.map
 ---@see scnvim.editor
 ---@see scnvim
----@usage map.action(modes, callback, flash)
----@usage scnvim.map.send_line({'i', 'n'})
+---@usage map('module.fn', { modes })
+---@usage scnvim.map('editor.send_line', {'i', 'n'})
+---@usage map(function() print 'hi' end)
 
 --- Valid modules.
 ---@table modules
