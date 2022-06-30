@@ -20,7 +20,7 @@ return function()
   -- comments
   vim.opt_local.commentstring = '//%s'
 
-  if not config.completion.signature.float then
+  if not config.editor.signature.float then
     -- disable showmode to be able to see the printed signature
     vim.opt_local.showmode = false
     vim.opt_local.shortmess:append 'c'

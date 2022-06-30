@@ -41,7 +41,9 @@ local scnvim = {}
 ---  vim.cmd [[ SCNvimGenerateAssets ]]
 --- end, { 'n' })
 ---@usage scnvim.map(scnvim.recompile)
-scnvim.map = require 'scnvim.map'
+local map = require 'scnvim.map'
+scnvim.map = map.map
+scnvim.map_expr = map.map_expr
 
 --- Setup function.
 ---

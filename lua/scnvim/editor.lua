@@ -4,10 +4,8 @@
 
 local sclang = require 'scnvim.sclang'
 local config = require 'scnvim.config'
-local postwin = require 'scnvim.postwin'
 local commands = require 'scnvim.commands'
 local settings = require 'scnvim.settings'
-local signature = require 'scnvim.completion.signature'
 local action = require 'scnvim.action'
 local api = vim.api
 local uv = vim.loop
@@ -234,12 +232,12 @@ local function create_autocmds()
       end,
     })
   end
-  if config.completion.signature.auto then
+  if config.editor.signature.auto then
     api.nvim_create_autocmd('InsertCharPre', {
       group = id,
       desc = 'Insert mode function signature',
       pattern = { '*.scd', '*.sc', '*.quark' },
-      callback = signature.ins_show,
+      callback = require('scnvim.signature').ins_show,
     })
   end
   if config.editor.force_ft_supercollider then
@@ -336,31 +334,6 @@ function M.send_selection(cb, flash)
     local finish = { ret.line_end - 1, ret.col_end - 1 }
     M.on_highlight(start, finish)
   end
-end
-
---- Send a "hard stop" to the interpreter.
-function M.hard_stop()
-  sclang.send('thisProcess.stop', true)
-end
-
---- Toggle the post window.
-function M.postwin_toggle()
-  postwin.toggle()
-end
-
---- Clear the post window.
-function M.postwin_clear()
-  postwin.clear()
-end
-
---- Focus the post window.
-function M.postwin_focus()
-  postwin.focus()
-end
-
---- Show the function signature under the cursor.
-function M.show_signature()
-  signature.show()
 end
 
 return M
