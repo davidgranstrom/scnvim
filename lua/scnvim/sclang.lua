@@ -163,6 +163,11 @@ function M.generate_assets(on_done)
   M.eval(expr, on_done)
 end
 
+--- Send a "hard stop" to the interpreter.
+function M.hard_stop()
+  M.send('thisProcess.stop', true)
+end
+
 --- Check if the process is running.
 ---@return True if running otherwise false.
 function M.is_running()

@@ -1,5 +1,5 @@
 --- Signature help.
----@module scnvim.completion.signature
+---@module scnvim.signature
 ---@local
 
 --- TODO: refactor to use vim.diagnostic?
@@ -95,8 +95,8 @@ end
 
 local function show_signature(object)
   if object ~= '' then
-    local float = config.completion.signature.float
-    local float_conf = config.completion.signature.config
+    local float = config.editor.signature.float
+    local float_conf = config.editor.signature.config
     get_method_signature(object, function(res)
       local signature = res:match '%((.+)%)'
       if signature then

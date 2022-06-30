@@ -138,17 +138,12 @@ local default = {
         duration = 375,
       },
     },
-  },
 
-  --- table
-  ---@table completion
-
-  --- table
-  ---@table completion.signature
-  ---@field float (default: true) Show function signatures in a floating window
-  ---@field auto (default: true) Show function signatures while typing in insert mode
-  ---@field config
-  completion = {
+    --- table
+    ---@table editor.signature
+    ---@field float (default: true) Show function signatures in a floating window
+    ---@field auto (default: true) Show function signatures while typing in insert mode
+    ---@field config
     signature = {
       float = true,
       auto = true,
