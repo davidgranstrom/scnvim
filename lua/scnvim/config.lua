@@ -18,9 +18,9 @@ local default = {
   },
 
   --- table (empty by default)
-  ---@table default.mapping
+  ---@table default.keymaps
   ---@field keymap scnvim.map
-  ---@usage mapping = {
+  ---@usage keymaps = {
   ---    ['<M-e>'] = scnvim.map.send_line({'i', 'n'}),
   ---    ['<C-e>'] = {
   ---      scnvim.map.send_block({'i', 'n'}),
@@ -29,7 +29,7 @@ local default = {
   ---    ['<leader>st'] = scnvim.map(scnvim.start),
   ---    ['<leader>sk'] = scnvim.map(scnvim.recompile),
   ---  }
-  mapping = {},
+  keymaps = {},
 
   --- table
   ---@table default.documentation
@@ -43,14 +43,14 @@ local default = {
   ---
   ---@field horizontal (default: true) Open the help window as a horizontal split
   ---@field direction (default: 'top') Direction of the split: 'top', 'right', 'bot', 'left'
-  ---@field mapping (default: true) If true apply user keymaps to the help
+  ---@field keymaps (default: true) If true apply user keymaps to the help
   --- window. Use a table value for explicit mappings.
   documentation = {
     cmd = nil,
     args = { '$1', '--from', 'html', '--to', 'plain', '-o', '$2' },
     horizontal = true,
     direction = 'top',
-    mapping = true,
+    keymaps = true,
   },
 
   --- table
@@ -62,7 +62,7 @@ local default = {
   ---@field direction (default: 'right') Direction of the split: 'top', 'right', 'bot', 'left'
   ---@field size Use a custom initial size
   ---@field fixed_size Use a fixed size for the post window. The window will always use this size if closed.
-  ---@field mapping (default: true) If true apply user keymaps to the help
+  ---@field keymaps (default: true) If true apply user keymaps to the help
   --- window. Use a table value for explicit mappings.
   postwin = {
     highlight = true,
@@ -72,7 +72,7 @@ local default = {
     direction = 'right',
     size = nil,
     fixed_size = nil,
-    mapping = nil,
+    keymaps = nil,
 
     --- table
     ---@table default.postwin.float

@@ -1,4 +1,4 @@
---- Helper object to define a mapping.
+--- Helper object to define a keymap.
 --- Usually used exported from the scnvim module
 ---@module scnvim.map
 ---@see scnvim.editor
