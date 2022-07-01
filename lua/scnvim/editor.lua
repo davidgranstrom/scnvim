@@ -283,9 +283,7 @@ end
 ---@param cb An optional callback function.
 ---@param flash Highlight the selected text
 function M.send_line(cb, flash)
-  if flash == nil then
-    flash = true
-  end
+  flash = flash == nil and true or flash
   local linenr = api.nvim_win_get_cursor(0)[1]
   local line = get_range(linenr, linenr)
   M.on_send(line, cb)
@@ -300,9 +298,7 @@ end
 ---@param cb An optional callback function.
 ---@param flash Highlight the selected text
 function M.send_block(cb, flash)
-  if flash == nil then
-    flash = true
-  end
+  flash = flash == nil and true or flash
   local lstart, lend = unpack(vim.fn['scnvim#editor#get_block']())
   if lstart == 0 or lend == 0 then
     M.send_line(cb, flash)
@@ -324,9 +320,7 @@ end
 ---@param cb An optional callback function.
 ---@param flash Highlight the selected text
 function M.send_selection(cb, flash)
-  if flash == nil then
-    flash = true
-  end
+  flash = flash == nil and true or flash
   local ret = vim.fn['scnvim#editor#get_visual_selection']()
   M.on_send(ret.lines, cb)
   if flash then
