@@ -11,9 +11,9 @@
 * [Features](#features)
 * [Installation](#installation)
 * [Usage](#usage)
+* [Documentation](#documentation)
 * [Extensions](#extensions)
 * [Supported platforms](#supported-platforms)
-* [Developers](#developers)
 
 ## News
 
@@ -28,11 +28,10 @@ Have other questions? Start a [discussion](https://github.com/davidgranstrom/scn
 * Post window output is displayed in a scratch buffer
   - Uses a split or a floating window for display
   - Navigate/move/copy etc. as with any other window
-  - Toggle back automatically if an error was detected
-* Automatic display of method arguments
-  - Uses a floating window next to the cursor by default
+  - Toggle back if hidden automatically on errors
+* Automatic display of function signatures
 * Status line widgets
-  - SuperCollider server status in the status line
+  - Display SuperCollider server status in the status line
 * Snippet generator
   - Generates snippets for creation methods in SCClassLibrary.
 * Can be used with Neovim [GUI frontends](https://github.com/neovim/neovim/wiki/Related-projects#gui)
@@ -103,8 +102,8 @@ scnvim.setup {
     ['<M-L>'] = map('postwin.clear', {'n', 'i'}),
     ['<C-k>'] = map('signature.show', {'n', 'i'}),
     ['<F12>'] = map('sclang.hard_stop', {'n', 'x', 'i'}),
-    ['<leader>st'] = map(scnvim.start),
-    ['<leader>sk'] = map(scnvim.recompile),
+    ['<leader>st'] = map('sclang.start'),
+    ['<leader>sk'] = map('sclang.recompile'),
     ['<F1>'] = map_expr('s.boot'),
     ['<F2>'] = map_expr('s.meter'),
   },
@@ -146,6 +145,11 @@ control please have a look at the [configuration
 section](https://github.com/davidgranstrom/scnvim/wiki/Configuration) in the
 wiki.
 
+## Documentation
+
+* `:help scnvim` for detailed documentation.
+* [API documentation](https://davidgranstrom.github.io/scnvim/)
+
 ## Extensions
 
 The extension system provides additional functionalities and integrations. If
@@ -183,10 +187,6 @@ if (\SCNvim.asClass.notNil) {
   Server.program = (Platform.resourceDir +/+ "scsynth.exe").quote;
 }
 ```
-
-## Developers
-
-* [API documentation](https://davidgranstrom.github.io/scnvim/)
 
 ## License
 
