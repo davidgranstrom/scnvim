@@ -19,7 +19,9 @@
 
 This plugin has recently undergone a big rewrite, take a look at the [installation](#installation) and [usage](#usage) sections to update your config.
 
-Have questions? Start a [discussion](https://github.com/davidgranstrom/scnvim/discussions) or join the [IRC channel](https://kiwiirc.com/client/irc.libera.chat/?&theme=mini#scnvim).
+Please report any issues or bugs on the [issue tracker](https://github.com/davidgranstrom/scnvim/issues).
+
+Have other questions? Start a [discussion](https://github.com/davidgranstrom/scnvim/discussions) or join the [IRC channel](https://kiwiirc.com/client/irc.libera.chat/?&theme=mini#scnvim).
 
 ## Features
 
