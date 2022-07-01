@@ -229,12 +229,9 @@ function M.post(line)
   vim.api.nvim_buf_set_lines(M.buf, -1, -1, true, { line })
 
   local num_lines = vim.api.nvim_buf_line_count(M.buf)
-  if scrollback > 0 then
-    if num_lines > scrollback then
-      local num = math.floor(scrollback - vim.o.lines)
-      vim.api.nvim_buf_set_lines(M.buf, 0, num, true, {})
-      num_lines = vim.api.nvim_buf_line_count(M.buf)
-    end
+  if scrollback > 0 and num_lines > scrollback then
+    vim.api.nvim_buf_set_lines(M.buf, 0, 1, true, {})
+    num_lines = vim.api.nvim_buf_line_count(M.buf)
   end
 
   if M.is_open() then

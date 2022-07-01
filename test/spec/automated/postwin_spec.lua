@@ -90,6 +90,27 @@ describe('post window', function()
     assert.are.equal(20, height)
   end)
 
+  it('limits scrollback', function()
+    postwin.open()
+    local tmp = config.postwin.scrollback
+    for i = 1, 15 do
+      local line = string.format('line %d', i)
+      postwin.post(line)
+    end
+    local count = vim.api.nvim_buf_line_count(postwin.buf)
+    assert.are.equal(16, count) -- + one empty line
+    postwin.destroy()
+    postwin.open()
+    config.postwin.scrollback = 10
+    for i = 1, 15 do
+      local line = string.format('line %d', i)
+      postwin.post(line)
+    end
+    count = vim.api.nvim_buf_line_count(postwin.buf)
+    assert.are.equal(10, count)
+    config.postwin.scrollback = tmp
+  end)
+
   describe('actions', function()
     before_each(function()
       config.postwin.float.enabled = false
