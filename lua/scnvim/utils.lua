@@ -1,4 +1,4 @@
---- Utility functions
+--- Utility functions.
 ---@module scnvim.utils
 
 local M = {}

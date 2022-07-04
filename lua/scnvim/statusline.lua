@@ -1,4 +1,4 @@
---- Status line
+--- Status line.
 ---@module scnvim.statusline
 local M = {}
 

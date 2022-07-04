@@ -1,5 +1,4 @@
---- sclang
---- Spawn a sclang process.
+--- Sclang wrapper.
 ---@module scnvim.sclang
 
 local postwin = require 'scnvim.postwin'

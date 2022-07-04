@@ -21,13 +21,13 @@ local default = {
   ---@table default.keymaps
   ---@field keymap scnvim.map
   ---@usage keymaps = {
-  ---    ['<M-e>'] = scnvim.map.send_line({'i', 'n'}),
+  ---    ['<M-e>'] = map('editor.send_line', {'i', 'n'}),
   ---    ['<C-e>'] = {
-  ---      scnvim.map.send_block({'i', 'n'}),
-  ---      scnvim.map.send_selection('x'),
+  ---      map('editor.send_block', {'i', 'n'}),
+  ---      map('editor.send_selection', 'x'),
   ---    },
-  ---    ['<leader>st'] = scnvim.map(scnvim.start),
-  ---    ['<leader>sk'] = scnvim.map(scnvim.recompile),
+  ---    ['<leader>st'] = map('sclang.start'),
+  ---    ['<leader>sk'] = map('sclang.recompile'),
   ---  }
   keymaps = {},
 

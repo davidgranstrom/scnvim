@@ -1,4 +1,4 @@
---- Post window
+--- Post window.
 --- The interpreter's post window.
 ---@module scnvim.postwin
 
