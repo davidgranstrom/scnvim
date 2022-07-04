@@ -157,6 +157,10 @@ you have made a scnvim extension, please open a PR and add it to this list!
 
 * [fzf-sc](https://github.com/madskjeldgaard/fzf-sc)
   - Combine the magic of fuzzy searching with the magic of SuperCollider in Neovim
+* [nvim-supercollider-piano](https://github.com/madskjeldgaard/nvim-supercollider-piano)
+  - Play SuperCollider synths using your (computer) keyboard in neovim!
+* [scnvim-tmux](https://github.com/davidgranstrom/scnvim-tmux)
+  - Redirect post window ouput to a tmux pane.
 * [scnvim-logger](https://github.com/davidgranstrom/scnvim-logger)
   - Log post window output to a file (example scnvim extension)
 
