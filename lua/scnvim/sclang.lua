@@ -215,6 +215,7 @@ function M.start()
   local port = udp.start_server()
   assert(port > 0, 'Could not start UDP server')
   M.send(string.format('SCNvim.port = %d', port), true)
+  M.send(string.format('SCNvim.socket = "%s"', vim.v.servername), true)
   M.set_current_path()
 
   local onread = on_stdout()
@@ -252,6 +253,7 @@ function M.recompile()
   end
   M.send(cmd_char.recompile, true)
   M.send(string.format('SCNvim.port = %d', udp.port), true)
+  M.send(string.format('SCNvim.socket = "%s"', vim.v.servername), true)
   M.set_current_path()
 end
 

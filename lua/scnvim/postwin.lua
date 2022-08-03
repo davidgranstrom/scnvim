@@ -150,7 +150,7 @@ function M.open()
   else
     M.win = open_split()
   end
-  vim.api.nvim_win_call(M.win, M.on_open)
+  api.nvim_win_call(M.win, M.on_open)
   return M.win
 end
 

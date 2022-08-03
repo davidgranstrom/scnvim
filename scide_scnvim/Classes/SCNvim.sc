@@ -2,6 +2,7 @@ SCNvim {
     classvar <>netAddr;
     classvar <>currentPath;
     classvar <>port;
+    classvar <>socket;
 
     *sendJSON {|data|
         var json;

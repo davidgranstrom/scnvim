@@ -12,6 +12,8 @@ local PORT = 0
 local eval_callbacks = {}
 local callback_id = '0'
 
+M.socket = uv.new_pipe(false)
+
 --- UDP handlers.
 --- Run the matching function in this table for the incoming 'action' parameter.
 local Handlers = {}
@@ -46,12 +48,45 @@ local function on_receive(err, chunk)
   if chunk then
     local ok, object = pcall(vim.fn.json_decode, chunk)
     if not ok then
-      error('[scnvim] Could not decode json chunk: ' .. object)
+      M.socket:write(chunk)
+      return
     end
     local func = Handlers[object.action]
     assert(func, '[scnvim] Unrecognized handler')
     func(object.args)
   end
+end
+
+local function rpc_start()
+  local addr = vim.fn.serverstart('scnvim.sock')
+  local rpc = uv.new_udp 'inet'
+  local tmp = { '' }
+  M.socket:connect(vim.v.servername)
+  local max_size = M.socket:recv_buffer_size()
+  M.socket:read_start(function(err, chunk)
+    assert(not err, err)
+    table.insert(tmp, chunk)
+    local chunk_size = string.len(chunk)
+    if (chunk_size < max_size) then
+      local data = table.concat(tmp, '')
+      local num_chunks = math.ceil(#data / max_size)
+      local chunk_id = 1
+      for i = 1, #data, max_size do
+        local payload = {
+          chunk_id,
+          num_chunks,
+          data:sub(i, i + max_size - 1),
+        }
+        local ok, bytes = pcall(vim.mpack.encode, payload)
+        if not ok then
+          print(string.format('[scnvim] Could not encode msgpack payload [%d/%d]: %s', chunkId, num_chunks, bytes))
+        end
+        rpc:send(bytes, HOST, 9999)
+        chunk_id = chunk_id + 1
+      end
+      tmp = { '' }
+    end
+  end)
 end
 
 --- Start the UDP server.
@@ -62,6 +97,7 @@ function M.start_server()
   handle:recv_start(vim.schedule_wrap(on_receive))
   M.port = handle:getsockname().port
   M.udp = handle
+  rpc_start()
   return M.port
 end
 
