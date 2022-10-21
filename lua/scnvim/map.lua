@@ -40,7 +40,7 @@ local function validate(str)
 end
 
 local map = setmetatable({}, {
-  __call = function(_, fn, modes, callback, flash)
+  __call = function(_, fn, modes, desc, callback, flash)
     modes = type(modes) == 'string' and { modes } or modes
     modes = modes or { 'n' }
     if type(fn) == 'string' then
@@ -52,19 +52,19 @@ local map = setmetatable({}, {
           require(module)[cmd]()
         end
       end
-      return { modes = modes, fn = wrapper }
+      return { modes = modes, fn = wrapper, desc = desc }
     elseif type(fn) == 'function' then
-      return { modes = modes, fn = fn }
+      return { modes = modes, fn = fn, desc = desc }
     end
   end,
 })
 
-local map_expr = function(expr, modes, silent)
+local map_expr = function(expr, modes, desc, silent)
   modes = type(modes) == 'string' and { modes } or modes
   silent = silent == nil and true or silent
   return map(function()
     require('scnvim.sclang').send(expr, silent)
-  end, modes)
+  end, modes, desc)
 end
 
 return {

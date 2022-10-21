@@ -145,10 +145,10 @@ local function apply_keymaps(mappings)
     -- handle list of keymaps to same key
     if value[1] ~= nil then
       for _, v in ipairs(value) do
-        vim.keymap.set(v.modes, key, v.fn, { buffer = true })
+        vim.keymap.set(v.modes, key, v.fn, { buffer = true, desc = v.desc or "scnvim keymap" })
       end
     else
-      vim.keymap.set(value.modes, key, value.fn, { buffer = true })
+      vim.keymap.set(value.modes, key, value.fn, { buffer = true, desc = value.desc or "scnvim keymap" })
     end
   end
 end
