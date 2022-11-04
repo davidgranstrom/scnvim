@@ -86,13 +86,13 @@ String example~
 <
 This will create a keymap for `<CR>` for the `toggle` function from the
 `postwin` module. See the reference documentation for an overview of all
-available functions in their respecive module:
+available functions in their respective module:
 
 https://davidgranstrom.github.io/scnvim/
 
 Function example~
 
-If the `map` helper recevies a function it will execute that function when
+If the `map` helper receives a function it will execute that function when
 pressing the key.
 >
   ['<leader>st'] = scnvim.map(scnvim.start)
@@ -182,7 +182,7 @@ CONFIGURATION                                             *scnvim-configuration*
 
 All user configuration is handled by the `scnvim.setup` function.
 
-The default values are defined and documented in `lua/scnvim/config.lua`in the
+The default values are defined and documented in `lua/scnvim/config.lua` in the
 root directory of this plugin.
 
 You can also view an up-to-date HTML version of the documentation by visiting
