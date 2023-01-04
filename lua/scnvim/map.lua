@@ -40,31 +40,33 @@ local function validate(str)
 end
 
 local map = setmetatable({}, {
-  __call = function(_, fn, modes, callback, flash)
+  __call = function(_, fn, modes, options)
     modes = type(modes) == 'string' and { modes } or modes
     modes = modes or { 'n' }
+    options = options or { desc = 'scnvim keymap' }
     if type(fn) == 'string' then
       local module, cmd = validate(fn)
       local wrapper = function()
         if module == 'scnvim.editor' then
-          require(module)[cmd](callback, flash)
+          require(module)[cmd](options.callback, options.flash)
         else
           require(module)[cmd]()
         end
       end
-      return { modes = modes, fn = wrapper }
+      return { modes = modes, fn = wrapper, options = options }
     elseif type(fn) == 'function' then
-      return { modes = modes, fn = fn }
+      return { modes = modes, fn = fn, options = options }
     end
   end,
 })
 
-local map_expr = function(expr, modes, silent)
+local map_expr = function(expr, modes, options)
   modes = type(modes) == 'string' and { modes } or modes
-  silent = silent == nil and true or silent
+  options = options or {}
+  options.silent = options.silent == nil and true or options.silent
   return map(function()
-    require('scnvim.sclang').send(expr, silent)
-  end, modes)
+    require('scnvim.sclang').send(expr, options.silent)
+  end, modes, options)
 end
 
 return {

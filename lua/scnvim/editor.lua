@@ -145,10 +145,18 @@ local function apply_keymaps(mappings)
     -- handle list of keymaps to same key
     if value[1] ~= nil then
       for _, v in ipairs(value) do
-        vim.keymap.set(v.modes, key, v.fn, { buffer = true })
+        local opts = {
+          buffer = true,
+          desc = v.options.desc,
+        }
+        vim.keymap.set(v.modes, key, v.fn, opts)
       end
     else
-      vim.keymap.set(value.modes, key, value.fn, { buffer = true })
+      local opts = {
+        buffer = true,
+        desc = value.options.desc,
+      }
+      vim.keymap.set(value.modes, key, value.fn, opts)
     end
   end
 end
