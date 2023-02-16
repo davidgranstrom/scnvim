@@ -22,10 +22,13 @@ describe('map', function()
 
   it('can use callbacks for editor keymaps', function()
     local editor = require 'scnvim.editor'
-    local ret = map('editor.send_line', 'n', function(data)
-      assert.are.equal('foo', data[1])
-      return data
-    end)
+    local options = {
+      callback = function(data)
+        assert.are.equal('foo', data[1])
+        return data
+      end,
+    }
+    local ret = map('editor.send_line', 'n', options)
     editor.on_send:replace(function(lines, cb)
       if cb then
         cb(lines)
@@ -34,5 +37,12 @@ describe('map', function()
     vim.api.nvim_buf_set_lines(0, -2, -1, false, { 'foo' })
     ret.fn()
     editor.on_send:restore()
+  end)
+
+  it('sets a default description', function()
+    local ret = map('editor.send_line', 'n')
+    assert.are.equal('scnvim keymap', ret.options.desc)
+    ret = map('editor.send_line', 'n', { desc = 'custom desc' })
+    assert.are.equal('custom desc', ret.options.desc)
   end)
 end)
