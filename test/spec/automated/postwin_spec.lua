@@ -111,6 +111,17 @@ describe('post window', function()
     config.postwin.scrollback = tmp
   end)
 
+  it('does not leave empty buffers when toggled', function()
+    local num_bufs
+    postwin.open()
+    num_bufs = #vim.api.nvim_list_bufs()
+    postwin.close()
+    assert.are.equal(num_bufs, #vim.api.nvim_list_bufs())
+    postwin.open()
+    postwin.close()
+    assert.are.equal(num_bufs, #vim.api.nvim_list_bufs())
+  end)
+
   describe('actions', function()
     before_each(function()
       config.postwin.float.enabled = false

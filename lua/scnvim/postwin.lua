@@ -117,7 +117,7 @@ local function open_split()
   else
     error '[scnvim] invalid config.postwin.direction'
   end
-  local win_cmd = string.format('%s %s', direction, horizontal and 'new' or 'vnew')
+  local win_cmd = string.format('%s %s', direction, horizontal and 'split' or 'vsplit')
   vim.cmd(win_cmd)
   local id = api.nvim_get_current_win()
   local size
