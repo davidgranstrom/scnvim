@@ -44,8 +44,8 @@ local map = setmetatable({}, {
     modes = type(modes) == 'string' and { modes } or modes
     modes = modes or { 'n' }
     options = options or {
-			desc = type(fn) == 'string' and ('scnvim: '..fn) or 'scnvim keymap'
-		}
+      desc = type(fn) == 'string' and ('scnvim: '..fn) or 'scnvim keymap'
+    }
     if type(fn) == 'string' then
       local module, cmd = validate(fn)
       local wrapper = function()
@@ -66,7 +66,7 @@ local map_expr = function(expr, modes, options)
   modes = type(modes) == 'string' and { modes } or modes
   options = options or {}
   options.silent = options.silent == nil and true or options.silent
-	options.desc = options.desc or 'sclang: '..expr
+  options.desc = options.desc or 'sclang: '..expr
   return map(function()
     require('scnvim.sclang').send(expr, options.silent)
   end, modes, options)
