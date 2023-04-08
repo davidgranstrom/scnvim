@@ -1,4 +1,5 @@
 local map = require('scnvim.map').map
+local map_expr = require('scnvim.map').map_expr
 
 describe('map', function()
   it('validates input strings', function()
@@ -41,8 +42,17 @@ describe('map', function()
 
   it('sets a default description', function()
     local ret = map('editor.send_line', 'n')
-    assert.are.equal('scnvim keymap', ret.options.desc)
+    assert.are.equal('scnvim: editor.send_line', ret.options.desc)
     ret = map('editor.send_line', 'n', { desc = 'custom desc' })
+    assert.are.equal('custom desc', ret.options.desc)
+  end)
+end)
+
+describe('map_expr', function()
+  it('sets a default description', function()
+    local ret = map_expr('s.boot', 'n')
+    assert.are.equal('sclang: s.boot', ret.options.desc)
+    ret = map_expr('s.boot', 'n', { desc = 'custom desc' })
     assert.are.equal('custom desc', ret.options.desc)
   end)
 end)
