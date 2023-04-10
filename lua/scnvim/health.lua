@@ -3,7 +3,7 @@
 ---@usage :checkhealth scnvim
 ---@local
 
-local health = require 'health'
+local health = vim.health or require 'health'
 local install = require 'scnvim.install'
 local sclang = require 'scnvim.sclang'
 local config = require 'scnvim.config'
