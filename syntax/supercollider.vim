@@ -65,7 +65,7 @@ syn match scInteger	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<0[oO]\=\o\+\%(_\o\+\)*\>"
 syn match scInteger	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<0[bB][01]\+\%(_[01]\+\)*\>"								display
 syn match scFloat	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<\%(0\|[1-9]\d*\%(_\d\+\)*\)\.\d\+\%(_\d\+\)*\>"					display
 syn match scFloat	"\%(\%(\w\|[]})\"']\s*\)\@<!-\)\=\<\%(0\|[1-9]\d*\%(_\d\+\)*\)\%(\.\d\+\%(_\d\+\)*\)\=\%([eE][-+]\=\d\+\%(_\d\+\)*\)\>"	display
-syn match scInfinity "inf"
+syn match scInfinity "\W\@<=inf\W\@="
 
 " keywords
 syn match   scControl	"\<\%(break\|rescue\|return\)\>[?!]\@!"
@@ -79,7 +79,7 @@ syn match scKrate "\v\.@<=kr(\w)@!"
 
 " operators
 syn keyword  scUnaryoperator  neg reciprocal abs floor ceil frac sign squared cubed sqrt exp midicps cpsmidi midiratio ratiomidi dbamp ampdb octcps cpsoct log log2 log10 sin cos tan asin acos atan sinh cosh tanh distort softclip isPositive isNegative isStrictlyPositive
-syn keyword  scBinaryoperator  min max round trunc atan2 hypot hypotApx ring1 ring2 ring3 ring4 sumsqr difsqr sqrsum sqrdif absdif thresh amclip scaleneg clip2 wrap2 fold2 excess + - *
+syn keyword  scBinaryoperator  min max round trunc atan2 hypot hypotApx ring1 ring2 ring3 ring4 sumsqr difsqr sqrsum sqrdif absdif thresh amclip scaleneg clip2 wrap2 fold2 excess + - * _
 
 syn match scBinaryoperator "+"
 syn match scBinaryoperator "-"
@@ -105,7 +105,6 @@ syn match scBinaryoperator "??"
 syn match scBinaryoperator "!?"
 syn match scBinaryoperator "!"
 syn match scBinaryoperator "#"
-syn match scBinaryoperator "_"
 syn match scBinaryoperator "\.\."
 syn match scBinaryoperator "\.\.\."
 syn match scBinaryoperator "`"
