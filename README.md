@@ -15,14 +15,6 @@
 * [Extensions](#extensions)
 * [Supported platforms](#supported-platforms)
 
-## News
-
-This plugin has recently undergone a big rewrite, take a look at the [installation](#installation) and [usage](#usage) sections to update your config.
-
-Please report any issues or bugs on the [issue tracker](https://github.com/davidgranstrom/scnvim/issues).
-
-Have other questions? Start a [discussion](https://github.com/davidgranstrom/scnvim/discussions) or join the [IRC channel](https://kiwiirc.com/client/irc.libera.chat/?&theme=mini#scnvim).
-
 ## Features
 
 * Post window output is displayed in a scratch buffer
@@ -54,24 +46,13 @@ Have other questions? Start a [discussion](https://github.com/davidgranstrom/scn
 * Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
-use {
-  'davidgranstrom/scnvim',
-  config = function()
-    require('scnvim').setup()
-  end
-}
+use { 'davidgranstrom/scnvim' }
 ```
 
 * Using [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
 Plug 'davidgranstrom/scnvim'
-
-" add this after calling plug#end()
-
-lua << EOF
-require('scnvim').setup()
-EOF
 ```
 
 ### Verify
@@ -82,15 +63,27 @@ Run `:checkhealth scnvim` to verify that the installation was successful.
 
 ### Configuration
 
-`scnvim` is configurable from lua only. Here is an example configuration that
-you can copy and paste to your init.vim.
+`scnvim` uses `lua` for configuration. Below is an example that you can copy
+and paste to your `init.lua`.
+
+If you are using `init.vim` for configuration you will need to surround the
+call to `scnvim.setup` in a `lua-heredoc`:
+
+```vim
+" file: init.vim
+lua << EOF
+require('scnvim').setup({})
+EOF
+```
+
+### Example
 
 ```lua
-lua << EOF
 local scnvim = require 'scnvim'
 local map = scnvim.map
 local map_expr = scnvim.map_expr
-scnvim.setup {
+
+scnvim.setup({
   keymaps = {
     ['<M-e>'] = map('editor.send_line', {'i', 'n'}),
     ['<C-e>'] = {
@@ -117,8 +110,7 @@ scnvim.setup {
       enabled = true,
     },
   },
-}
-EOF
+})
 ```
 
 ### Start
@@ -175,11 +167,12 @@ you have made a scnvim extension, please open a PR and add it to this list!
 The path to `sclang.exe` needs to be specified in the config:
 
 ```lua
-local scnvim = require 'scnvim'
-scnvim.setup {
+local scnvim = require('scnvim')
+scnvim.setup({
   sclang = {
     cmd = 'C:/Program Files/SuperCollider-3.12.2/sclang.exe'
   },
+})
 ```
 
 Modify the `sclang.cmd` to point to where SuperCollider is installed on your system.

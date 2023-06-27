@@ -9,7 +9,7 @@ on:
 jobs:
   luacheck:
     name: luacheck
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Prepare
@@ -21,7 +21,7 @@ jobs:
         run: luacheck lua ftdetect test/spec
   stylua:
     name: stylua
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: JohnnyMorganz/stylua-action@v1
