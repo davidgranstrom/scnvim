@@ -63,11 +63,11 @@ Run `:checkhealth scnvim` to verify that the installation was successful.
 
 ### Configuration
 
-`scnvim` is configured in lua. Below is an example configuration that you can
-copy and paste to your `init.lua`.
+`scnvim` uses `lua` for configuration. Below is an example that you can copy
+and paste to your `init.lua`.
 
 If you are using `init.vim` for configuration you will need to surround the
-call to setup in `lua-heredoc` like this:
+call to `scnvim.setup` in a `lua-heredoc`:
 
 ```vim
 " file: init.vim
@@ -167,11 +167,12 @@ you have made a scnvim extension, please open a PR and add it to this list!
 The path to `sclang.exe` needs to be specified in the config:
 
 ```lua
-local scnvim = require 'scnvim'
-scnvim.setup {
+local scnvim = require('scnvim')
+scnvim.setup({
   sclang = {
     cmd = 'C:/Program Files/SuperCollider-3.12.2/sclang.exe'
   },
+})
 ```
 
 Modify the `sclang.cmd` to point to where SuperCollider is installed on your system.
