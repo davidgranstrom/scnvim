@@ -155,6 +155,8 @@ you have made a scnvim extension, please open a PR and add it to this list!
   - Redirect post window ouput to a tmux pane.
 * [scnvim-logger](https://github.com/davidgranstrom/scnvim-logger)
   - Log post window output to a file (example scnvim extension)
+* [telescope-scdoc](https://github.com/davidgranstrom/telescope-scdoc.nvim)
+  - Use Telescope to fuzzy find documentation
 
 ## Supported platforms
 
