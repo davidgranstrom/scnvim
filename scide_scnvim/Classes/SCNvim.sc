@@ -163,6 +163,7 @@ SCNvim {
                         className = className.replace("*", ".").replace(" ", "");
 
                         if(snippetFormat == "luasnip", {
+
                           // LuaSnip
                           argList = signature[index..];
                           argList = argList.replace("(", "").replace(")", "");
@@ -172,9 +173,24 @@ SCNvim {
                             var scArgName = scArg[0];
                             var scArgVal = scArg[1];
                             var snipArgument;
+                            var escapeChars;
 
+                            // Create argument name as text node
                             snipArgument = "t(\"%:\"),".format(scArgName);
-                            snipArgument = snipArgument ++ "i(%, \"%\")".format(i+1, scArgVal);
+
+                            // Escape all characters that might break the snippet
+                            escapeChars = [
+                                $\\,
+                                $",
+                                $',
+                            ];
+
+                            escapeChars.do {|char|
+                                scArgVal = scArgVal.asString.replace(char, "\\" ++ char.asString);
+                            };
+
+                            // Create argument default value as insert node
+                            snipArgument = snipArgument ++ "i(%, %)".format(i+1, scArgVal.quote);
 
                             // Only add text node with comma if not last item
                             if(i+1 != argList.size, {
