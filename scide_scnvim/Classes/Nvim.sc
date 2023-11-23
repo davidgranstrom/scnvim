@@ -1,13 +1,18 @@
 Nvim {
-    var netAddr;
-    var messageId = 0;
+    var socket;
+    classvar messageId = 0;
 
     *new {
         ^super.new.init;
     }
 
     init {
-        netAddr = NetAddr("127.0.0.1", SCNvim.port);
+        socket = NetAddr("127.0.0.1", SCNvim.port);
+        // socket.tryConnectTCP({
+        //     "connected!".postln;
+        // }, {
+        //     "failed, re-trying..".postln;
+        // });
     }
 
     attach {arg port, responseCallback;
@@ -38,6 +43,6 @@ Nvim {
     }
 
     send {arg bytes;
-        netAddr.sendRaw(bytes);
+        socket.sendRaw(bytes);
     }
 }

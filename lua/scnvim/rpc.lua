@@ -12,8 +12,6 @@ local PORT = 0
 local eval_callbacks = {}
 local callback_id = '0'
 
-M.socket = uv.new_pipe(false)
-
 --- UDP handlers.
 --- Run the matching function in this table for the incoming 'action' parameter.
 local Handlers = {}
@@ -42,28 +40,25 @@ function Handlers.eval(object)
   end
 end
 
---- Callback for UDP datagrams
-local function on_receive(err, chunk)
-  assert(not err, err)
-  if chunk then
-    local ok, object = pcall(vim.fn.json_decode, chunk)
-    if not ok then
-      M.socket:write(chunk)
-      return
-    end
-    local func = Handlers[object.action]
-    assert(func, '[scnvim] Unrecognized handler')
-    func(object.args)
-  end
-end
+--- Start the UDP server.
+function M.start_server()
+  local rpc_addr = assert(vim.fn.serverstart('scnvim.sock'), 'Could not start RPC server')
+  local client = assert(uv.new_udp 'inet', 'Could not create UDP client')
+  local server = assert(uv.new_udp 'inet', 'Could not create UDP server')
+  local socket = assert(uv.new_pipe(false), 'Could not create pipe')
 
-local function rpc_start()
-  local addr = vim.fn.serverstart('scnvim.sock')
-  local rpc = uv.new_udp 'inet'
+  socket:connect(rpc_addr)
+  server:bind(HOST, PORT, { reuseaddr = true })
+  server:recv_start(vim.schedule_wrap(function(err, chunk)
+    assert(not err, err)
+    if chunk then
+      socket:write(chunk)
+    end
+  end))
+
   local tmp = { '' }
-  M.socket:connect(vim.v.servername)
-  local max_size = M.socket:recv_buffer_size()
-  M.socket:read_start(function(err, chunk)
+  local max_size = socket:recv_buffer_size()
+  socket:read_start(function(err, chunk)
     assert(not err, err)
     table.insert(tmp, chunk)
     local chunk_size = string.len(chunk)
@@ -81,34 +76,45 @@ local function rpc_start()
         if not ok then
           print(string.format('[scnvim] Could not encode msgpack payload [%d/%d]: %s', chunkId, num_chunks, bytes))
         end
-        rpc:send(bytes, HOST, 9999)
+        client:send(bytes, HOST, 9999)
         chunk_id = chunk_id + 1
       end
       tmp = { '' }
     end
   end)
-end
 
---- Start the UDP server.
-function M.start_server()
-  local handle = uv.new_udp 'inet'
-  assert(handle, 'Could not create UDP handle')
-  handle:bind(HOST, PORT, { reuseaddr = true })
-  handle:recv_start(vim.schedule_wrap(on_receive))
-  M.port = handle:getsockname().port
-  M.udp = handle
-  rpc_start()
-  return M.port
+  M.handles = {
+    socket = socket,
+    client = client,
+    server = client,
+  }
+
+  return server:getsockname().port
 end
 
 --- Stop the UDP server.
 function M.stop_server()
-  if M.udp then
-    M.udp:recv_stop()
-    if not M.udp:is_closing() then
-      M.udp:close()
+  local server = M.handles.server
+  local client = M.handles.client
+  local socket = M.handles.socket
+  if server then
+    server:recv_stop()
+    if not server:is_closing() then
+      server:close()
     end
-    M.udp = nil
+    M.handles.server = nil
+  end
+  if socket then
+    if not socket:is_closing() then
+      socket:close()
+    end
+    M.handles.socket = nil
+  end
+  if client then
+    if not client:is_closing() then
+      client:close()
+    end
+    M.handles.client = nil
   end
 end
 

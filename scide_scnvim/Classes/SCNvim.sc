@@ -5,26 +5,32 @@ SCNvim {
     classvar <>socket;
 
     *sendJSON {|data|
-        var json;
+        this.deprecated(thisMethod, this.class.findMethod(\send));
+    }
+
+    *send {|object|
+        var data;
         if (netAddr.isNil) {
             netAddr = NetAddr("127.0.0.1", SCNvim.port);
         };
-        json = SCNvimJSON.stringify(data);
-        if (json.notNil) {
-            netAddr.sendRaw(json);
-        } {
-            "[scnvim] could not encode to json: %".format(data).warn;
-        }
+        try {
+            data = MessagePack.encode(object);
+            data = [1, data]; // mark this as a 
+            data = MessagePack.encode(data);
+            netAddr.sendRaw(data.as(Int8Array));
+        } {|err|
+            "[scnvim] could not encode object: % (%)".format(object, err).error;
+        };
     }
 
     *luaeval{|luacode|
-        SCNvim.sendJSON((action: "luaeval", args: luacode))
+        SCNvim.send((action: "luaeval", args: luacode))
     }
 
     *eval {|expr, callback_id|
         var result = expr.interpret;
         result = (action: "eval", args: (result: result, id: callback_id));
-        SCNvim.sendJSON(result);
+        SCNvim.send(result);
     }
 
     *updateStatusLine {arg interval=1;

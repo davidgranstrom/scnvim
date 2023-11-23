@@ -2,7 +2,7 @@
 ---@module scnvim.sclang
 
 local postwin = require 'scnvim.postwin'
-local udp = require 'scnvim.udp'
+local rpc = require 'scnvim.rpc'
 local path = require 'scnvim.path'
 local config = require 'scnvim.config'
 local action = require 'scnvim.action'
@@ -195,7 +195,7 @@ function M.eval(expr, cb)
     cb = { cb, 'function' },
   }
   expr = vim.fn.escape(expr, '"')
-  local id = udp.push_eval_callback(cb)
+  local id = rpc.push_eval_callback(cb)
   local cmd = string.format('SCNvim.eval("%s", "%s");', expr, id)
   M.send(cmd, true)
 end
@@ -212,8 +212,8 @@ function M.start()
   M.proc = start_process()
   assert(M.proc, 'Could not start sclang process')
 
-  local port = udp.start_server()
-  assert(port > 0, 'Could not start UDP server')
+  local port = rpc.start_server()
+  assert(port > 0, 'Could not start RPC server')
   M.send(string.format('SCNvim.port = %d', port), true)
   M.send(string.format('SCNvim.socket = "%s"', vim.v.servername), true)
   M.set_current_path()
@@ -228,7 +228,7 @@ function M.stop()
   if not M.is_running() then
     return
   end
-  udp.stop_server()
+  rpc.stop_server()
   M.send('0.exit', true)
   local timer = uv.new_timer()
   timer:start(1000, 0, function()
@@ -252,7 +252,7 @@ function M.recompile()
     return
   end
   M.send(cmd_char.recompile, true)
-  M.send(string.format('SCNvim.port = %d', udp.port), true)
+  M.send(string.format('SCNvim.port = %d', rpc.port), true)
   M.send(string.format('SCNvim.socket = "%s"', vim.v.servername), true)
   M.set_current_path()
 end
