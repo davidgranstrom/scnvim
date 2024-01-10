@@ -86,7 +86,7 @@ function M.find_sclang_executable()
     local locations = { '/Applications', '/Applications/SuperCollider' }
     for _, loc in ipairs(locations) do
       local app_path = string.format('%s/%s', loc, app)
-      if vim.fn.executable(app_path) then
+      if vim.fn.executable(app_path) ~= 0 then
         return app_path
       end
     end
