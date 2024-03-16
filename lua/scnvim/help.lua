@@ -26,16 +26,16 @@ local M = {}
 --- The default is to open a split buffer.
 ---@param err nil on success or reason of error
 ---@param uri Help file URI
----@param pattern (optional) move cursor to line matching regex pattern
-M.on_open = action.new(function(err, uri, pattern)
+---@param method (optional) move cursor to line matching regex pattern
+M.on_open = action.new(function(err, uri, subject, method)
   if err then
     utils.print(err)
     return
   end
   local is_open = vim.fn.win_gotoid(win_id) == 1
   local expr = string.format('edit %s', uri)
-  if pattern then
-    expr = string.format('edit +/%s %s', pattern, uri)
+  if method then
+    expr = string.format('edit +/^\\\\(%s\\\\)\\\\?%s %s', subject, method, uri)
   end
   if is_open then
     vim.cmd(expr)
@@ -112,13 +112,19 @@ local function open_from_quickfix(index)
   local item = list[index]
   if item then
     local uri = vim.fn.bufname(item.bufnr)
+    local isWindows = (vim.fn.has 'win32' == 1) and not vim.env.MSYSTEM
+    if isWindows then
+      uri = uri:gsub('\\', '/')
+    end
+    local cmd = string.format('SCNvim.getFileNameFromUri("%s")', uri)
     if uv.fs_stat(uri) then
-      M.on_open(nil, uri, item.pattern)
+      sclang.eval(cmd, function(subject)
+        M.on_open(nil, uri, subject, item.text)
+      end)
     else
-      local cmd = string.format('SCNvim.getFileNameFromUri("%s")', uri)
       sclang.eval(cmd, function(subject)
         render_help_file(subject, function(result)
-          M.on_open(nil, result, item.pattern)
+          M.on_open(nil, result, subject, item.text)
         end)
       end)
     end
@@ -169,7 +175,6 @@ local function find_methods(name, target_dir)
         table.insert(results, {
           filename = destpath,
           text = string.format('.%s', name),
-          pattern = string.format('^\\.%s', name),
         })
       end
     end
