@@ -112,8 +112,7 @@ local function open_from_quickfix(index)
   local item = list[index]
   if item then
     local uri = vim.fn.bufname(item.bufnr)
-    local isWindows = (vim.fn.has 'win32' == 1) and not vim.env.MSYSTEM
-    if isWindows then
+    if _path.get_system() == 'windows' then
       uri = uri:gsub('\\', '/')
     end
     local cmd = string.format('SCNvim.getFileNameFromUri("%s")', uri)
