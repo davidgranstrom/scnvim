@@ -115,7 +115,7 @@ local function open_from_quickfix(index)
     local uri = vim.fn.bufname(item.bufnr)
     local subject = vim.fn.fnamemodify(uri, ':t:r')
     if uv.fs_stat(uri) then
-      M.on_open(nil, uri, subject, item.text)
+      M.on_open(nil, uri, item.text)
     else
       render_help_file(subject, function(result)
         M.on_open(nil, result, item.text)
