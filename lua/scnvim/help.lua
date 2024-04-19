@@ -35,7 +35,8 @@ M.on_open = action.new(function(err, uri, pattern)
   local is_open = vim.fn.win_gotoid(win_id) == 1
   local expr = string.format('edit %s', uri)
   if pattern then
-    expr = string.format('edit +/%s %s', pattern, uri)
+    local subject = vim.fn.fnamemodify(uri, ':t:r')
+    expr = string.format('edit +/^\\\\(%s\\\\)\\\\?%s %s', subject, pattern, uri)
   end
   if is_open then
     vim.cmd(expr)
@@ -112,14 +113,12 @@ local function open_from_quickfix(index)
   local item = list[index]
   if item then
     local uri = vim.fn.bufname(item.bufnr)
+    local subject = vim.fn.fnamemodify(uri, ':t:r')
     if uv.fs_stat(uri) then
-      M.on_open(nil, uri, item.pattern)
+      M.on_open(nil, uri, item.text)
     else
-      local cmd = string.format('SCNvim.getFileNameFromUri("%s")', uri)
-      sclang.eval(cmd, function(subject)
-        render_help_file(subject, function(result)
-          M.on_open(nil, result, item.pattern)
-        end)
+      render_help_file(subject, function(result)
+        M.on_open(nil, result, item.text)
       end)
     end
   end
@@ -169,7 +168,6 @@ local function find_methods(name, target_dir)
         table.insert(results, {
           filename = destpath,
           text = string.format('.%s', name),
-          pattern = string.format('^\\.%s', name),
         })
       end
     end
