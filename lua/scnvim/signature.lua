@@ -102,7 +102,8 @@ local function show_signature(object)
       local signature = res:match '%((.+)%)'
       if signature then
         if float then
-          _, hint_winid = lsp_util.open_floating_preview({ signature }, 'supercollider', float_conf)
+          local _, id = lsp_util.open_floating_preview({ signature }, 'supercollider', float_conf)
+          hint_winid = id
         else
           print(signature)
         end
