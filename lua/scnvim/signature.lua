@@ -8,6 +8,7 @@ local sclang = require 'scnvim.sclang'
 local config = require 'scnvim.config'
 local api = vim.api
 local lsp_util = vim.lsp.util
+local hint_winid = nil
 
 local M = {}
 
@@ -101,13 +102,18 @@ local function show_signature(object)
       local signature = res:match '%((.+)%)'
       if signature then
         if float then
-          lsp_util.open_floating_preview({ signature }, 'supercollider', float_conf)
+          _, hint_winid = lsp_util.open_floating_preview({ signature }, 'supercollider', float_conf)
         else
           print(signature)
         end
       end
     end)
   end
+end
+
+local function close_signature()
+  vim.api.nvim_win_close(hint_winid, false)
+  hint_winid = nil
 end
 
 --- Show signature from normal mode
@@ -125,6 +131,22 @@ function M.ins_show()
     if ok then
       pcall(show_signature, object)
     end
+  end
+end
+
+-- Close signature hint window
+function M.close()
+  if hint_winid ~= nil and vim.api.nvim_win_is_valid(hint_winid) then
+    pcall(close_signature)
+  end
+end
+
+-- Toggle signature hint window
+function M.toggle()
+  if hint_winid ~= nil and vim.api.nvim_win_is_valid(hint_winid) then
+    pcall(close_signature)
+  else
+    M.show()
   end
 end
 
