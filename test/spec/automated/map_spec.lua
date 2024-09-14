@@ -35,7 +35,7 @@ describe('map', function()
         cb(lines)
       end
     end)
-    vim.api.nvim_win_set_cursor(0, {1, 0})
+    vim.api.nvim_win_set_cursor(0, { 1, 0 })
     vim.api.nvim_buf_set_lines(0, -2, -1, true, { 'foo' })
     ret.fn()
     editor.on_send:restore()
