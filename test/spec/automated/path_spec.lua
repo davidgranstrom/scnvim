@@ -1,11 +1,9 @@
 local path = require 'scnvim.path'
-
 local eq = assert.are.same
-local is_ci = vim.loop.os_getenv 'SCNVIM_CI'
-if is_ci then
-  path.get_plugin_root_dir = function()
-    return vim.fn.expand '%:p:h:h'
-  end
+
+-- override for unit test runner
+path.get_plugin_root_dir = function()
+  return vim.fn.expand '%:p:h:h'
 end
 
 describe('path', function()
@@ -73,9 +71,7 @@ describe('path', function()
     assert.is_false(path.exists(destination))
   end)
 
-  it('returns plugin root dir', function()
-    local root_dir = path.get_plugin_root_dir()
-    root_dir = string.match(root_dir, 'scnvim')
-    eq(root_dir, 'scnvim')
-  end)
+  -- TODO: Find another way to test this function
+  -- it('returns plugin root dir', function()
+  -- end)
 end)

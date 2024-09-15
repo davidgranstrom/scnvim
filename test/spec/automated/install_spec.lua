@@ -1,10 +1,8 @@
 local install = require 'scnvim.install'
 
-local is_ci = vim.loop.os_getenv 'SCNVIM_CI'
-if is_ci then
-  require('scnvim.path').get_plugin_root_dir = function()
-    return vim.fn.expand '%:p:h:h'
-  end
+-- override for unit test runner
+require('scnvim.path').get_plugin_root_dir = function()
+  return vim.fn.expand '%:p:h:h'
 end
 
 describe('install', function()
