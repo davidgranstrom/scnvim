@@ -1,5 +1,6 @@
 local editor = require 'scnvim.editor'
 
+-- NOTE: only append to this data in order to not break existing tests
 local content = [[
 x = 123;
 (
@@ -17,6 +18,7 @@ x * 2;
 var y = 3;
 y * 2;
 )foo
+(degree: 0).play;
 ]]
 
 local buf = vim.api.nvim_create_buf(false, true)
@@ -102,6 +104,16 @@ x * 2;
 var y = 3;
 y * 2;
 )]]
+        assert.are.equal(expected, block)
+        return data
+      end)
+    end)
+
+    it('can send a single line containing parenthesis', function()
+      vim.api.nvim_win_set_cursor(0, { 17, 0 })
+      editor.send_block(function(data)
+        local block = table.concat(data, '\n')
+        local expected = [[(degree: 0).play;]]
         assert.are.equal(expected, block)
         return data
       end)

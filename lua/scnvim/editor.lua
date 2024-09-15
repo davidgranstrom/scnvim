@@ -308,7 +308,7 @@ end
 function M.send_block(cb, flash)
   flash = flash == nil and true or flash
   local lstart, lend = unpack(vim.fn['scnvim#editor#get_block']())
-  if lstart == 0 or lend == 0 then
+  if lstart == lend or lstart == 0 or lend == 0 then
     M.send_line(cb, flash)
     return
   end
