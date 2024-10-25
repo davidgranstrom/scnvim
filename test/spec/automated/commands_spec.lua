@@ -8,6 +8,7 @@ describe('commands', function()
       'SCNvimGenerateAssets',
       'SCNvimHelp',
       'SCNvimRecompile',
+      'SCNvimReboot',
       'SCNvimStart',
       'SCNvimStatusLine',
       'SCNvimStop',
