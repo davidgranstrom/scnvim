@@ -223,7 +223,7 @@ function M.start()
 end
 
 --- Stop the sclang process.
-function M.stop()
+function M.stop(callback)
   if not M.is_running() then
     return
   end
@@ -235,13 +235,23 @@ function M.stop()
       local ret = M.proc:kill 'sigkill'
       if ret == 0 then
         timer:close()
+        if callback then
+          vim.schedule(callback)
+        end
         M.proc = nil
       end
     else
       -- process exited during timer loop
       timer:close()
+      if callback then
+        vim.schedule(callback)
+      end
     end
   end)
+end
+
+function M.reboot()
+  M.stop(M.start)
 end
 
 --- Recompile the class library.

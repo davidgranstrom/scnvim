@@ -99,6 +99,11 @@ function scnvim.recompile()
   sclang.recompile()
 end
 
+--- Reboot sclang.
+function scnvim.reboot()
+  sclang.reboot()
+end
+
 --- Determine if a sclang process is active.
 ---@return True if sclang is running otherwise false.
 function scnvim.is_running()

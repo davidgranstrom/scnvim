@@ -123,6 +123,7 @@ Command                   Description
 `SCNvimStart`               Start SuperCollider
 `SCNvimStop`                Stop SuperCollider
 `SCNvimRecompile`           Recompile SCClassLibrary
+`SCNvimReboot`              Reboot sclang interpreter
 `SCNvimGenerateAssets`      Generate syntax highlightning and snippets
 `SCNvimHelp` <subject>      Open HelpBrowser or window split for <subject>
 `SCNvimStatusLine`          Display server status in 'statusline' if configured.
