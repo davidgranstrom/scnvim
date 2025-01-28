@@ -223,7 +223,7 @@ function M.start()
 end
 
 --- Stop the sclang process.
-function M.stop(callback)
+function M.stop(_, callback)
   if not M.is_running() then
     return
   end
@@ -251,7 +251,7 @@ function M.stop(callback)
 end
 
 function M.reboot()
-  M.stop(M.start)
+  M.stop(nil, M.start)
 end
 
 --- Recompile the class library.
