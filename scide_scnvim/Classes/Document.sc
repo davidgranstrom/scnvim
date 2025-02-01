@@ -1,21 +1,37 @@
-// nvim Document implementation
-//
-// The following code is copied/adapted from the Document implementation found in ScIDE.sc
-// License GPLv3
+// The following code was copied from the LanguageServer.quark implementation
+// and adjusted to handle thisProcess.nowExecutingPath for scnvim
 
 Document {
-    classvar <dir="";
+    classvar <dir="", <allDocuments, >current;
+    classvar <globalKeyDownAction, <globalKeyUpAction, <>initAction;
+    classvar <>autoRun = true;
+    classvar <asyncActions;
+    classvar <>implementingClass;
 
-    // needed for thisProcess.nowExecutingPath to work.. see Kernel::interpretCmdLine
-    var <path, <dataptr;
+    var <>quuid, <title, <isEdited = false;
+    var <>toFrontAction, <>endFrontAction, <>onClose, <>textChangedAction;
 
-    *new {|path, dataptr|
-        ^super.newCopyArgs(path, dataptr);
+    var <envir, <savedEnvir;
+    var <>path, <>dataptr;
+    // var <editable = true, <promptToSave = true;
+
+    //path            { ^this.subclassResponsibility(thisMethod) }
+    keyDownAction   { ^this.subclassResponsibility(thisMethod) }
+    keyDownAction_  { ^this.subclassResponsibility(thisMethod) }
+    keyUpAction     { ^this.subclassResponsibility(thisMethod) }
+    keyUpAction_    { ^this.subclassResponsibility(thisMethod) }
+    mouseUpAction   { ^this.subclassResponsibility(thisMethod) }
+    mouseUpAction_  { ^this.subclassResponsibility(thisMethod) }
+    mouseDownAction { ^this.subclassResponsibility(thisMethod) }
+    mouseDownAction_{ ^this.subclassResponsibility(thisMethod) }
+
+    *newFromPath {|path, dataptr|
+        ^super.new.path_(path).dataptr_(dataptr);
     }
 
     *current {
         var path = SCNvim.currentPath;
-        ^Document(path, true);
+        ^Document.newFromPath(path, true);
     }
 
     *dir_ {|path|
@@ -31,4 +47,16 @@ Document {
         var path = this.path;
         ^path !? { path.dirname }
     }
+
+    *open {
+        |path, selectionStart=0, selectionLength=0, envir|
+        ^implementingClass.open(path, selectionStart=0, selectionLength=0, envir)
+    }
+
+    open {
+        |path, selectionStart=0, selectionLength=0, envir|
+        ^implementingClass.open(path, selectionStart=0, selectionLength=0, envir)
+    }
+
+    *implementationClass { ^LSPDocument }
 }
