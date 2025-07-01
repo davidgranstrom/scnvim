@@ -43,6 +43,23 @@
 
 ### Install
 
+* Using [lazy.nvim](https://github.com/folke/lazy.nvim)
+
+```lua
+return {
+  'davidgranstrom/scnvim',
+  ft = 'supercollider',
+  config = function()
+    local scnvim = require 'scnvim'
+    local map = scnvim.map
+    local map_expr = scnvim.map_expr
+    scnvim.setup {
+      -- your config here
+    }
+  end
+}
+```
+
 * Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
