@@ -27,11 +27,12 @@ local on_stdout = function()
       local str = table.concat(stack, '')
       local got_line = vim.endswith(str, '\n')
       if got_line then
-        local lines = vim.gsplit(str, '\n')
-        for line in lines do
-          if line ~= '' then
-            M.on_output(line)
-          end
+        local lines = vim.split(str, '\n')
+        if #lines > 0 and lines[#lines] == "" then
+          table.remove(lines)
+        end
+        for _, line in pairs(lines) do
+          M.on_output(line)
         end
         stack = { '' }
       end
