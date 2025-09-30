@@ -31,4 +31,10 @@ Document {
         var path = this.path;
         ^path !? { path.dirname }
     }
+
+    // needed for string.openDocument
+    *implementationClass { ^this }
+    *open { |path|
+        SCNvim.luaeval("vim.cmd'edit %'".format(path))
+    }
 }
