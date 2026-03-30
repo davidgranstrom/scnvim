@@ -244,6 +244,7 @@ SCNvimDocEntry : SCDocEntry {
 		var delimiter = if(lastItem.notNil and:{lastItem}, "", ",");
 		var inheritance = [];
 		var numItems;
+    var keys;
 
 		stream << "\"" << path.escapeChar(34.asAscii) << "\": {\n";
 
@@ -262,7 +263,7 @@ SCNvimDocEntry : SCDocEntry {
 		};
 
 		if (klass.notNil) {
-			var keys = #[ "superclasses", "subclasses", "implementor" ];
+			keys = #[ "superclasses", "subclasses", "implementor" ];
 			klass.superclasses !? {
 				inheritance = inheritance.add(klass.superclasses.collect {|c|
 					c.name.asString
