@@ -43,6 +43,15 @@
 
 ### Install
 
+* Using [vim.pack](https://neovim.io/doc/user/pack/#vim.pack)
+
+```lua
+vim.pack.add({'https://github.com/davidgranstrom/scnvim'})
+require('scnvim').setup{
+    ensure_installed = true
+}
+```
+
 * Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
@@ -58,12 +67,6 @@ return {
     }
   end
 }
-```
-
-* Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
-
-```lua
-use { 'davidgranstrom/scnvim' }
 ```
 
 * Using [vim-plug](https://github.com/junegunn/vim-plug)
