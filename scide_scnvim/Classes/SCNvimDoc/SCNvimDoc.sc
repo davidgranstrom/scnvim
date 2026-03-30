@@ -244,7 +244,7 @@ SCNvimDocEntry : SCDocEntry {
 		var delimiter = if(lastItem.notNil and:{lastItem}, "", ",");
 		var inheritance = [];
 		var numItems;
-    var keys;
+        var keys;
 
 		stream << "\"" << path.escapeChar(34.asAscii) << "\": {\n";
 
