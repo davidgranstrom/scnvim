@@ -31,7 +31,7 @@ implementation, for example the code for indent and syntax highlighting.
 SETUP                                                             *scnvim-setup*
 
 Enable the plugin by calling the setup function in your *init.lua*
->
+>lua
   local scnvim = require('scnvim')
   scnvim.setup()
 <
@@ -46,7 +46,7 @@ KEYMAPS                                                         *scnvim-keymaps*
 No keymaps are defined by default. Use the `scnvim.setup` function to set
 your mappings. The *keywordprg* option is set by scnvim, use `K` to open
 documentation for the word under the cursor.
->
+>lua
   local map = scnvim.map
   scnvim.setup {
     keymaps = {
@@ -81,7 +81,7 @@ The following modules can be used to create a keymap from a string:
 * `signature`
 
 String example~
->
+>lua
   ['<CR>'] = scnvim.map('postwin.toggle')
 <
 This will create a keymap for `<CR>` for the `toggle` function from the
@@ -94,12 +94,12 @@ Function example~
 
 If the `map` helper receives a function it will execute that function when
 pressing the key.
->
+>lua
   ['<leader>st'] = scnvim.map(scnvim.start)
 <
 Here we're using the `scnvim.start` function. But its also possible to map
 arbitrary functions.
->
+>lua
   ['<F1>'] = scnvim.map(function()
     vim.cmd('SCNvimGenerateAssets')
   end)
@@ -107,7 +107,7 @@ arbitrary functions.
 Map expressions~
 
 The `map_expr` helper let's you map SuperCollider code.
->
+>lua
   local map_expr = scnvim.map_expr
   ['<F2>'] = map_expr('s.meter')
 <
@@ -142,7 +142,7 @@ and display the result inside nvim. In order to do so, the scnvim help system
 needs a program to convert HTML help files into plain text e.g. `pandoc[1]`
 
 Set the path to your converter program in the config passed to `scnvim.setup`
->
+>lua
   scnvim.setup{
     documentation = {
       cmd = '/opt/homebrew/bin/pandoc',
@@ -150,14 +150,14 @@ Set the path to your converter program in the config passed to `scnvim.setup`
   }
 <
 
-Customization~
+Customization ~
 
 The help system is configured to use `pandoc` by default. To use another
 program you will also need to supply the command line arguments needed to
 perform the HTML to plain text conversion. The example below is for the
 `html2text` program. `$1` is a placeholder for the *input file* and `$2` is a
 placeholder for the *output file*, these are replaced automatically.
->
+>lua
   scnvim.setup{
     documentation = {
       cmd = '/usr/local/bin/html2text',
@@ -190,7 +190,7 @@ You can also view an up-to-date HTML version of the documentation by visiting
 this link: https://davidgranstrom.github.io/scnvim/modules/scnvim.config.html
 
 Example configuration~
->
+>lua
   scnvim.setup {
     mapping = {
       ['<M-e>'] = scnvim.map.send_line({'i', 'n'}),
