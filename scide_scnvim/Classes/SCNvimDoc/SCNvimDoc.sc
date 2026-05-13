@@ -225,61 +225,84 @@ SCNvimDocEntry : SCDocEntry {
 	}
 
 	// overriden to output valid json
-	prJSONString {|stream, key, x|
+	prJSONString {|depth=0, stream, key, x, lastItem|
+		var delimiter = if (lastItem.notNil and: { lastItem }, "", ",");
+		var indent = "";
 		if (x.isNil) { x = "" };
 		x = x.escapeChar(92.asAscii); // backslash
 		x = x.escapeChar(34.asAscii); // double quote
-		stream << "\"" << key << "\": \"" << x << "\",\n";
+
+		if (depth > 0) {
+			depth.do {
+				indent = indent ++ "\t";
+			}
+		};
+
+		stream << indent << "\"" << key << "\": \"" << x << "\"%\n".format(delimiter);
 	}
 
 	// overriden to output valid json
-	prJSONList {|stream, key, v, lastItem|
-		var delimiter = if(lastItem.notNil and:{lastItem}, "", ",");
+	prJSONList {|depth=0, stream, key, v, lastItem|
+		var delimiter = if (lastItem.notNil and: { lastItem }, "", ",");
+		var indent = "";
 		if (v.isNil) { v = "" };
-		stream << "\"" << key << "\": [ " << v.collect{|x|"\""++x.escapeChar(34.asAscii)++"\""}.join(",") << " ]%\n".format(delimiter);
+
+		if (depth > 0) {
+			depth.do {
+				indent = indent ++ "\t";
+			}
+		};
+
+		stream << indent << "\"" << key << "\": [" << v.collect{ |x| "\"" ++ x.escapeChar(34.asAscii) ++ "\"" }.join(", ") << "]%\n".format(delimiter);
 	}
 
 	toJSON {|stream, lastItem|
-		var delimiter = if(lastItem.notNil and:{lastItem}, "", ",");
-		var inheritance = [];
-		var numItems;
+		var delimiter = if (lastItem.notNil and: { lastItem }, "", ",");
+		var inheritance = Array.fill(3, nil);
         var keys;
+		var lastKey = 0;
 
 		stream << "\"" << path.escapeChar(34.asAscii) << "\": {\n";
 
-		this.prJSONString(stream, "title", title);
-		this.prJSONString(stream, "path", path);
-		this.prJSONString(stream, "summary", summary);
-		this.prJSONString(stream, "installed", if(isExtension,"extension","standard")); //FIXME: also 'missing'.. better to have separate extension and missing booleans..
-		this.prJSONString(stream, "categories", if(categories.notNil) {categories.join(", ")} {""}); // FIXME: export list instead
-		this.prJSONList(stream, "keywords", keywords);
-		this.prJSONList(stream, "related", related);
+		this.prJSONString(1, stream, "title", title);
+		this.prJSONString(1, stream, "path", path);
+		this.prJSONString(1, stream, "summary", summary);
+		this.prJSONString(1, stream, "installed", if(isExtension,"extension","standard")); //FIXME: also 'missing'.. better to have separate extension and missing booleans..
+		this.prJSONString(1, stream, "categories", if(categories.notNil) {categories.join(", ")} {""}); // FIXME: export list instead
 
-		this.prJSONList(stream, "methods", this.makeMethodList, klass.isNil);
+		this.prJSONList(1, stream, "keywords", keywords);
+		this.prJSONList(1, stream, "related", related);
+		this.prJSONList(1, stream, "methods", this.makeMethodList, klass.isNil and: {oldHelp.isNil});
 
 		if (oldHelp.notNil) {
-			this.prJSONString(stream, "oldhelp", oldHelp);
+			this.prJSONString(1, stream, "oldhelp", oldHelp, klass.isNil);
 		};
 
 		if (klass.notNil) {
 			keys = #[ "superclasses", "subclasses", "implementor" ];
 			klass.superclasses !? {
-				inheritance = inheritance.add(klass.superclasses.collect {|c|
+				inheritance.put(0, klass.superclasses.collect {|c|
 					c.name.asString
 				});
 			};
 			klass.subclasses !? {
-				inheritance = inheritance.add(klass.subclasses.collect {|c|
+				inheritance.put(1, klass.subclasses.collect {|c|
 					c.name.asString
 				});
+				lastKey = 1;
 			};
 			implKlass !? {
-				inheritance = inheritance.add(implKlass.name.asString);
+				inheritance.put(2, implKlass.name.asString);
+				lastKey = 2;
 			};
 
-			numItems = inheritance.size - 1;
 			inheritance.do {|item, i|
-				this.prJSONList(stream, keys[i], item, i >= numItems);
+				if (item.notNil && item.isKindOf(String)) {
+					this.prJSONString(1, stream, keys[i], item, i == lastKey);
+				};
+				if (item.notNil && item.isKindOf(Array)) {
+					this.prJSONList(1, stream, keys[i], item, i == lastKey);
+				};
 			};
 		};
 
