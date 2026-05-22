@@ -231,6 +231,7 @@ function M.stop(_, callback)
   udp.stop_server()
   M.send('0.exit', true)
   local timer = uv.new_timer()
+  assert(timer, 'Could not create timer')
   timer:start(1000, 0, function()
     if M.proc then
       local ret = M.proc:kill 'sigkill'

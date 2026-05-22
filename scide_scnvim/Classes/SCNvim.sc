@@ -146,8 +146,14 @@ SCNvim {
         Class.allClasses.do {arg klass;
             var className, argList, signature;
             if (klass.asString.beginsWith("Meta_").not) {
+                var currClass = klass;
+                // get methods from superclass for derived classes
+                // TODO: should traverse entire heirarchy but this produces too many snippets!
+                while ({currClass.class.methods.isNil}, {
+                    currClass = currClass.superclass;
+                });
                 // collect all creation methods
-                klass.class.methods.do {arg meth;
+                currClass.class.methods.do {arg meth;
                     var index, snippet;
                     var snippetName;
                     var description;

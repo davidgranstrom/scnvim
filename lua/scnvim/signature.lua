@@ -29,7 +29,7 @@ local function extract_objects_helper(str)
   objects = vim.tbl_map(function(s)
     return vim.split(s, ',', true)
   end, objects)
-  objects = vim.tbl_flatten(objects)
+  objects = vim.iter(objects):flatten():totable()
   objects = vim.tbl_map(function(s)
     -- filter out empty strings (nvim 0.5.1 compatability fix, use
     -- vim.split(..., {trimempty = true}) for nvim 0.6)

@@ -69,6 +69,7 @@ local function flash_region(start, finish)
   if repeats > 1 then
     local count = 0
     local timer = uv.new_timer()
+    assert(timer, 'Could not create timer')
     timer:start(
       duration,
       duration,
@@ -115,11 +116,12 @@ local function fade_region(start, finish)
     anchor = lstart > 0 and 'NW' or 'SE',
   }
   local id = api.nvim_open_win(buf, false, options)
-  api.nvim_win_set_option(id, 'winhl', 'Normal:' .. 'SCNvimEval')
+  api.nvim_set_option_value('winhl', 'Normal:' .. 'SCNvimEval', { win = id })
   local timer = uv.new_timer()
   local rate = 50
   local accum = 0
   local duration = math.floor(config.editor.highlight.fade.duration)
+  assert(timer, 'Could not create timer')
   timer:start(
     0,
     rate,
@@ -129,7 +131,7 @@ local function fade_region(start, finish)
         accum = duration
       end
       local value = math.pow(accum / duration, 2.5)
-      api.nvim_win_set_option(id, 'winblend', math.floor(100 * value))
+      api.nvim_set_option_value('winblend', math.floor(100 * value), { win = id })
       if accum >= duration then
         timer:stop()
         api.nvim_win_close(id, true)

@@ -24,7 +24,7 @@ return function()
       print('[scnvim] Assets written to ' .. get_cache_dir())
     end
     sclang.generate_assets(on_done)
-  end, 'Generate syntax highlightning and snippets')
+  end, 'Generate syntax highlighting and snippets')
 
   local options = { nargs = 1, desc = 'Open help for subject' }
   local open_help = function(tbl)

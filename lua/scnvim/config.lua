@@ -100,7 +100,7 @@ local default = {
         border = 'single',
       },
       callback = function(id)
-        vim.api.nvim_win_set_option(id, 'winblend', 10)
+        vim.api.nvim_set_option_value('winblend', 10, { win = id })
       end,
     },
   },

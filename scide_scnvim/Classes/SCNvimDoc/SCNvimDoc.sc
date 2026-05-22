@@ -234,10 +234,9 @@ SCNvimDocEntry : SCDocEntry {
 	}
 
 	// overriden to output valid json
-	prJSONList {|stream, key, v, lastItem|
-		var delimiter = if(lastItem.notNil and:{lastItem}, "", ",");
+	prJSONList {|stream, key, v|
 		if (v.isNil) { v = "" };
-		stream << "\"" << key << "\": [ " << v.collect{|x|"\""++x.escapeChar(34.asAscii)++"\""}.join(",") << " ]%\n".format(delimiter);
+		stream << "\"" << key << "\": [ " << v.collect{|x|"\""++x.escapeChar(34.asAscii)++"\""}.join(",") << " ],\n";
 	}
 
 	toJSON {|stream, lastItem|
@@ -262,28 +261,24 @@ SCNvimDocEntry : SCDocEntry {
 			this.prJSONString(stream, "oldhelp", oldHelp);
 		};
 
-		if (klass.notNil) {
-			keys = #[ "superclasses", "subclasses", "implementor" ];
+		if(klass.notNil) {
 			klass.superclasses !? {
-				inheritance = inheritance.add(klass.superclasses.collect {|c|
+				this.prJSONList(stream, "superclasses", klass.superclasses.collect {|c|
 					c.name.asString
-				});
+				})
 			};
 			klass.subclasses !? {
-				inheritance = inheritance.add(klass.subclasses.collect {|c|
+				this.prJSONList(stream, "subclasses", klass.subclasses.collect {|c|
 					c.name.asString
-				});
+				})
 			};
 			implKlass !? {
-				inheritance = inheritance.add(implKlass.name.asString);
-			};
-
-			numItems = inheritance.size - 1;
-			inheritance.do {|item, i|
-				this.prJSONList(stream, keys[i], item, i >= numItems);
-			};
+				this.prJSONString(stream, "implementor", implKlass.name.asString);
+			}
 		};
 
-		stream << "}%\n".format(delimiter);
+		stream.seek(-2, 1);
+
+		stream << "\n}%\n".format(delimiter);
 	}
 }
