@@ -244,7 +244,6 @@ SCNvimDocEntry : SCDocEntry {
 		var delimiter = if(lastItem.notNil and:{lastItem}, "", ",");
 		var inheritance = [];
 		var numItems;
-        var keys;
 
 		stream << "\"" << path.escapeChar(34.asAscii) << "\": {\n";
 
@@ -263,24 +262,25 @@ SCNvimDocEntry : SCDocEntry {
 		};
 
 		if (klass.notNil) {
-			keys = #[ "superclasses", "subclasses", "implementor" ];
+			// keep each key paired with its value so a missing entry can't
+			// shift the labels, and always pass an array to prJSONList
 			klass.superclasses !? {
-				inheritance = inheritance.add(klass.superclasses.collect {|c|
+				inheritance = inheritance.add(["superclasses", klass.superclasses.collect {|c|
 					c.name.asString
-				});
+				}]);
 			};
 			klass.subclasses !? {
-				inheritance = inheritance.add(klass.subclasses.collect {|c|
+				inheritance = inheritance.add(["subclasses", klass.subclasses.collect {|c|
 					c.name.asString
-				});
+				}]);
 			};
 			implKlass !? {
-				inheritance = inheritance.add(implKlass.name.asString);
+				inheritance = inheritance.add(["implementor", [implKlass.name.asString]]);
 			};
 
 			numItems = inheritance.size - 1;
-			inheritance.do {|item, i|
-				this.prJSONList(stream, keys[i], item, i >= numItems);
+			inheritance.do {|pair, i|
+				this.prJSONList(stream, pair[0], pair[1], i >= numItems);
 			};
 		};
 
