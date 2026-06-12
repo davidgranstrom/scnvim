@@ -81,6 +81,10 @@ end
 local function render_help_file(subject, on_done)
   local cmd = string.format('SCNvim.getHelpUri("%s")', subject)
   sclang.eval(cmd, function(input_path)
+    if not input_path then
+      utils.print(string.format('The class %s does not exist', subject))
+      return
+    end
     local basename = input_path:gsub('%.html%.scnvim', '')
     local output_path = basename .. '.txt'
     local args = get_render_args(input_path, output_path)
