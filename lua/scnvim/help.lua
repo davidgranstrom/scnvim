@@ -81,6 +81,10 @@ end
 local function render_help_file(subject, on_done)
   local cmd = string.format('SCNvim.getHelpUri("%s")', subject)
   sclang.eval(cmd, function(input_path)
+    if not input_path then
+      utils.print(string.format('The class %s does not exist', subject), 'WarningMsg')
+      return
+    end
     local basename = input_path:gsub('%.html%.scnvim', '')
     local output_path = basename .. '.txt'
     local args = get_render_args(input_path, output_path)
@@ -130,7 +134,7 @@ end
 ---@param results Table with results
 M.on_select = action.new(function(err, results)
   if err then
-    print(err)
+    utils.print(err, 'WarningMsg')
     return
   end
   local id = api.nvim_create_augroup('scnvim_qf_conceal', { clear = true })
