@@ -41,18 +41,26 @@ M.on_open = action.new(function(err, uri, pattern)
   if is_open then
     vim.cmd(expr)
   else
-    local horizontal = config.documentation.horizontal
-    local direction = config.documentation.direction
-    if direction == 'top' or direction == 'left' then
-      direction = 'leftabove'
-    elseif direction == 'right' or direction == 'bot' then
-      direction = 'rightbelow'
+    if config.documentation.tab then
+      local win_cmd = string.format('tabnew | %s', expr)
+      vim.cmd(win_cmd)
     else
-      error '[scnvim] invalid config.documentation.direction'
+      local horizontal = config.documentation.horizontal
+      local direction = config.documentation.direction
+      if direction == 'top' or direction == 'left' then
+        direction = 'leftabove'
+      elseif direction == 'right' or direction == 'bot' then
+        direction = 'rightbelow'
+      else
+        error '[scnvim] invalid config.documentation.direction'
+      end
+      local win_cmd = string.format('%s %s | %s', direction, horizontal and 'split' or 'vsplit', expr)
+      vim.cmd(win_cmd)
     end
-    local win_cmd = string.format('%s %s | %s', direction, horizontal and 'split' or 'vsplit', expr)
-    vim.cmd(win_cmd)
     win_id = vim.fn.win_getid()
+    vim.opt_local.number = false
+    vim.opt_local.relativenumber = false
+    vim.opt_local.wrap = false
   end
 end)
 

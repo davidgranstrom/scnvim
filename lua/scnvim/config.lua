@@ -41,6 +41,7 @@ local default = {
   --- string $1 will be replaced with the input file path and $2 will be replaced
   --- with the output file path.
   ---
+  ---@field tab (default: false) If true open the help window in a new tab
   ---@field horizontal (default: true) Open the help window as a horizontal split
   ---@field direction (default: 'top') Direction of the split: 'top', 'right', 'bot', 'left'
   ---@field keymaps (default: true) If true apply user keymaps to the help
@@ -48,6 +49,7 @@ local default = {
   documentation = {
     cmd = nil,
     args = { '$1', '--from', 'html', '--to', 'plain', '-o', '$2' },
+    tab = false,
     horizontal = true,
     direction = 'top',
     keymaps = true,
