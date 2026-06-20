@@ -147,7 +147,11 @@ local default = {
     signature = {
       float = true,
       auto = true,
-      config = {}, -- TODO: can we use vim.diagnostic instead..?
+      config = {
+        -- Override the default close events for vim.lsp.util.open_floating_preview() which are:
+        -- { 'CursorMoved', 'CursorMovedI', 'InsertCharPre' }
+        close_events = { 'InsertLeave', 'CursorMoved' },
+      },
     },
   },
 
