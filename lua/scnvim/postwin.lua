@@ -164,7 +164,8 @@ end
 function M.close()
   if M.is_open() then
     save_last_size()
-    api.nvim_win_close(M.win, false)
+    -- This call can fail if its the last window
+    pcall(api.nvim_win_close, M.win, true)
     M.win = nil
   end
 end
