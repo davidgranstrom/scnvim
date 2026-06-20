@@ -206,6 +206,23 @@ if (\SCNvim.asClass.notNil) {
   Server.program = (Platform.resourceDir +/+ "scsynth.exe").quote;
 }
 ```
+### Note to Mac users
+sclang will set its `Platform.userConfigDir` to XDG_CONFIG_HOME (most likely `/Users/USERNAME/.config`) if it exists, 
+and only if it does not exist, the mac `/Users/USERNAME/Library/Application Support` directory will be used.
+This means that the path to the startup and config files will likely be different in scnvim from that in the
+regular superCollider IDE. 
+
+While the path to the config file can be specified via args to sclang, e.g.:
+```lua
+local scnvim = require('scnvim')
+scnvim.setup({
+  sclang = {
+    cmd = "/Applications/SuperCollider.app/Contents/MacOS/sclang",
+    args = { "-l", "/Users/USERNAME/Library/Application Support/SuperCollider/sclang_conf.yaml" }
+  },
+})
+```
+the same appears not to be possible for the startup file and sclang's `userConfigDir` in general.
 
 ## License
 
